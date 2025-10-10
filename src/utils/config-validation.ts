@@ -30,6 +30,16 @@ export function validateConfig(config: AugenAufConfig): ValidationResult {
       } else if (!isValidUuid(stage.queueUuid)) {
         errors.push(`Workflow stage '${stage.id}' has invalid queueUuid format: ${stage.queueUuid}`);
       }
+      if (!stage.formUuid || stage.formUuid === '') {
+        warnings.push(`Workflow stage '${stage.id}' is missing 'formUuid' - form will not be displayed`);
+      } else if (!isValidUuid(stage.formUuid)) {
+        warnings.push(`Workflow stage '${stage.id}' has invalid formUuid format: ${stage.formUuid}`);
+      }
+      if (!stage.encounterTypeUuid || stage.encounterTypeUuid === '') {
+        warnings.push(`Workflow stage '${stage.id}' is missing 'encounterTypeUuid'`);
+      } else if (!isValidUuid(stage.encounterTypeUuid)) {
+        warnings.push(`Workflow stage '${stage.id}' has invalid encounterTypeUuid format: ${stage.encounterTypeUuid}`);
+      }
     });
   }
 
@@ -47,25 +57,11 @@ export function validateConfig(config: AugenAufConfig): ValidationResult {
     warnings.push(`'surgeryWorkflowConceptUuid' has invalid UUID format: ${config.surgeryWorkflowConceptUuid}`);
   }
 
-  // Validate protocols
-  if (!config.protocols || Object.keys(config.protocols).length === 0) {
-    warnings.push('No protocols configured');
-  } else {
-    Object.entries(config.protocols).forEach(([key, protocol]) => {
-      if (!protocol.name) {
-        warnings.push(`Protocol '${key}' is missing 'name'`);
-      }
-      if (!protocol.formUuid || protocol.formUuid === '') {
-        warnings.push(`Protocol '${key}' is missing 'formUuid' - forms will not be displayed`);
-      } else if (!isValidUuid(protocol.formUuid)) {
-        warnings.push(`Protocol '${key}' has invalid formUuid format: ${protocol.formUuid}`);
-      }
-      if (!protocol.encounterTypeUuid || protocol.encounterTypeUuid === '') {
-        warnings.push(`Protocol '${key}' is missing 'encounterTypeUuid'`);
-      } else if (!isValidUuid(protocol.encounterTypeUuid)) {
-        warnings.push(`Protocol '${key}' has invalid encounterTypeUuid format: ${protocol.encounterTypeUuid}`);
-      }
-    });
+  // Validate visitEncounterTypeUuid
+  if (!config.visitEncounterTypeUuid || config.visitEncounterTypeUuid === '') {
+    errors.push("'visitEncounterTypeUuid' is not configured");
+  } else if (!isValidUuid(config.visitEncounterTypeUuid)) {
+    errors.push(`'visitEncounterTypeUuid' has invalid UUID format: ${config.visitEncounterTypeUuid}`);
   }
 
   return {
@@ -122,15 +118,10 @@ export function getConfigSummary(config: AugenAufConfig): string {
   lines.push('─────────────────────');
   lines.push(`Workflow Stages: ${config.workflowStages.length}`);
 
-  const configuredStages = config.workflowStages.filter(s => s.queueUuid && s.queueUuid !== '').length;
-  lines.push(`  Configured: ${configuredStages}/${config.workflowStages.length}`);
+  const configuredStages = config.workflowStages.filter(s => s.queueUuid && s.queueUuid !== '' && s.formUuid && s.formUuid !== '').length;
+  lines.push(`  Fully Configured: ${configuredStages}/${config.workflowStages.length}`);
 
-  const protocolCount = Object.keys(config.protocols).length;
-  lines.push(`Protocols: ${protocolCount}`);
-
-  const configuredProtocols = Object.values(config.protocols).filter(p => p.formUuid && p.formUuid !== '').length;
-  lines.push(`  Configured: ${configuredProtocols}/${protocolCount}`);
-
+  lines.push(`Visit Encounter Type: ${config.visitEncounterTypeUuid ? '✓' : '✗'}`);
   lines.push(`Needs Surgery Concept: ${config.needsSurgeryConceptUuid ? '✓' : '✗'}`);
   lines.push('');
   lines.push(`Status: ${validation.isValid ? '✓ Valid' : '✗ Invalid'}`);

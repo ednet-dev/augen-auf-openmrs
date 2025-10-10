@@ -6,66 +6,49 @@ export const configSchema = {
     _description: "Encounter type UUID for the single patient visit encounter",
     _default: "aa001100-1234-5678-90ab-000000000001"
   },
-  protocols: {
-    _type: Type.Object,
-    _description: "Protocol to form UUID mappings for the surgery workflow",
-    _default: {
-      "protocol-1": {
-        name: "Pre-Surgery",
-        formUuid: "",
-        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000011",
-        icon: "surgery",
-        color: "#FFA500"
-      },
-      "protocol-2": {
-        name: "Intra-Surgery",
-        formUuid: "",
-        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000012",
-        icon: "eye",
-        color: "#FF8C00"
-      },
-      "protocol-3": {
-        name: "Post-Surgery",
-        formUuid: "",
-        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000013",
-        icon: "checkmark",
-        color: "#FFD700"
-      }
-    }
-  },
   workflowStages: {
     _type: Type.Array,
-    _description: "Available workflow stages for patient filtering (queue-based)",
+    _description: "Available workflow stages with one form per stage",
     _default: [
       {
         id: "registration",
         label: "Registration",
         color: "#E0E0E0",
-        queueUuid: "aa004400-1234-5678-90ab-000000000001"
+        queueUuid: "aa004400-1234-5678-90ab-000000000001",
+        formUuid: "",
+        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000001"
       },
       {
         id: "refraction",
         label: "Refraction",
         color: "#C0C0C0",
-        queueUuid: "aa004400-1234-5678-90ab-000000000002"
+        queueUuid: "aa004400-1234-5678-90ab-000000000002",
+        formUuid: "",
+        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000002"
       },
       {
         id: "eye-exam",
         label: "Eye Exam",
         color: "#A0A0A0",
-        queueUuid: "aa004400-1234-5678-90ab-000000000003"
+        queueUuid: "aa004400-1234-5678-90ab-000000000003",
+        formUuid: "",
+        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000003"
       },
       {
         id: "therapy",
         label: "Therapy",
         color: "#808080",
-        queueUuid: "aa004400-1234-5678-90ab-000000000004"
+        queueUuid: "aa004400-1234-5678-90ab-000000000004",
+        formUuid: "",
+        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000004"
       },
       {
         id: "finished",
         label: "Finished",
         color: "#90EE90",
-        queueUuid: "aa004400-1234-5678-90ab-000000000005"
+        queueUuid: "aa004400-1234-5678-90ab-000000000005",
+        formUuid: "",
+        encounterTypeUuid: "aa003300-1234-5678-90ab-000000000005"
       }
     ]
   },

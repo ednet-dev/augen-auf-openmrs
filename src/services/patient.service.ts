@@ -1,5 +1,5 @@
 import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
-import { PatientListItem, PatientWorkflowData, WorkflowStageId, ProtocolId } from '../types';
+import { PatientListItem, PatientWorkflowData, WorkflowStageId } from '../types';
 
 /**
  * Fetch patients based on search query and filters
@@ -170,7 +170,7 @@ export async function fetchPatientWorkflowData(
 
     // Determine current stage based on active queue entry
     let currentStage: WorkflowStageId = 'registration';
-    let completedProtocols: ProtocolId[] = [];
+    let completedStages: WorkflowStageId[] = [];
     let lastUpdated = new Date().toISOString();
 
     if (queueData.results && queueData.results.length > 0) {
@@ -188,8 +188,14 @@ export async function fetchPatientWorkflowData(
         }
       }
 
-      // TODO: Extract completed protocols from form encounters
-      // This depends on how protocol forms are linked to encounters
+      // Determine completed stages from ended queue entries
+      const endedEntries = queueData.results.filter((entry: any) => entry.endedAt);
+      completedStages = endedEntries
+        .map((entry: any) => {
+          const stage = workflowStages.find((s) => s.queueUuid === entry.queue.uuid);
+          return stage?.id;
+        })
+        .filter((id): id is WorkflowStageId => id !== undefined);
     }
 
     // Check if patient needs surgery
@@ -199,7 +205,7 @@ export async function fetchPatientWorkflowData(
       patientUuid,
       currentStage,
       needsSurgery,
-      completedProtocols,
+      completedStages,
       lastUpdated,
     };
   } catch (error) {

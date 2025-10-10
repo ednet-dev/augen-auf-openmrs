@@ -5,25 +5,13 @@ export type WorkflowStageId =
   | 'therapy'
   | 'finished';
 
-export type ProtocolId = 'protocol-1' | 'protocol-2' | 'protocol-3';
-
 export interface WorkflowStage {
   id: WorkflowStageId;
   label: string;
   color: string;
   queueUuid: string;
-}
-
-export interface Protocol {
-  name: string;
   formUuid: string;
   encounterTypeUuid: string;
-  icon: string;
-  color: string;
-}
-
-export interface ProtocolsConfig {
-  [key: string]: Protocol;
 }
 
 export interface DateFilter {
@@ -40,7 +28,7 @@ export interface DateFiltersConfig {
 }
 
 export interface AugenAufConfig {
-  protocols: ProtocolsConfig;
+  visitEncounterTypeUuid: string;
   workflowStages: WorkflowStage[];
   surgeryWorkflowConceptUuid: string;
   needsSurgeryConceptUuid: string;
@@ -54,7 +42,7 @@ export interface PatientWorkflowData {
   patientUuid: string;
   currentStage: WorkflowStageId;
   needsSurgery: boolean;
-  completedProtocols: ProtocolId[];
+  completedStages: WorkflowStageId[];
   lastUpdated: string;
 }
 
@@ -83,6 +71,5 @@ export interface FilterState {
     end: Date;
   };
   workflowStage: WorkflowStageId | 'all' | 'needs-surgery';
-  protocolFilter: ProtocolId | 'all';
   searchQuery: string;
 }
