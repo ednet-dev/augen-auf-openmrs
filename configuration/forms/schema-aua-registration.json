@@ -1,0 +1,33 @@
+{
+    "name": "AUA Registration",
+    "pages": [
+        {
+            "label": "Registration",
+            "sections": [
+                {
+                    "label": "General",
+                    "isExpanded": "true",
+                    "questions": [
+                        {
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "text",
+                                "concept": "139548AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "maxLength": "80",
+                                "minLength": "1"
+                            },
+                            "id": "generalMedicalCondition",
+                            "label": "General Medical Condition"
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "processor": "EncounterFormProcessor",
+    "encounterType": "e22e39fd-7db2-45e7-80f1-60fa0d5a4378",
+    "referencedForms": [],
+    "uuid": "2338e7c3-978c-489d-90c5-c2fefcaffe50",
+    "description": "Patient Registration",
+    "version": "1.0"
+}

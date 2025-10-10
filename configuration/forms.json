@@ -1,0 +1,275 @@
+[
+  {
+    "uuid": "2338e7c3-978c-489d-90c5-c2fefcaffe50",
+    "display": "AUA Registration",
+    "name": "AUA Registration",
+    "description": "Patient Registration",
+    "encounterType": {
+      "uuid": "e22e39fd-7db2-45e7-80f1-60fa0d5a4378",
+      "display": "Admission",
+      "name": "Admission",
+      "description": "Indicates that the patient has been admitted for inpatient care, and is not expected to leave the hospital unless discharged.",
+      "retired": false,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/encountertype/e22e39fd-7db2-45e7-80f1-60fa0d5a4378",
+          "resourceAlias": "encountertype"
+        },
+        {
+          "rel": "full",
+          "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/encountertype/e22e39fd-7db2-45e7-80f1-60fa0d5a4378?v=full",
+          "resourceAlias": "encountertype"
+        }
+      ],
+      "resourceVersion": "1.8"
+    },
+    "version": "1.0",
+    "build": null,
+    "published": true,
+    "formFields": [],
+    "retired": false,
+    "auditInfo": {
+      "creator": {
+        "uuid": "ad4c3f36-f462-4773-a55e-07787959c649",
+        "display": "patrikf",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/user/ad4c3f36-f462-4773-a55e-07787959c649",
+            "resourceAlias": "user"
+          }
+        ]
+      },
+      "dateCreated": "2025-10-10T12:44:41.000+0000",
+      "changedBy": {
+        "uuid": "ad4c3f36-f462-4773-a55e-07787959c649",
+        "display": "patrikf",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/user/ad4c3f36-f462-4773-a55e-07787959c649",
+            "resourceAlias": "user"
+          }
+        ]
+      },
+      "dateChanged": "2025-10-10T12:44:48.000+0000"
+    },
+    "resources": [
+      {
+        "uuid": "86923442-bdd6-4066-a0bd-5faceaac68e6",
+        "name": "JSON schema",
+        "valueReference": "7b3e192e-2400-4081-9df3-90bec7de738c",
+        "display": "JSON schema",
+        "links": [
+          {
+            "rel": "value",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/2338e7c3-978c-489d-90c5-c2fefcaffe50/resource/86923442-bdd6-4066-a0bd-5faceaac68e6/value",
+            "resourceAlias": "resource"
+          },
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/2338e7c3-978c-489d-90c5-c2fefcaffe50/resource/86923442-bdd6-4066-a0bd-5faceaac68e6",
+            "resourceAlias": "resource"
+          },
+          {
+            "rel": "full",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/2338e7c3-978c-489d-90c5-c2fefcaffe50/resource/86923442-bdd6-4066-a0bd-5faceaac68e6?v=full",
+            "resourceAlias": "resource"
+          }
+        ],
+        "resourceVersion": "1.9"
+      }
+    ],
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/2338e7c3-978c-489d-90c5-c2fefcaffe50",
+        "resourceAlias": "form"
+      }
+    ],
+    "resourceVersion": "1.9"
+  },
+  {
+    "uuid": "c9e43a82-18d8-4ef6-ad4e-3bc376c3bbb0",
+    "display": "Augen Auf Test",
+    "name": "Augen Auf Test",
+    "description": "Form collecting ophthalmological exam, diagnoses and treatment plan",
+    "encounterType": {
+      "uuid": "d7151f82-c1f3-4152-a605-2f9ea7414a79",
+      "display": "Visit Note",
+      "name": "Visit Note",
+      "description": "Encounter where a full or abbreviated examination is done, usually leading to a presumptive or confirmed diagnosis, recorded by the examining clinician.",
+      "retired": false,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/encountertype/d7151f82-c1f3-4152-a605-2f9ea7414a79",
+          "resourceAlias": "encountertype"
+        },
+        {
+          "rel": "full",
+          "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/encountertype/d7151f82-c1f3-4152-a605-2f9ea7414a79?v=full",
+          "resourceAlias": "encountertype"
+        }
+      ],
+      "resourceVersion": "1.8"
+    },
+    "version": "1.0.0",
+    "build": null,
+    "published": true,
+    "formFields": [],
+    "retired": false,
+    "auditInfo": {
+      "creator": {
+        "uuid": "82f18b44-6814-11e8-923f-e9a88dcb533f",
+        "display": "admin",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/user/82f18b44-6814-11e8-923f-e9a88dcb533f",
+            "resourceAlias": "user"
+          }
+        ]
+      },
+      "dateCreated": "2025-09-12T11:38:57.000+0000",
+      "changedBy": {
+        "uuid": "ad4c3f36-f462-4773-a55e-07787959c649",
+        "display": "patrikf",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/user/ad4c3f36-f462-4773-a55e-07787959c649",
+            "resourceAlias": "user"
+          }
+        ]
+      },
+      "dateChanged": "2025-09-22T14:14:54.000+0000"
+    },
+    "resources": [
+      {
+        "uuid": "dbd1130e-561c-4f21-b798-5845159cb2d0",
+        "name": "JSON schema",
+        "valueReference": "2685ca93-03b9-4281-b777-4ceb7302e97b",
+        "display": "JSON schema",
+        "links": [
+          {
+            "rel": "value",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/c9e43a82-18d8-4ef6-ad4e-3bc376c3bbb0/resource/dbd1130e-561c-4f21-b798-5845159cb2d0/value",
+            "resourceAlias": "resource"
+          },
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/c9e43a82-18d8-4ef6-ad4e-3bc376c3bbb0/resource/dbd1130e-561c-4f21-b798-5845159cb2d0",
+            "resourceAlias": "resource"
+          },
+          {
+            "rel": "full",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/c9e43a82-18d8-4ef6-ad4e-3bc376c3bbb0/resource/dbd1130e-561c-4f21-b798-5845159cb2d0?v=full",
+            "resourceAlias": "resource"
+          }
+        ],
+        "resourceVersion": "1.9"
+      }
+    ],
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/c9e43a82-18d8-4ef6-ad4e-3bc376c3bbb0",
+        "resourceAlias": "form"
+      }
+    ],
+    "resourceVersion": "1.9"
+  },
+  {
+    "uuid": "eca06ede-b80f-4a4d-a38c-58ca3be56640",
+    "display": "Ophthalmological Visit",
+    "name": "Ophthalmological Visit",
+    "description": "Form collecting ophthalmological exam, diagnoses and treatment plan",
+    "encounterType": {
+      "uuid": "d7151f82-c1f3-4152-a605-2f9ea7414a79",
+      "display": "Visit Note",
+      "name": "Visit Note",
+      "description": "Encounter where a full or abbreviated examination is done, usually leading to a presumptive or confirmed diagnosis, recorded by the examining clinician.",
+      "retired": false,
+      "links": [
+        {
+          "rel": "self",
+          "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/encountertype/d7151f82-c1f3-4152-a605-2f9ea7414a79",
+          "resourceAlias": "encountertype"
+        },
+        {
+          "rel": "full",
+          "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/encountertype/d7151f82-c1f3-4152-a605-2f9ea7414a79?v=full",
+          "resourceAlias": "encountertype"
+        }
+      ],
+      "resourceVersion": "1.8"
+    },
+    "version": "1.0.0",
+    "build": null,
+    "published": true,
+    "formFields": [],
+    "retired": false,
+    "auditInfo": {
+      "creator": {
+        "uuid": "47854baa-ee05-463a-b7bb-587ca8107ab9",
+        "display": "slavisam",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/user/47854baa-ee05-463a-b7bb-587ca8107ab9",
+            "resourceAlias": "user"
+          }
+        ]
+      },
+      "dateCreated": "2025-09-12T12:41:00.000+0000",
+      "changedBy": {
+        "uuid": "ad4c3f36-f462-4773-a55e-07787959c649",
+        "display": "patrikf",
+        "links": [
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/user/ad4c3f36-f462-4773-a55e-07787959c649",
+            "resourceAlias": "user"
+          }
+        ]
+      },
+      "dateChanged": "2025-09-22T14:14:25.000+0000"
+    },
+    "resources": [
+      {
+        "uuid": "d04e3e29-d783-4f46-b3a7-b44b523e52e0",
+        "name": "JSON schema",
+        "valueReference": "a0b668df-f19f-48c1-bebc-cd7b34535013",
+        "display": "JSON schema",
+        "links": [
+          {
+            "rel": "value",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/eca06ede-b80f-4a4d-a38c-58ca3be56640/resource/d04e3e29-d783-4f46-b3a7-b44b523e52e0/value",
+            "resourceAlias": "resource"
+          },
+          {
+            "rel": "self",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/eca06ede-b80f-4a4d-a38c-58ca3be56640/resource/d04e3e29-d783-4f46-b3a7-b44b523e52e0",
+            "resourceAlias": "resource"
+          },
+          {
+            "rel": "full",
+            "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/eca06ede-b80f-4a4d-a38c-58ca3be56640/resource/d04e3e29-d783-4f46-b3a7-b44b523e52e0?v=full",
+            "resourceAlias": "resource"
+          }
+        ],
+        "resourceVersion": "1.9"
+      }
+    ],
+    "links": [
+      {
+        "rel": "self",
+        "uri": "http://augen-auf-workshop.westeurope.cloudapp.azure.com/ws/rest/v1/form/eca06ede-b80f-4a4d-a38c-58ca3be56640",
+        "resourceAlias": "form"
+      }
+    ],
+    "resourceVersion": "1.9"
+  }
+]

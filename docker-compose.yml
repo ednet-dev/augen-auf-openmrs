@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: openmrs-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: openmrs
+      MYSQL_DATABASE: openmrs
+      MYSQL_USER: openmrs
+      MYSQL_PASSWORD: openmrs
+    volumes:
+      - openmrs-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  backend:
+    image: openmrs/openmrs-reference-application:latest
+    container_name: openmrs-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
+      OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
+      OMRS_CONFIG_CREATE_TABLES: "true"
+      OMRS_CONFIG_CONNECTION_SERVER: mysql
+      OMRS_CONFIG_CONNECTION_DATABASE: openmrs
+      OMRS_CONFIG_CONNECTION_USERNAME: openmrs
+      OMRS_CONFIG_CONNECTION_PASSWORD: openmrs
+      OMRS_CONFIG_HAS_CURRENT_OPENMRS_DATABASE: "false"
+      OMRS_DEV_DEBUG_PORT: "1044"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/openmrs"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 300s
+    volumes:
+      - openmrs-data:/openmrs/data
+
+volumes:
+  openmrs-mysql-data:
+  openmrs-data:

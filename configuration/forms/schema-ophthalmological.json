@@ -1,0 +1,639 @@
+{
+    "name": "Ophthalmological Visit",
+    "description": "Form collecting ophthalmological exam, diagnoses and treatment plan",
+    "processor": "EncounterFormProcessor",
+    "version": "1.0.0",
+    "uuid": "eca06ede-b80f-4a4d-a38c-58ca3be56640",
+    "encounterType": "d7151f82-c1f3-4152-a605-2f9ea7414a79",
+    "referencedForms": [],
+    "pages": [
+        {
+            "label": "Visit Information",
+            "sections": [
+                {
+                    "label": "Visit Details",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "encounter-datetime",
+                            "label": "Visit Date",
+                            "type": "encounter",
+                            "questionOptions": {
+                                "rendering": "encounterDatetime"
+                            }
+                        },
+                        {
+                            "id": "encounter-location",
+                            "label": "Location",
+                            "type": "encounter",
+                            "questionOptions": {
+                                "rendering": "encounterLocation"
+                            }
+                        },
+                        {
+                            "id": "encounter-provider",
+                            "label": "Provider",
+                            "type": "encounter",
+                            "questionOptions": {
+                                "rendering": "encounterProvider"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Patient History",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "chief-complaint",
+                            "label": "Chief Complaint",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "textarea",
+                                "concept": "1311AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "rows": 3
+                            }
+                        },
+                        {
+                            "id": "medical-history",
+                            "label": "Medical History",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "textarea",
+                                "concept": "1330AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "rows": 3
+                            }
+                        },
+                        {
+                            "id": "current-medications",
+                            "label": "Current Medications",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "textarea",
+                                "concept": "1026AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "rows": 3
+                            }
+                        },
+                        {
+                            "id": "wears-glasses",
+                            "label": "Currently wears glasses",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "radio",
+                                "concept": "2125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "answers": [
+                                    {
+                                        "concept": "621AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "Yes"
+                                    },
+                                    {
+                                        "concept": "620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "No"
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Symptoms",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "type": "obsGroup",
+                            "label": "Right Eye Symptoms",
+                            "id": "symptoms-right-group",
+                            "questionOptions": {
+                                "rendering": "group",
+                                "concept": "a89a7e04-1350-11df-a1f1-0026b9348838"
+                            },
+                            "questions": [
+                                {
+                                    "id": "symptoms-right",
+                                    "label": "Select all that apply",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "checkbox",
+                                        "concept": "a89a7ae0-1350-11df-a1f1-0026b9348838",
+                                        "answers": [
+                                            {
+                                                "concept": "1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Blurred vision"
+                                            },
+                                            {
+                                                "concept": "1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Eye pain"
+                                            },
+                                            {
+                                                "concept": "1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Red eye"
+                                            },
+                                            {
+                                                "concept": "2128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Dry eye"
+                                            },
+                                            {
+                                                "concept": "1055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Excessive tearing"
+                                            },
+                                            {
+                                                "concept": "1061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Eye discharge"
+                                            },
+                                            {
+                                                "concept": "2120AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Flashes of light"
+                                            },
+                                            {
+                                                "concept": "2134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Vitreous floaters"
+                                            },
+                                            {
+                                                "concept": "791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Headache"
+                                            },
+                                            {
+                                                "concept": "398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Other"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "symptom-right-other-text",
+                                    "label": "If other, specify",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "textarea",
+                                        "concept": "218AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "rows": 2
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "obsGroup",
+                            "label": "Left Eye Symptoms",
+                            "id": "symptoms-left-group",
+                            "questionOptions": {
+                                "rendering": "group",
+                                "concept": "a89a7e04-1350-11df-a1f1-0026b9348838"
+                            },
+                            "questions": [
+                                {
+                                    "id": "symptoms-left",
+                                    "label": "Select all that apply",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "checkbox",
+                                        "concept": "a89a7bc6-1350-11df-a1f1-0026b9348838",
+                                        "answers": [
+                                            {
+                                                "concept": "1472AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Blurred vision"
+                                            },
+                                            {
+                                                "concept": "1184AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Eye pain"
+                                            },
+                                            {
+                                                "concept": "1222AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Red eye"
+                                            },
+                                            {
+                                                "concept": "2128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Dry eye"
+                                            },
+                                            {
+                                                "concept": "1055AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Excessive tearing"
+                                            },
+                                            {
+                                                "concept": "1061AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Eye discharge"
+                                            },
+                                            {
+                                                "concept": "2120AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Flashes of light"
+                                            },
+                                            {
+                                                "concept": "2134AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Vitreous floaters"
+                                            },
+                                            {
+                                                "concept": "791AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Headache"
+                                            },
+                                            {
+                                                "concept": "398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Other"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "symptom-left-other-text",
+                                    "label": "If other, specify",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "textarea",
+                                        "concept": "218AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "rows": 2
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Examination",
+            "sections": [
+                {
+                    "label": "Right Eye Examination",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "re-visual-acuity-sc",
+                            "label": "Visual Acuity (without correction)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "text",
+                                "concept": "a89a8ff4-1350-11df-a1f1-0026b9348838"
+                            }
+                        },
+                        {
+                            "id": "re-visual-acuity-cc",
+                            "label": "Visual Acuity (with correction)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "text",
+                                "concept": "a89a9030-1350-11df-a1f1-0026b9348838"
+                            }
+                        },
+                        {
+                            "id": "re-iop",
+                            "label": "Intraocular Pressure (mmHg)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a9062-1350-11df-a1f1-0026b9348838",
+                                "min": 0,
+                                "max": 80
+                            }
+                        },
+                        {
+                            "id": "re-refraction-sph",
+                            "label": "Refraction - Sphere",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a9094-1350-11df-a1f1-0026b9348838",
+                                "min": -25,
+                                "max": 25
+                            }
+                        },
+                        {
+                            "id": "re-refraction-cyl",
+                            "label": "Refraction - Cylinder",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a90c6-1350-11df-a1f1-0026b9348838",
+                                "min": -10,
+                                "max": 10
+                            }
+                        },
+                        {
+                            "id": "re-refraction-axis",
+                            "label": "Refraction - Axis (degrees)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a90f8-1350-11df-a1f1-0026b9348838",
+                                "min": 0,
+                                "max": 180
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Left Eye Examination",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "le-visual-acuity-sc",
+                            "label": "Visual Acuity (without correction)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "text",
+                                "concept": "a89a912a-1350-11df-a1f1-0026b9348838"
+                            }
+                        },
+                        {
+                            "id": "le-visual-acuity-cc",
+                            "label": "Visual Acuity (with correction)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "text",
+                                "concept": "a89a915c-1350-11df-a1f1-0026b9348838"
+                            }
+                        },
+                        {
+                            "id": "le-iop",
+                            "label": "Intraocular Pressure (mmHg)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a918e-1350-11df-a1f1-0026b9348838",
+                                "min": 0,
+                                "max": 80
+                            }
+                        },
+                        {
+                            "id": "le-refraction-sph",
+                            "label": "Refraction - Sphere",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a91c0-1350-11df-a1f1-0026b9348838",
+                                "min": -25,
+                                "max": 25
+                            }
+                        },
+                        {
+                            "id": "le-refraction-cyl",
+                            "label": "Refraction - Cylinder",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a91f2-1350-11df-a1f1-0026b9348838",
+                                "min": -10,
+                                "max": 10
+                            }
+                        },
+                        {
+                            "id": "le-refraction-axis",
+                            "label": "Refraction - Axis (degrees)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "number",
+                                "concept": "a89a9224-1350-11df-a1f1-0026b9348838",
+                                "min": 0,
+                                "max": 180
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Diagnoses",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "type": "obsGroup",
+                            "label": "Right Eye Diagnoses",
+                            "id": "diagnoses-right-group",
+                            "questionOptions": {
+                                "rendering": "group",
+                                "concept": "a89a9256-1350-11df-a1f1-0026b9348838"
+                            },
+                            "questions": [
+                                {
+                                    "id": "diagnosis-right",
+                                    "label": "Select all that apply",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "checkbox",
+                                        "concept": "a89a9288-1350-11df-a1f1-0026b9348838",
+                                        "answers": [
+                                            {
+                                                "concept": "2131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Presbyopia"
+                                            },
+                                            {
+                                                "concept": "2138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Strabismus"
+                                            },
+                                            {
+                                                "concept": "2133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Pterygium"
+                                            },
+                                            {
+                                                "concept": "1383AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Cataract"
+                                            },
+                                            {
+                                                "concept": "2132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Pseudophakia"
+                                            },
+                                            {
+                                                "concept": "2136AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Glaucoma"
+                                            },
+                                            {
+                                                "concept": "1044AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Diabetic retinopathy"
+                                            },
+                                            {
+                                                "concept": "2139AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Macular degeneration"
+                                            },
+                                            {
+                                                "concept": "2128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Dry eye"
+                                            },
+                                            {
+                                                "concept": "398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Other"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "diagnosis-right-other-text",
+                                    "label": "If other, specify",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "textarea",
+                                        "concept": "1278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "rows": 2
+                                    }
+                                }
+                            ]
+                        },
+                        {
+                            "type": "obsGroup",
+                            "label": "Left Eye Diagnoses",
+                            "id": "diagnoses-left-group",
+                            "questionOptions": {
+                                "rendering": "group",
+                                "concept": "a89a92ba-1350-11df-a1f1-0026b9348838"
+                            },
+                            "questions": [
+                                {
+                                    "id": "diagnosis-left",
+                                    "label": "Select all that apply",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "checkbox",
+                                        "concept": "a89a92ec-1350-11df-a1f1-0026b9348838",
+                                        "answers": [
+                                            {
+                                                "concept": "2131AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Presbyopia"
+                                            },
+                                            {
+                                                "concept": "2138AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Strabismus"
+                                            },
+                                            {
+                                                "concept": "2133AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Pterygium"
+                                            },
+                                            {
+                                                "concept": "1383AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Cataract"
+                                            },
+                                            {
+                                                "concept": "2132AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Pseudophakia"
+                                            },
+                                            {
+                                                "concept": "2136AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Glaucoma"
+                                            },
+                                            {
+                                                "concept": "1044AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Diabetic retinopathy"
+                                            },
+                                            {
+                                                "concept": "2139AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Macular degeneration"
+                                            },
+                                            {
+                                                "concept": "2128AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Dry eye"
+                                            },
+                                            {
+                                                "concept": "398AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                                "label": "Other"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "id": "diagnosis-left-other-text",
+                                    "label": "If other, specify",
+                                    "type": "obs",
+                                    "questionOptions": {
+                                        "rendering": "textarea",
+                                        "concept": "1278AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "rows": 2
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "label": "Treatment Plan",
+            "sections": [
+                {
+                    "label": "Treatment",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "glasses-prescribed",
+                            "label": "Glasses prescribed",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "radio",
+                                "concept": "2125AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "answers": [
+                                    {
+                                        "concept": "621AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "Yes"
+                                    },
+                                    {
+                                        "concept": "620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "No"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "eye-drops-prescribed",
+                            "label": "Eye drops prescribed",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "radio",
+                                "concept": "2124AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "answers": [
+                                    {
+                                        "concept": "621AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "Yes"
+                                    },
+                                    {
+                                        "concept": "620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "No"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "surgery-recommended",
+                            "label": "Surgery recommended",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "radio",
+                                "concept": "960AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "answers": [
+                                    {
+                                        "concept": "621AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "Yes"
+                                    },
+                                    {
+                                        "concept": "620AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                        "label": "No"
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "id": "surgery-details",
+                            "label": "Surgery details (if applicable)",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "textarea",
+                                "concept": "641AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "rows": 3
+                            }
+                        },
+                        {
+                            "id": "treatment-notes",
+                            "label": "Additional treatment notes",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "textarea",
+                                "concept": "1265AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "rows": 3
+                            }
+                        },
+                        {
+                            "id": "follow-up-date",
+                            "label": "Follow-up date",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "date",
+                                "concept": "1161AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

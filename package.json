@@ -7,6 +7,7 @@
   "source": true,
   "scripts": {
     "start": "openmrs develop",
+    "start:azure": "openmrs develop --backend http://augen-auf-workshop.westeurope.cloudapp.azure.com",
     "build": "webpack --mode production",
     "serve": "webpack serve --mode development"
   },

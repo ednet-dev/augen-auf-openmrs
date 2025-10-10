@@ -1,0 +1,3 @@
+Uuid,Name,Description,Parent,Tags,_order:1000
+9e922f7d-f112-453b-8596-07fe1c92a8a6,Augen Auf,,,"Login Location",1000
+e719c02c-18d8-45b8-b5b9-45184e501705,QU01,Quetzaltenango Outpatient Clinic,Augen Auf,"Queue Location,Appointment Location,Login Location,Facility Location",1010

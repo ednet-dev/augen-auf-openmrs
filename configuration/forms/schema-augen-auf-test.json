@@ -1,0 +1,64 @@
+{
+    "name": "Augen Auf Test",
+    "description": "Form collecting ophthalmological exam, diagnoses and treatment plan",
+    "processor": "EncounterFormProcessor",
+    "version": "1.0.0",
+    "uuid": "eca06ede-b80f-4a4d-a38c-58ca3be56640",
+    "encounterType": "d7151f82-c1f3-4152-a605-2f9ea7414a79",
+    "referencedForms": [],
+    "pages": [
+        {
+            "label": "Visit Information",
+            "sections": [
+                {
+                    "label": "Visit Details",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "encounter-datetime",
+                            "label": "Visit Date",
+                            "type": "encounterDatetime",
+                            "questionOptions": {
+                                "rendering": "datetime"
+                            },
+                            "datePickerFormat": "calendar"
+                        },
+                        {
+                            "id": "encounter-location",
+                            "label": "Location",
+                            "type": "encounter",
+                            "questionOptions": {
+                                "rendering": "encounter-location"
+                            }
+                        },
+                        {
+                            "id": "encounter-provider",
+                            "label": "Provider",
+                            "type": "encounterProvider",
+                            "questionOptions": {
+                                "rendering": "ui-select-extended",
+                                "isSearchable": true
+                            }
+                        }
+                    ]
+                },
+                {
+                    "label": "Patient History",
+                    "isExpanded": true,
+                    "questions": [
+                        {
+                            "id": "chief-complaint",
+                            "label": "Chief Complaint",
+                            "type": "obs",
+                            "questionOptions": {
+                                "rendering": "textarea",
+                                "concept": "160531AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+                                "rows": 3
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
