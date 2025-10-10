@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
 import { Printer, ArrowRight } from '@carbon/react/icons';
 import { AugenAufConfig, PatientListItem, WorkflowStageId } from '../../types';
@@ -25,11 +25,21 @@ const StandardStageLayout: React.FC<StandardStageLayoutProps> = ({
   onMoveToNextStage,
   getNextStage,
 }) => {
+  const [isMoving, setIsMoving] = useState(false);
   const selectedPatient = patients.find((p) => p.uuid === selectedPatientUuid);
   const currentStage = selectedPatient?.workflowData?.currentStage || 'registration';
   const stage = config.workflowStages.find((s) => s.id === currentStage);
   const StageComponent = stage ? getStageComponent(currentStage) : null;
   const nextStage = getNextStage();
+
+  const handleMoveClick = async () => {
+    setIsMoving(true);
+    try {
+      await onMoveToNextStage();
+    } finally {
+      setIsMoving(false);
+    }
+  };
 
   return (
     <div className={styles.stageLayout}>
@@ -68,16 +78,6 @@ const StandardStageLayout: React.FC<StandardStageLayoutProps> = ({
 
             {/* Action Bar */}
             <div className={styles.actionBar}>
-              {nextStage && (
-                <Button
-                  kind="primary"
-                  renderIcon={ArrowRight}
-                  size="md"
-                  onClick={onMoveToNextStage}
-                >
-                  Move to {config.workflowStages.find((s) => s.id === nextStage)?.label}
-                </Button>
-              )}
               <Button
                 kind="secondary"
                 renderIcon={Printer}
@@ -85,6 +85,17 @@ const StandardStageLayout: React.FC<StandardStageLayoutProps> = ({
               >
                 Print
               </Button>
+              {nextStage && (
+                <Button
+                  kind="primary"
+                  renderIcon={ArrowRight}
+                  size="md"
+                  onClick={handleMoveClick}
+                  disabled={isMoving}
+                >
+                  {isMoving ? 'Moving...' : `Move to ${config.workflowStages.find((s) => s.id === nextStage)?.label}`}
+                </Button>
+              )}
             </div>
           </>
         ) : (
