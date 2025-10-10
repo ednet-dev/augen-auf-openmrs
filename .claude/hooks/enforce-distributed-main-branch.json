@@ -1,0 +1,12 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Bash(git push*)",
+  "command": "CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && if [ \"$CURRENT_BRANCH\" != \"distributed-main\" ]; then echo '⚠️  WARNING: Pushing to '$CURRENT_BRANCH'. Agents should work on distributed-main branch.' && echo 'Switch with: git checkout distributed-main' && exit 1; fi",
+  "description": "Ensure agents work on distributed-main branch",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "allowedBranch": "distributed-main",
+    "message": "Agents must work on distributed-main branch for distributed coordination"
+  }
+}
