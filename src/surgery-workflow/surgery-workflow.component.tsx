@@ -29,12 +29,11 @@ const SurgeryWorkflow: React.FC = () => {
   const [filterState, setFilterState] = useState<FilterState>({
     dateFilter: 'today',
     workflowStage: 'all',
-    protocolFilter: 'all',
     searchQuery: '',
   });
 
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
-  const [selectedProtocol, setSelectedProtocol] = useState<string>('protocol-1');
+  const [selectedStage, setSelectedStage] = useState<WorkflowStageId>('registration');
 
   // Load patients using the service
   const { patients, isLoading, error, refetch } = usePatients({
@@ -195,41 +194,55 @@ const SurgeryWorkflow: React.FC = () => {
             </Button>
           </div>
 
-          {/* Protocol Tabs (E) */}
-          <Tabs selectedIndex={Object.keys(config.protocols).indexOf(selectedProtocol)}>
-            <TabList aria-label="Protocol tabs" contained>
-              {Object.entries(config.protocols).map(([key, protocol]) => (
-                <Tab
-                  key={key}
-                  onClick={() => setSelectedProtocol(key)}
-                >
-                  {protocol.name}
-                </Tab>
-              ))}
-            </TabList>
+          {/* Stage Tabs (E) - 2 tabs: Form for current stage and Info from previous stages */}
+          {selectedPatient && (() => {
+            const patient = patients.find((p) => p.uuid === selectedPatient);
+            const currentStage = patient?.workflowData?.currentStage || 'registration';
+            const stage = config.workflowStages.find((s) => s.id === currentStage);
 
-            <TabPanels>
-              {Object.entries(config.protocols).map(([key, protocol]) => (
-                <TabPanel key={key}>
-                  {/* Form Display Area */}
-                  <div className={styles.formArea}>
-                    {selectedPatient ? (
+            if (!stage) return null;
+
+            return (
+              <Tabs>
+                <TabList aria-label="Stage content tabs" contained>
+                  <Tab>Form</Tab>
+                  <Tab>Info</Tab>
+                </TabList>
+
+                <TabPanels>
+                  {/* Form Tab Panel */}
+                  <TabPanel>
+                    <div className={styles.formArea}>
                       <Tile className={styles.formPlaceholder}>
                         <h2>ID: {selectedPatient}</h2>
-                        <h3>{protocol.name}</h3>
+                        <h3>{stage.label} Form</h3>
                         <p>Form engine will render here</p>
-                        <p>Form UUID: {protocol.formUuid || 'Not configured'}</p>
+                        <p>Form UUID: {stage.formUuid || 'Not configured'}</p>
                       </Tile>
-                    ) : (
-                      <div className={styles.noSelection}>
-                        <p>Select a patient to view their protocol forms</p>
-                      </div>
-                    )}
-                  </div>
-                </TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
+                    </div>
+                  </TabPanel>
+
+                  {/* Info Tab Panel */}
+                  <TabPanel>
+                    <div className={styles.formArea}>
+                      <Tile className={styles.formPlaceholder}>
+                        <h2>ID: {selectedPatient}</h2>
+                        <h3>Accumulated Information</h3>
+                        <p>Display gathered data from previous stages here</p>
+                        {/* TODO: Fetch and display encounter data from completed stages */}
+                      </Tile>
+                    </div>
+                  </TabPanel>
+                </TabPanels>
+              </Tabs>
+            );
+          })()}
+
+          {!selectedPatient && (
+            <div className={styles.noSelection}>
+              <p>Select a patient to view their stage forms</p>
+            </div>
+          )}
 
           {/* Action Bar (F) */}
           <div className={styles.actionBar}>
