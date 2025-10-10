@@ -8,12 +8,14 @@ import {
   TabPanels,
   TabPanel,
   Tile,
+  InlineLoading,
 } from '@carbon/react';
 import { Settings, Printer, Add, Link } from '@carbon/react/icons';
-import { AugenAufConfig, FilterState, PatientListItem } from '../types';
+import { AugenAufConfig, FilterState } from '../types';
 import FilterBar from '../components/filter-bar.component';
 import WorkflowStageFilter from '../components/workflow-stage-filter.component';
 import PatientList from '../components/patient-list.component';
+import { usePatients } from '../hooks/usePatients';
 import styles from './surgery-workflow.scss';
 
 const SurgeryWorkflow: React.FC = () => {
@@ -29,53 +31,11 @@ const SurgeryWorkflow: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [selectedProtocol, setSelectedProtocol] = useState<string>('protocol-1');
 
-  // Mock patient data - will be replaced with real API calls
-  const mockPatients: PatientListItem[] = [
-    {
-      uuid: '002',
-      display: 'Patient 002',
-      identifiers: [],
-      person: { age: 45, birthdate: '1979-01-01', gender: 'M', display: 'Patient 002' },
-    },
-    {
-      uuid: '003',
-      display: 'Patient 003',
-      identifiers: [],
-      person: { age: 52, birthdate: '1972-01-01', gender: 'F', display: 'Patient 003' },
-    },
-    {
-      uuid: '005',
-      display: 'Patient 005',
-      identifiers: [],
-      person: { age: 38, birthdate: '1986-01-01', gender: 'M', display: 'Patient 005' },
-    },
-    {
-      uuid: '001',
-      display: 'Patient 001',
-      identifiers: [],
-      person: { age: 60, birthdate: '1964-01-01', gender: 'F', display: 'Patient 001' },
-      workflowData: {
-        patientUuid: '001',
-        currentStage: 'finished',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1', 'protocol-2', 'protocol-3'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '004',
-      display: 'Patient 004',
-      identifiers: [],
-      person: { age: 55, birthdate: '1969-01-01', gender: 'M', display: 'Patient 004' },
-      workflowData: {
-        patientUuid: '004',
-        currentStage: 'finished',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1', 'protocol-2'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-  ];
+  // Load patients using the service
+  const { patients, isLoading, error } = usePatients({
+    searchQuery: filterState.searchQuery,
+    workflowStage: filterState.workflowStage,
+  });
 
   return (
     <div className={styles.surgeryWorkflowContainer}>
@@ -128,11 +88,21 @@ const SurgeryWorkflow: React.FC = () => {
           />
 
           {/* Right: Patient List (C) */}
-          <PatientList
-            patients={mockPatients}
-            selectedPatientUuid={selectedPatient}
-            onPatientSelect={(uuid) => setSelectedPatient(uuid)}
-          />
+          {isLoading ? (
+            <div className={styles.loadingContainer}>
+              <InlineLoading description="Loading patients..." />
+            </div>
+          ) : error ? (
+            <div className={styles.errorContainer}>
+              <p>Error loading patients: {error.message}</p>
+            </div>
+          ) : (
+            <PatientList
+              patients={patients}
+              selectedPatientUuid={selectedPatient}
+              onPatientSelect={(uuid) => setSelectedPatient(uuid)}
+            />
+          )}
 
           {/* Main Content Area */}
           <main className={styles.contentArea}>
