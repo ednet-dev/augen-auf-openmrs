@@ -406,8 +406,8 @@ import { FormEngineRenderer } from '@/services/form-engine.service';
   - [x] ✅ **CONTRACT B→D**: Exported TabContext for Registration tab integration
 
 #### Week 2: Active Visit Management
-- [ ] Create `NoActiveVisitDialog.tsx` - Modal with "Start new visit" button
-- [ ] Create `useRequireActiveVisit.ts` - Guard hook for forms
+- [ ] 🔒 [AGENT-1760126731] Create `NoActiveVisitDialog.tsx` - Modal with "Start new visit" button - 2025-10-10T22:18:51+01:00
+- [ ] 🔒 [AGENT-1760126731] Create `useRequireActiveVisit.ts` - Guard hook for forms - 2025-10-10T22:18:51+01:00
 - [ ] Implement visit type selection dropdown (Home Visit, Facility Visit, OPD)
 - [ ] Add active visit indicator badge in patient list
 - [ ] **CONTRACT B→C**: Import `useActiveVisit` hook from Stream C
