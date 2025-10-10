@@ -358,7 +358,7 @@ import { FormEngineRenderer } from '@/services/form-engine.service';
   - [x] 🟢 GREEN: Implementation complete (all 21 tests passing)
 - [ ] `BCVAInput.tsx` + tests - BCVA validation (0.0-1.0, display errors)
 - [ ] `CataractTypeSelector.tsx` + tests - 7-type multi-select (Incipiens, Brunescens, Corticalis, Subcaps, Polaris, Matura, Intumescens)
-- [ ] `MeasurementInput.tsx` + tests - Numeric with units (dpt, mm, decimal)
+- [ ] 🔒 [AGENT-1760126008] `MeasurementInput.tsx` + tests - Numeric with units (dpt, mm, decimal) - 2025-10-10T22:05:33+02:00
 - [ ] `PterygiumAssessment.tsx` + tests - Classification + "needs surgery" checkbox
 - [ ] `AnesthesiaSelector.tsx` + tests - Radio buttons (ic, st/pb, AN)
 - [ ] Export all components via `src/components/Forms/index.ts`
