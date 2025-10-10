@@ -1,0 +1,16 @@
+{
+  "event": "PostToolUse",
+  "matcher": "Write|Edit",
+  "command": "if [[ '$TOOL_INPUT' =~ src/components/.*\\.(tsx|ts)$ ]]; then echo '👁️ Check browser: http://localhost:8080/openmrs/spa/augen-auf'; echo 'Report what you see for agent to adjust.'; fi",
+  "description": "Remind to check browser after component changes",
+  "blocking": false,
+  "enabled": true,
+  "configuration": {
+    "urlPattern": "http://localhost:8080/openmrs/spa/augen-auf",
+    "componentPatterns": [
+      "src/components/**/*.tsx",
+      "src/components/**/*.ts"
+    ],
+    "showOnlyFor": "components"
+  }
+}
