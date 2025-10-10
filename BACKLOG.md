@@ -345,7 +345,7 @@ import { FormEngineRenderer } from '@/services/form-engine.service';
 
 #### Week 1: Testing Infrastructure
 - [x] ✅ Configure Vitest + React Testing Library (COMPLETED - AGENT-1760124496)
-- [ ] Write tests for existing components:
+- [ ] 🔒 [AGENT-1760125063] Write tests for existing components: - 2025-10-10T21:31:03+01:00
   - [ ] `FilterBar.test.tsx`
   - [ ] `PatientList.test.tsx`
   - [ ] `WorkflowStageFilter.test.tsx`
