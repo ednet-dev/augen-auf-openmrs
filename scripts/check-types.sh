@@ -6,8 +6,8 @@ set -e
 
 echo "🔍 Checking TypeScript types..."
 
-# Check if TypeScript is installed
-if ! command -v tsc &> /dev/null; then
+# Check if TypeScript is installed (use yarn/npx, not global tsc)
+if ! yarn tsc --version &> /dev/null && ! npx tsc --version &> /dev/null; then
   echo "❌ ERROR: TypeScript not installed"
   exit 1
 fi

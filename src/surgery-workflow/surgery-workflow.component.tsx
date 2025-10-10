@@ -190,6 +190,7 @@ const SurgeryWorkflow: React.FC = () => {
           </main>
         </div>
       </div>
+      </div>
     </TabProvider>
   );
 };
