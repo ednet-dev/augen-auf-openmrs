@@ -1,0 +1,24 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Bash(git add*)",
+  "command": "if git diff --cached --name-only | grep -qE '(PARALLEL_STATUS|TDD_LOG|STREAM_STATUS|INTEGRATION_STATUS|TESTING_LOG|.*-REPORT|.*-WIP|.*-STATUS|.*-LOG|AGENT_WORK_)'; then echo '❌ BLOCKED: Attempting to stage ephemeral files. Run ./scripts/agent-cleanup.sh first.' && exit 1; fi",
+  "description": "Prevent committing ephemeral tracking files",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "ephemeralPatterns": [
+      "PARALLEL_STATUS",
+      "TDD_LOG",
+      "STREAM_STATUS",
+      "INTEGRATION_STATUS",
+      "TESTING_LOG",
+      "QUALITY_METRICS",
+      "*-REPORT",
+      "*-WIP",
+      "*-STATUS",
+      "*-LOG",
+      "AGENT_WORK_*",
+      "MIGRATION_STATUS"
+    ]
+  }
+}

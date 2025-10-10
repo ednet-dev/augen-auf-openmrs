@@ -1,0 +1,12 @@
+{
+  "event": "PostToolUse",
+  "matcher": "Write|Edit",
+  "command": "echo '💡 Reminder: Run ./scripts/test.sh to verify your changes'",
+  "description": "Remind to run tests after editing source files",
+  "blocking": false,
+  "enabled": true,
+  "configuration": {
+    "frequency": "everyEdit",
+    "skipForTests": true
+  }
+}

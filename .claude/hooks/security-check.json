@@ -1,0 +1,23 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Bash(git commit*)",
+  "command": "./scripts/pre-commit-check.sh",
+  "description": "Security scan for PHI/PII, secrets, API keys (medical data protection)",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "timeout": 60000,
+    "medicalDataProtection": true,
+    "scanPatterns": [
+      "password",
+      "api_key",
+      "secret",
+      "token",
+      "PHI",
+      "PII",
+      "patient_id",
+      "ssn",
+      "date_of_birth"
+    ]
+  }
+}
