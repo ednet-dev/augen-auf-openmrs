@@ -54,3 +54,12 @@ coverage/
 # package-lock.json
 # yarn.lock
 # pnpm-lock.yaml
+
+# Agent Protocol v1.1 - Ephemeral files
+.agent/
+.agent_id
+.agent_sync.pid
+.agent_sync.log
+*.tmp.md
+*.wip.md
+*.bak
