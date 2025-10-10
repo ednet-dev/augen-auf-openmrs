@@ -17,10 +17,14 @@ import WorkflowStageFilter from '../components/workflow-stage-filter.component';
 import PatientList from '../components/patient-list.component';
 import { usePatients } from '../hooks/usePatients';
 import { movePatientToStage } from '../services/patient.service';
+import { useConfigValidation } from '../utils/config-validation';
 import styles from './surgery-workflow.scss';
 
 const SurgeryWorkflow: React.FC = () => {
   const config = useConfig() as AugenAufConfig;
+
+  // Validate configuration on mount
+  const configValidation = useConfigValidation(config);
 
   const [filterState, setFilterState] = useState<FilterState>({
     dateFilter: 'today',

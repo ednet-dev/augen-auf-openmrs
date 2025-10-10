@@ -36,43 +36,43 @@ export const configSchema = {
         id: "registration",
         label: "Registration",
         color: "#E0E0E0",
-        encounterTypeUuid: ""
+        encounterTypeUuid: "aa001100-1234-5678-90ab-000000000001"
       },
       {
         id: "refraction",
         label: "Refraction",
         color: "#C0C0C0",
-        encounterTypeUuid: ""
+        encounterTypeUuid: "aa001100-1234-5678-90ab-000000000002"
       },
       {
         id: "eye-exam",
         label: "Eye Exam",
         color: "#A0A0A0",
-        encounterTypeUuid: ""
+        encounterTypeUuid: "aa001100-1234-5678-90ab-000000000003"
       },
       {
         id: "therapy",
         label: "Therapy",
         color: "#808080",
-        encounterTypeUuid: ""
+        encounterTypeUuid: "aa001100-1234-5678-90ab-000000000004"
       },
       {
         id: "finished",
         label: "Finished",
         color: "#90EE90",
-        encounterTypeUuid: ""
+        encounterTypeUuid: "aa001100-1234-5678-90ab-000000000005"
       }
     ]
   },
   surgeryWorkflowConceptUuid: {
     _type: Type.UUID,
     _description: "Concept UUID for tracking surgery workflow stage",
-    _default: ""
+    _default: "aa002200-1234-5678-90ab-000000000001"
   },
   needsSurgeryConceptUuid: {
     _type: Type.UUID,
     _description: "Concept UUID for marking patient needs surgery",
-    _default: ""
+    _default: "aa002200-1234-5678-90ab-000000000002"
   },
   dateFilters: {
     _type: Type.Object,
