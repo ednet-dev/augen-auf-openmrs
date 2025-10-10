@@ -1,5 +1,19 @@
 import React, { useState } from 'react';
 import { useConfig } from '@openmrs/esm-framework';
+import {
+  Button,
+  Dropdown,
+  Search,
+  Tabs,
+  TabList,
+  Tab,
+  TabPanels,
+  TabPanel,
+  Tile,
+  ClickableTile,
+  Layer,
+} from '@carbon/react';
+import { Settings, Printer, Add, Link } from '@carbon/react/icons';
 import { AugenAufConfig, FilterState } from '../types';
 import styles from './surgery-workflow.scss';
 
@@ -16,6 +30,11 @@ const SurgeryWorkflow: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [selectedProtocol, setSelectedProtocol] = useState<string>('protocol-1');
 
+  const dateFilterItems = Object.entries(config.dateFilters).map(([key, filter]) => ({
+    id: key,
+    label: filter.label,
+  }));
+
   return (
     <div className={styles.surgeryWorkflowContainer}>
       {/* Header Section */}
@@ -24,10 +43,20 @@ const SurgeryWorkflow: React.FC = () => {
           <h1>Surgery Workflow</h1>
         </div>
         <div className={styles.headerRight}>
-          <button className={styles.linkButton}>
-            Link to Database (e.g. Statistic)
-          </button>
-          <button className={styles.settingsButton}>⚙</button>
+          <Button
+            kind="tertiary"
+            renderIcon={Link}
+            size="sm"
+          >
+            Link to Database
+          </Button>
+          <Button
+            kind="ghost"
+            renderIcon={Settings}
+            hasIconOnly
+            iconDescription="Settings"
+            size="sm"
+          />
         </div>
       </div>
 
@@ -35,41 +64,37 @@ const SurgeryWorkflow: React.FC = () => {
         {/* Left Sidebar - Filters and Patient List */}
         <aside className={styles.sidebar}>
           {/* Filter Section (A) */}
-          <div className={styles.filterSection}>
-            <div className={styles.dateFilter}>
-              <label>Filter by Date</label>
-              <select
-                value={filterState.dateFilter}
-                onChange={(e) =>
-                  setFilterState({
-                    ...filterState,
-                    dateFilter: e.target.value as keyof typeof config.dateFilters,
-                  })
-                }
-              >
-                {Object.entries(config.dateFilters).map(([key, filter]) => (
-                  <option key={key} value={key}>
-                    {filter.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <Layer className={styles.filterSection}>
+            <Dropdown
+              id="date-filter"
+              titleText="Filter by Date"
+              label="Select date range"
+              items={dateFilterItems}
+              itemToString={(item) => item?.label || ''}
+              selectedItem={dateFilterItems.find((item) => item.id === filterState.dateFilter)}
+              onChange={({ selectedItem }) =>
+                setFilterState({
+                  ...filterState,
+                  dateFilter: selectedItem.id as keyof typeof config.dateFilters,
+                })
+              }
+            />
 
-            <div className={styles.searchBox}>
-              <input
-                type="text"
-                placeholder="Search for Patient"
-                value={filterState.searchQuery}
-                onChange={(e) =>
-                  setFilterState({ ...filterState, searchQuery: e.target.value })
-                }
-              />
-            </div>
-          </div>
+            <Search
+              id="patient-search"
+              labelText="Search for Patient"
+              placeholder="Search for Patient"
+              value={filterState.searchQuery}
+              onChange={(e) =>
+                setFilterState({ ...filterState, searchQuery: e.target.value })
+              }
+              size="sm"
+            />
+          </Layer>
 
           {/* Workflow Stage Filter (B) */}
           <div className={styles.workflowStages}>
-            <div
+            <ClickableTile
               className={`${styles.stageItem} ${
                 filterState.workflowStage === 'all' ? styles.active : ''
               }`}
@@ -78,9 +103,9 @@ const SurgeryWorkflow: React.FC = () => {
               }
             >
               Show All
-            </div>
+            </ClickableTile>
             {config.workflowStages.map((stage) => (
-              <div
+              <ClickableTile
                 key={stage.id}
                 className={`${styles.stageItem} ${
                   filterState.workflowStage === stage.id ? styles.active : ''
@@ -91,13 +116,13 @@ const SurgeryWorkflow: React.FC = () => {
                 style={{ borderLeftColor: stage.color }}
               >
                 {stage.label} &gt;
-              </div>
+              </ClickableTile>
             ))}
           </div>
 
           {/* Protocol Filter (B2) */}
           <div className={styles.protocolFilter}>
-            <div
+            <ClickableTile
               className={`${styles.stageItem} ${
                 filterState.workflowStage === 'needs-surgery' ? styles.active : ''
               }`}
@@ -106,37 +131,39 @@ const SurgeryWorkflow: React.FC = () => {
               }
             >
               Needs surgery &gt;
-            </div>
+            </ClickableTile>
           </div>
 
           {/* Patient List (C) */}
           <div className={styles.patientList}>
             <div className={styles.patientListHeader}>Patients</div>
             <div className={styles.patientItems}>
-              <div
-                className={`${styles.patientItem} ${styles.active}`}
+              <ClickableTile
+                className={`${styles.patientItem} ${
+                  selectedPatient === '002' ? styles.active : ''
+                }`}
                 onClick={() => setSelectedPatient('002')}
               >
                 Patient 002
-              </div>
-              <div
+              </ClickableTile>
+              <ClickableTile
                 className={styles.patientItem}
                 onClick={() => setSelectedPatient('003')}
               >
                 Patient 003
-              </div>
-              <div
+              </ClickableTile>
+              <ClickableTile
                 className={styles.patientItem}
                 onClick={() => setSelectedPatient('005')}
               >
                 Patient 005
-              </div>
-              <div className={`${styles.patientItem} ${styles.finished}`}>
+              </ClickableTile>
+              <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
                 (Patient 001)
-              </div>
-              <div className={`${styles.patientItem} ${styles.finished}`}>
+              </ClickableTile>
+              <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
                 (Patient 004)
-              </div>
+              </ClickableTile>
             </div>
           </div>
         </aside>
@@ -145,47 +172,60 @@ const SurgeryWorkflow: React.FC = () => {
         <main className={styles.contentArea}>
           {/* Top Actions (D) */}
           <div className={styles.topActions}>
-            <button className={styles.addPatientButton}>add new patient</button>
+            <Button
+              kind="primary"
+              renderIcon={Add}
+              size="md"
+            >
+              Add new patient
+            </Button>
           </div>
 
           {/* Protocol Tabs (E) */}
-          <div className={styles.protocolTabs}>
-            {Object.entries(config.protocols).map(([key, protocol]) => (
-              <button
-                key={key}
-                className={`${styles.protocolTab} ${
-                  selectedProtocol === key ? styles.activeTab : ''
-                }`}
-                style={{
-                  backgroundColor:
-                    selectedProtocol === key ? protocol.color : undefined,
-                }}
-                onClick={() => setSelectedProtocol(key)}
-              >
-                {protocol.name}
-              </button>
-            ))}
-          </div>
+          <Tabs selectedIndex={Object.keys(config.protocols).indexOf(selectedProtocol)}>
+            <TabList aria-label="Protocol tabs" contained>
+              {Object.entries(config.protocols).map(([key, protocol]) => (
+                <Tab
+                  key={key}
+                  onClick={() => setSelectedProtocol(key)}
+                >
+                  {protocol.name}
+                </Tab>
+              ))}
+            </TabList>
 
-          {/* Form Display Area */}
-          <div className={styles.formArea}>
-            {selectedPatient ? (
-              <div className={styles.formPlaceholder}>
-                <h2>ID: {selectedPatient}</h2>
-                <h3>{config.protocols[selectedProtocol]?.name || 'Form'}</h3>
-                <p>Form engine will render here</p>
-                <p>Form UUID: {config.protocols[selectedProtocol]?.formUuid || 'Not configured'}</p>
-              </div>
-            ) : (
-              <div className={styles.noSelection}>
-                <p>Select a patient to view their protocol forms</p>
-              </div>
-            )}
-          </div>
+            <TabPanels>
+              {Object.entries(config.protocols).map(([key, protocol]) => (
+                <TabPanel key={key}>
+                  {/* Form Display Area */}
+                  <div className={styles.formArea}>
+                    {selectedPatient ? (
+                      <Tile className={styles.formPlaceholder}>
+                        <h2>ID: {selectedPatient}</h2>
+                        <h3>{protocol.name}</h3>
+                        <p>Form engine will render here</p>
+                        <p>Form UUID: {protocol.formUuid || 'Not configured'}</p>
+                      </Tile>
+                    ) : (
+                      <div className={styles.noSelection}>
+                        <p>Select a patient to view their protocol forms</p>
+                      </div>
+                    )}
+                  </div>
+                </TabPanel>
+              ))}
+            </TabPanels>
+          </Tabs>
 
           {/* Print Button (F) */}
           <div className={styles.actionBar}>
-            <button className={styles.printButton}>PRINT</button>
+            <Button
+              kind="secondary"
+              renderIcon={Printer}
+              size="md"
+            >
+              Print
+            </Button>
           </div>
         </main>
       </div>

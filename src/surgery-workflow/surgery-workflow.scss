@@ -1,12 +1,12 @@
 @use '@carbon/styles/scss/spacing';
 @use '@carbon/styles/scss/type';
-@use '@carbon/colors';
+@use '@carbon/styles/scss/theme';
 
 .surgeryWorkflowContainer {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: colors.$gray-10;
+  background-color: theme.$layer-01;
 }
 
 .header {
@@ -14,11 +14,12 @@
   justify-content: space-between;
   align-items: center;
   padding: spacing.$spacing-05;
-  background-color: colors.$gray-90;
-  color: colors.$white;
+  background-color: theme.$background-inverse;
+  color: theme.$text-inverse;
+  border-bottom: 1px solid theme.$border-strong-01;
 
   h1 {
-    @include type.type-style('heading-03');
+    @include type.type-style('heading-04');
     margin: 0;
   }
 }
@@ -26,29 +27,7 @@
 .headerRight {
   display: flex;
   gap: spacing.$spacing-03;
-}
-
-.linkButton,
-.settingsButton {
-  padding: spacing.$spacing-03 spacing.$spacing-05;
-  background-color: colors.$teal-40;
-  border: none;
-  border-radius: 4px;
-  color: colors.$white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: colors.$teal-50;
-  }
-}
-
-.settingsButton {
-  background-color: colors.$gray-70;
-  padding: spacing.$spacing-03;
-
-  &:hover {
-    background-color: colors.$gray-60;
-  }
+  align-items: center;
 }
 
 .mainContent {
@@ -58,90 +37,59 @@
 }
 
 .sidebar {
-  width: 280px;
-  background-color: colors.$gray-20;
+  width: 300px;
+  background-color: theme.$layer-02;
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  border-right: 1px solid theme.$border-subtle-01;
 }
 
 .filterSection {
   padding: spacing.$spacing-05;
-  background-color: colors.$orange-20;
-  border-bottom: 1px solid colors.$gray-30;
-}
-
-.dateFilter {
-  margin-bottom: spacing.$spacing-03;
-
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: spacing.$spacing-02;
-  }
-
-  select {
-    width: 100%;
-    padding: spacing.$spacing-03;
-    border: 1px solid colors.$gray-40;
-    border-radius: 4px;
-  }
-}
-
-.searchBox {
-  input {
-    width: 100%;
-    padding: spacing.$spacing-03;
-    border: 1px solid colors.$gray-40;
-    border-radius: 4px;
-
-    &::placeholder {
-      color: colors.$gray-60;
-    }
-  }
+  background-color: theme.$layer-accent-01;
+  border-bottom: 1px solid theme.$border-subtle-01;
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-04;
 }
 
 .workflowStages,
 .protocolFilter {
-  padding: spacing.$spacing-03;
-  background-color: colors.$blue-10;
-}
-
-.protocolFilter {
-  background-color: colors.$cyan-10;
+  padding: spacing.$spacing-04;
+  background-color: theme.$layer-01;
+  border-bottom: 1px solid theme.$border-subtle-01;
 }
 
 .stageItem {
-  padding: spacing.$spacing-03;
   margin-bottom: spacing.$spacing-02;
-  background-color: colors.$white;
-  border-left: 4px solid transparent;
-  cursor: pointer;
-  border-radius: 2px;
+  border-left: 4px solid transparent !important;
   transition: all 0.2s;
 
   &:hover {
-    background-color: colors.$gray-10;
+    background-color: theme.$layer-hover-01 !important;
   }
 
   &.active {
-    background-color: colors.$blue-20;
-    border-left-color: colors.$blue-60;
+    background-color: theme.$layer-selected-01 !important;
+    border-left-color: theme.$border-interactive !important;
     font-weight: 600;
   }
 }
 
 .patientList {
   flex: 1;
-  padding: spacing.$spacing-03;
-  background-color: colors.$cyan-10;
+  padding: spacing.$spacing-04;
+  background-color: theme.$layer-01;
   overflow-y: auto;
 }
 
 .patientListHeader {
+  @include type.type-style('label-01');
   font-weight: 600;
   margin-bottom: spacing.$spacing-03;
   padding: spacing.$spacing-03;
+  color: theme.$text-secondary;
 }
 
 .patientItems {
@@ -151,25 +99,21 @@
 }
 
 .patientItem {
-  padding: spacing.$spacing-03;
-  background-color: colors.$white;
-  border-radius: 4px;
-  cursor: pointer;
   transition: all 0.2s;
-  color: colors.$blue-60;
 
   &:hover {
-    background-color: colors.$blue-10;
+    background-color: theme.$layer-hover-01 !important;
   }
 
   &.active {
-    background-color: colors.$blue-40;
-    color: colors.$white;
+    background-color: theme.$layer-selected-01 !important;
+    border-left: 4px solid theme.$border-interactive !important;
     font-weight: 600;
   }
 
   &.finished {
-    color: colors.$green-50;
+    color: theme.$text-secondary;
+    font-style: italic;
   }
 }
 
@@ -177,80 +121,39 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: colors.$white;
+  background-color: theme.$layer-01;
   overflow: hidden;
 }
 
 .topActions {
   padding: spacing.$spacing-05;
-  border-bottom: 1px solid colors.$gray-20;
-}
-
-.addPatientButton {
-  padding: spacing.$spacing-03 spacing.$spacing-05;
-  background-color: colors.$teal-40;
-  border: none;
-  border-radius: 4px;
-  color: colors.$white;
-  cursor: pointer;
-
-  &:hover {
-    background-color: colors.$teal-50;
-  }
-}
-
-.protocolTabs {
-  display: flex;
-  gap: spacing.$spacing-03;
-  padding: spacing.$spacing-05;
-  background-color: colors.$gray-10;
-  border-bottom: 1px solid colors.$gray-30;
-}
-
-.protocolTab {
-  padding: spacing.$spacing-04 spacing.$spacing-06;
-  background-color: colors.$gray-20;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-weight: 500;
-
-  &:hover {
-    opacity: 0.8;
-  }
-
-  &.activeTab {
-    color: colors.$white;
-    font-weight: 600;
-  }
+  border-bottom: 1px solid theme.$border-subtle-01;
+  background-color: theme.$layer-01;
 }
 
 .formArea {
   flex: 1;
   padding: spacing.$spacing-05;
   overflow-y: auto;
-  background-color: colors.$yellow-10;
+  background-color: theme.$layer-01;
 }
 
 .formPlaceholder {
-  background-color: colors.$white;
-  padding: spacing.$spacing-06;
-  border-radius: 8px;
-  border: 2px solid colors.$orange-40;
-
   h2 {
     @include type.type-style('heading-04');
     margin-bottom: spacing.$spacing-05;
+    color: theme.$text-primary;
   }
 
   h3 {
     @include type.type-style('heading-02');
-    margin-bottom: spacing.$spacing-03;
+    margin-bottom: spacing.$spacing-04;
+    color: theme.$text-secondary;
   }
 
   p {
-    color: colors.$gray-70;
+    @include type.type-style('body-01');
+    color: theme.$text-secondary;
     margin: spacing.$spacing-03 0;
   }
 }
@@ -260,31 +163,17 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: colors.$gray-60;
 
   p {
-    @include type.type-style('heading-02');
+    @include type.type-style('heading-03');
+    color: theme.$text-placeholder;
   }
 }
 
 .actionBar {
   padding: spacing.$spacing-05;
-  background-color: colors.$gray-10;
-  border-top: 1px solid colors.$gray-30;
+  background-color: theme.$layer-01;
+  border-top: 1px solid theme.$border-subtle-01;
   display: flex;
   justify-content: flex-end;
-}
-
-.printButton {
-  padding: spacing.$spacing-04 spacing.$spacing-06;
-  background-color: colors.$purple-60;
-  border: none;
-  border-radius: 4px;
-  color: colors.$white;
-  font-weight: 600;
-  cursor: pointer;
-
-  &:hover {
-    background-color: colors.$purple-70;
-  }
 }
