@@ -1,0 +1,19 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Bash(git commit*)",
+  "command": "./scripts/quality-gate.sh",
+  "description": "Run comprehensive quality gate before commits (zero tolerance)",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "timeout": 300000,
+    "retries": 0,
+    "medicalSoftware": true,
+    "requiredChecks": [
+      "tests",
+      "types",
+      "lint",
+      "medicalValidation"
+    ]
+  }
+}

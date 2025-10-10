@@ -1,0 +1,27 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Write|Edit",
+  "command": "./scripts/check-medical-coverage.sh",
+  "description": "Verify medical validation logic has exhaustive test coverage",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "timeout": 15000,
+    "requiredCoverage": 100,
+    "medicalFilePatterns": [
+      "**/medical*.ts",
+      "**/validation*.ts",
+      "**/bilateral*.ts",
+      "**/bcva*.ts",
+      "**/cataract*.ts",
+      "**/ophthalm*.ts"
+    ],
+    "requiredTestTypes": [
+      "boundary_values",
+      "invalid_inputs",
+      "null_handling",
+      "type_validation",
+      "range_validation"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Write(src/**/*.tsx)|Write(src/**/*.ts)",
+  "command": "./scripts/check-test-exists.sh",
+  "description": "Enforce test-first for source files (TDD RED-GREEN-REFACTOR)",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "timeout": 10000,
+    "excludePatterns": [
+      "**/__tests__/**",
+      "**/*.spec.ts",
+      "**/*.test.tsx",
+      "**/index.ts",
+      "**/types.ts"
+    ],
+    "medicalCodePriority": [
+      "**/medical*.ts",
+      "**/validation*.ts",
+      "**/bilateral*.ts"
+    ]
+  }
+}
