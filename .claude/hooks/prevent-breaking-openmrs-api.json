@@ -1,0 +1,165 @@
+{
+  "name": "prevent-breaking-openmrs-api",
+  "event": "PreToolUse",
+  "tool": "Edit",
+  "pattern": "src/services/.*|src/constants/concepts/.*",
+  "blocking": true,
+  "description": "Check API contract compliance before modifying OpenMRS integration",
+  "action": {
+    "type": "validate",
+    "checks": [
+      {
+        "name": "Concept UUID Stability",
+        "description": "Ensure concept UUIDs are not modified after production deployment",
+        "pattern": {
+          "file": "src/constants/concepts/**/*.ts",
+          "search": "\\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\\b",
+          "action": "warn",
+          "message": "Changing concept UUIDs may break OpenMRS data integrity. Verify this change is intentional."
+        }
+      },
+      {
+        "name": "Encounter Type Compatibility",
+        "description": "Ensure encounter structure remains compatible with OpenMRS REST API",
+        "requiredFields": [
+          "encounterType",
+          "patient",
+          "location",
+          "encounterDatetime",
+          "encounterProviders",
+          "obs"
+        ],
+        "action": "block",
+        "message": "Encounter payload missing required fields. See OpenMRS REST API documentation."
+      },
+      {
+        "name": "Observation Structure",
+        "description": "Ensure observations have correct structure",
+        "requiredFields": [
+          "concept",
+          "value",
+          "obsDatetime"
+        ],
+        "action": "block",
+        "message": "Observation missing required fields (concept, value, obsDatetime)"
+      }
+    ]
+  },
+  "apiContractChecks": {
+    "encounterEndpoint": {
+      "method": "POST",
+      "path": "/ws/rest/v1/encounter",
+      "requiredFields": {
+        "encounterType": "string (UUID)",
+        "patient": "string (UUID)",
+        "location": "string (UUID)",
+        "encounterDatetime": "string (ISO 8601)",
+        "encounterProviders": "array",
+        "obs": "array"
+      },
+      "examplePayload": {
+        "encounterType": "4a8b8c8d-1234-5678-9abc-def012345678",
+        "patient": "patient-uuid",
+        "location": "location-uuid",
+        "encounterDatetime": "2025-10-10T14:30:00.000Z",
+        "encounterProviders": [
+          {
+            "provider": "provider-uuid",
+            "encounterRole": "role-uuid"
+          }
+        ],
+        "obs": [
+          {
+            "concept": "concept-uuid",
+            "value": 0.8,
+            "obsDatetime": "2025-10-10T14:30:00.000Z"
+          }
+        ]
+      }
+    },
+    "observationTypes": {
+      "Numeric": {
+        "valueType": "number",
+        "example": 0.8
+      },
+      "Coded": {
+        "valueType": "string (UUID)",
+        "example": "answer-concept-uuid"
+      },
+      "Text": {
+        "valueType": "string",
+        "example": "Free text note"
+      },
+      "Boolean": {
+        "valueType": "boolean",
+        "example": true
+      },
+      "Date": {
+        "valueType": "string (ISO 8601 date)",
+        "example": "2025-10-10"
+      }
+    }
+  },
+  "backwardCompatibility": {
+    "enabled": true,
+    "checks": [
+      {
+        "name": "Field Removal",
+        "description": "Removing fields may break existing code",
+        "action": "block",
+        "message": "Removing fields breaks backward compatibility. Use deprecation strategy instead."
+      },
+      {
+        "name": "Field Renaming",
+        "description": "Renaming fields may break existing code",
+        "action": "warn",
+        "message": "Renaming fields may break compatibility. Consider adding new field and deprecating old one."
+      },
+      {
+        "name": "Type Changes",
+        "description": "Changing field types may break existing code",
+        "action": "block",
+        "message": "Changing field types breaks compatibility. Create new field with new type instead."
+      }
+    ]
+  },
+  "testRequirements": {
+    "integrationTests": [
+      "Test encounter creation with valid payload",
+      "Test encounter creation with missing required fields",
+      "Test observation creation for each datatype (Numeric, Coded, Text, Boolean, Date)",
+      "Test error handling for API failures (400, 401, 404, 409, 500)",
+      "Test offline queue behavior"
+    ],
+    "mswMocks": [
+      "Mock POST /ws/rest/v1/encounter (success)",
+      "Mock POST /ws/rest/v1/encounter (400 validation error)",
+      "Mock POST /ws/rest/v1/encounter (401 unauthorized)",
+      "Mock POST /ws/rest/v1/encounter (409 conflict)",
+      "Mock POST /ws/rest/v1/encounter (network error)"
+    ]
+  },
+  "onViolation": {
+    "blocking": true,
+    "message": "⚠️ OpenMRS API Contract Violation Detected",
+    "details": [
+      "This change may break OpenMRS integration.",
+      "Review the API contract requirements above.",
+      "Ensure all required fields are present.",
+      "Run integration tests: ./scripts/test.sh services",
+      "If intentional, document migration strategy."
+    ],
+    "actions": [
+      "Fix the API contract violation",
+      "Run integration tests",
+      "Update API documentation if contract changed",
+      "Consider backward compatibility"
+    ]
+  },
+  "metadata": {
+    "category": "integration",
+    "priority": "critical",
+    "autofix": false,
+    "documentation": "https://wiki.openmrs.org/display/docs/REST+API"
+  }
+}

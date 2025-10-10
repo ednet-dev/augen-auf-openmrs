@@ -1,0 +1,87 @@
+{
+  "name": "pre-commit-medical-validation",
+  "event": "PreToolUse",
+  "tool": "Bash",
+  "pattern": "git commit",
+  "blocking": true,
+  "description": "Zero-tolerance medical validation checks before commits",
+  "action": {
+    "type": "runScript",
+    "script": "./scripts/quality-gate.sh",
+    "timeout": 120000,
+    "onSuccess": {
+      "action": "allow",
+      "message": "✅ Quality gate passed. Medical validation complete."
+    },
+    "onFailure": {
+      "action": "block",
+      "message": "❌ Quality gate failed. Medical code must pass all checks before commit.",
+      "details": [
+        "Run ./scripts/quality-gate.sh to see failures",
+        "Fix all type errors (zero tolerance)",
+        "Fix all lint issues (zero tolerance)",
+        "Ensure all tests pass (100%)",
+        "Medical logic coverage must be ≥90%"
+      ]
+    }
+  },
+  "configuration": {
+    "checks": [
+      {
+        "name": "TypeScript Type Check",
+        "command": "./scripts/check-types.sh",
+        "required": true,
+        "zeroTolerance": true,
+        "medicalFiles": [
+          "src/utils/validation/**",
+          "src/services/**",
+          "src/components/PreSurgery/**"
+        ]
+      },
+      {
+        "name": "ESLint",
+        "command": "./scripts/check-lint.sh",
+        "required": true,
+        "zeroTolerance": true
+      },
+      {
+        "name": "Unit Tests",
+        "command": "./scripts/test.sh all",
+        "required": true,
+        "coverageThreshold": {
+          "global": 80,
+          "medicalLogic": 90
+        }
+      },
+      {
+        "name": "Medical Validation Rules",
+        "checks": [
+          "BCVA range (0.0-1.0) validated",
+          "Astigmatism range (-10.0 to +10.0) validated",
+          "Axial length range (15.0-35.0) validated",
+          "Bilateral asymmetry detection implemented",
+          "Boundary value tests present"
+        ]
+      }
+    ]
+  },
+  "exemptions": {
+    "allowedPrefixes": [
+      "docs:",
+      "chore:",
+      "test:"
+    ],
+    "allowedPaths": [
+      "docs/**",
+      "*.md",
+      ".github/**",
+      "scripts/**"
+    ]
+  },
+  "metadata": {
+    "category": "quality",
+    "priority": "critical",
+    "autofix": false,
+    "documentation": "See CLAUDE.md for quality gate requirements"
+  }
+}

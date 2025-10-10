@@ -1,0 +1,76 @@
+{
+  "name": "openmrs-medical-plugin",
+  "version": "1.0.0",
+  "description": "OpenMRS augmented coding plugin for medical domain development with bilateral forms, PHI protection, and distributed team coordination",
+  "author": "Augen Auf Team",
+  "framework": "agent-protocol",
+  "frameworkVersion": "1.1.0",
+  "domain": "healthcare",
+  "targetPlatform": "openmrs-3.x",
+  "capabilities": {
+    "slashCommands": [
+      "/medical-form",
+      "/openmrs-concept",
+      "/bilateral-test",
+      "/validate-medical",
+      "/encounter-save",
+      "/presurgery-workflow",
+      "/sync-backlog",
+      "/handoff"
+    ],
+    "specializedAgents": [
+      "medical-validator",
+      "bilateral-form-builder",
+      "openmrs-integration-agent",
+      "parallel-stream-coordinator",
+      "medical-tdd-enforcer"
+    ],
+    "workflowHooks": [
+      "prevent-phi-commits",
+      "pre-commit-medical-validation",
+      "post-test-coverage-reminder",
+      "prevent-breaking-openmrs-api"
+    ],
+    "patterns": [
+      "BILATERAL_CAPTURE",
+      "MEDICAL_VALIDATION",
+      "PHI_PROTECTION",
+      "OPENMRS_INTEGRATION",
+      "PARALLEL_STREAMS"
+    ]
+  },
+  "configuration": {
+    "qualityGate": {
+      "testCoverageMinimum": 80,
+      "medicalLogicCoverageMinimum": 90,
+      "typeScriptErrors": 0,
+      "lintIssues": 0
+    },
+    "medicalValidation": {
+      "bcvaRange": [0.0, 1.0],
+      "astigmatismRange": [-10.0, 10.0],
+      "axialLengthRange": [15.0, 35.0],
+      "requireBilateralSymmetryCheck": true
+    },
+    "phiProtection": {
+      "blockPatientNames": true,
+      "blockMedicalRecordNumbers": true,
+      "blockDatesOfBirth": true,
+      "scanCommitsForPhi": true
+    }
+  },
+  "dependencies": {
+    "@openmrs/esm-framework": ">=5.0.0",
+    "react": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "tags": [
+    "healthcare",
+    "openmrs",
+    "ophthalmology",
+    "medical-records",
+    "tdd",
+    "parallel-agents",
+    "distributed-team"
+  ]
+}

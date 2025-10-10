@@ -1,0 +1,84 @@
+{
+  "name": "post-test-coverage-reminder",
+  "event": "PostToolUse",
+  "tool": "Bash",
+  "pattern": "yarn test|npm test|./scripts/test.sh",
+  "blocking": false,
+  "description": "Remind to check coverage after tests, especially for medical logic",
+  "action": {
+    "type": "notification",
+    "condition": {
+      "check": "testsPassed",
+      "value": true
+    },
+    "message": {
+      "title": "✅ Tests Passed",
+      "body": [
+        "Next steps:",
+        "1. Check coverage report (should be ≥80% overall, ≥90% medical)",
+        "2. If coverage low, add boundary tests",
+        "3. Run quality gate: ./scripts/quality-gate.sh",
+        "4. Commit when GREEN"
+      ],
+      "links": [
+        {
+          "text": "View Coverage Report",
+          "url": "./coverage/index.html"
+        },
+        {
+          "text": "TDD Guidelines",
+          "url": "file:///CLAUDE.md#tdd-workflow"
+        }
+      ]
+    }
+  },
+  "coverageChecks": {
+    "medicalLogic": {
+      "paths": [
+        "src/utils/validation/**",
+        "src/services/preSurgeryService.ts",
+        "src/components/PreSurgery/**"
+      ],
+      "threshold": 90,
+      "warnBelow": 85,
+      "failBelow": 80
+    },
+    "uiComponents": {
+      "paths": [
+        "src/components/**"
+      ],
+      "threshold": 80,
+      "warnBelow": 75,
+      "failBelow": 70
+    },
+    "services": {
+      "paths": [
+        "src/services/**"
+      ],
+      "threshold": 85,
+      "warnBelow": 80,
+      "failBelow": 75
+    }
+  },
+  "recommendations": {
+    "lowCoverage": [
+      "Add boundary value tests (min, max, edges)",
+      "Add edge case tests (null, undefined, NaN, Infinity)",
+      "Add medical correlation tests (BCVA vs cataract severity)",
+      "Add bilateral asymmetry tests",
+      "Use /bilateral-test or /validate-medical commands"
+    ],
+    "highCoverage": [
+      "Great job! Coverage is excellent.",
+      "Consider refactoring to improve code quality",
+      "Document any complex medical logic",
+      "Ready for quality gate"
+    ]
+  },
+  "metadata": {
+    "category": "testing",
+    "priority": "medium",
+    "autofix": false,
+    "documentation": "See CLAUDE.md for testing requirements"
+  }
+}

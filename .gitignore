@@ -57,3 +57,30 @@ coverage/
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Agent Protocol v1.1 - Ephemeral Files (Auto-Generated, Do Not Commit)
+PARALLEL_STATUS.md
+PARALLEL_STATE.md
+TDD_LOG.md
+QUALITY_METRICS.md
+INTEGRATION_STATUS.md
+MIGRATION_STATUS.md
+TESTING_LOG.md
+COMPONENT_MIGRATION_STATUS.md
+QUALITY_STATUS.md
+BUNDLE_ANALYSIS.md
+STORYBOOK_CHECKLIST.md
+DOCS_GENERATION_STATUS.md
+CHANGELOG_DRAFT.md
+*-REPORT.md
+*-WIP.md
+*-SCRATCH.md
+*-TEMP.md
+.agent/*/scratch/
+.agent/*/TASK_LOG.md
+.agent_sync.log
+.agent_sync.pid
+.agent_id
+
+# Agent Handoff Documents (Temporary, Review Before Deleting)
+.agent/HANDOFF-*.md

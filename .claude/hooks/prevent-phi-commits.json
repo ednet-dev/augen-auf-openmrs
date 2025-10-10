@@ -1,0 +1,54 @@
+{
+  "name": "prevent-phi-commits",
+  "event": "PreToolUse",
+  "tool": "Bash",
+  "pattern": "git commit",
+  "blocking": true,
+  "description": "Prevent commits containing PHI/PII (patient names, DOBs, MRNs)",
+  "action": {
+    "type": "scan",
+    "patterns": [
+      {
+        "regex": "\\b(?:Patient|patient)\\s+(?:Name|name)\\s*[:=]\\s*[A-Z][a-z]+\\s+[A-Z][a-z]+",
+        "message": "Potential patient name detected. Use UUIDs instead.",
+        "severity": "critical"
+      },
+      {
+        "regex": "\\b(?:DOB|dob|dateOfBirth|date_of_birth)\\s*[:=]\\s*\\d{4}-\\d{2}-\\d{2}",
+        "message": "Date of birth detected. Do not commit PHI.",
+        "severity": "critical"
+      },
+      {
+        "regex": "\\b(?:MRN|mrn|medicalRecordNumber)\\s*[:=]\\s*\\d{6,}",
+        "message": "Medical record number detected. Use patient UUID instead.",
+        "severity": "critical"
+      },
+      {
+        "regex": "\\bconsole\\.log\\([^)]*(?:patient|Patient|name|Name)[^)]*\\)",
+        "message": "console.log may contain patient data. Remove or use UUID only.",
+        "severity": "high"
+      },
+      {
+        "regex": "\\b(?:John|Jane|Mary|Robert|Michael|David|James|Patricia|Linda)\\s+(?:Doe|Smith|Johnson|Williams|Brown|Jones|Miller)",
+        "message": "Common patient name pattern detected. Ensure this is test data only.",
+        "severity": "medium"
+      }
+    ],
+    "excludePaths": [
+      "__tests__/**",
+      "**/*.test.ts",
+      "**/*.test.tsx",
+      "**/*.spec.ts",
+      "mocks/**",
+      "fixtures/**"
+    ],
+    "onViolation": "block",
+    "notificationMessage": "PHI/PII violation detected. Commit blocked for patient safety."
+  },
+  "metadata": {
+    "compliance": "HIPAA",
+    "category": "security",
+    "autofix": false,
+    "documentation": "https://www.hhs.gov/hipaa/for-professionals/privacy/index.html"
+  }
+}
