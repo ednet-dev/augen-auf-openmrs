@@ -353,7 +353,8 @@ import { FormEngineRenderer } from '@/services/form-engine.service';
 - [x] ✅ Achieve 80%+ coverage on existing components (COMPLETED - 99.09% component coverage)
 
 #### Week 2-3: Ophthalmology Components (TDD: RED→GREEN→REFACTOR)
-- [ ] `BilateralInput.tsx` + tests - Left/right eye input with copy buttons
+- [ ] 🔴 RED complete: `BilateralInput.tsx` tests (25 tests written, all failing) - AGENT-1760124496
+- [ ] 🟢 GREEN: `BilateralInput.tsx` implementation (make tests pass)
 - [ ] `BCVAInput.tsx` + tests - BCVA validation (0.0-1.0, display errors)
 - [ ] `CataractTypeSelector.tsx` + tests - 7-type multi-select (Incipiens, Brunescens, Corticalis, Subcaps, Polaris, Matura, Intumescens)
 - [ ] `MeasurementInput.tsx` + tests - Numeric with units (dpt, mm, decimal)
