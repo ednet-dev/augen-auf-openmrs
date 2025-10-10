@@ -34,33 +34,15 @@ api_call() {
     echo "$response"
 }
 
-echo "Step 1: Creating Workflow Stage Encounter Types"
-echo "================================================="
+echo "Step 1: Creating Visit Encounter Type"
+echo "======================================"
+echo "Note: We use a single encounter per patient visit (not per workflow stage)"
+echo ""
 
-# Registration
-echo "Creating 'Augen Auf Registration' encounter type..."
-api_call POST "encountertype" '{"name":"Augen Auf Registration","description":"Initial patient registration for Augen Auf surgery workflow","uuid":"aa001100-1234-5678-90ab-000000000001"}' > /dev/null
-echo "✓ Registration: aa001100-1234-5678-90ab-000000000001"
-
-# Refraction
-echo "Creating 'Augen Auf Refraction' encounter type..."
-api_call POST "encountertype" '{"name":"Augen Auf Refraction","description":"Refraction examination for Augen Auf surgery workflow","uuid":"aa001100-1234-5678-90ab-000000000002"}' > /dev/null
-echo "✓ Refraction: aa001100-1234-5678-90ab-000000000002"
-
-# Eye Exam
-echo "Creating 'Augen Auf Eye Exam' encounter type..."
-api_call POST "encountertype" '{"name":"Augen Auf Eye Exam","description":"Comprehensive eye examination for Augen Auf surgery workflow","uuid":"aa001100-1234-5678-90ab-000000000003"}' > /dev/null
-echo "✓ Eye Exam: aa001100-1234-5678-90ab-000000000003"
-
-# Therapy
-echo "Creating 'Augen Auf Therapy' encounter type..."
-api_call POST "encountertype" '{"name":"Augen Auf Therapy","description":"Therapy/treatment for Augen Auf surgery workflow","uuid":"aa001100-1234-5678-90ab-000000000004"}' > /dev/null
-echo "✓ Therapy: aa001100-1234-5678-90ab-000000000004"
-
-# Finished
-echo "Creating 'Augen Auf Finished' encounter type..."
-api_call POST "encountertype" '{"name":"Augen Auf Finished","description":"Final/discharge encounter for Augen Auf surgery workflow","uuid":"aa001100-1234-5678-90ab-000000000005"}' > /dev/null
-echo "✓ Finished: aa001100-1234-5678-90ab-000000000005"
+# Visit Encounter Type
+echo "Creating 'Augen Auf Visit' encounter type..."
+api_call POST "encountertype" '{"name":"Augen Auf Visit","description":"Single encounter for entire patient visit across all workflow stages","uuid":"aa001100-1234-5678-90ab-000000000001"}' > /dev/null
+echo "✓ Visit Encounter: aa001100-1234-5678-90ab-000000000001"
 
 echo ""
 echo "Step 2: Creating Concepts"
@@ -134,20 +116,21 @@ echo "==========================================="
 echo ""
 echo "Summary:"
 echo "--------"
-echo "Created 5 workflow stage encounter types"
+echo "Created 1 visit encounter type (single encounter per patient visit)"
 echo "Created 1 concept (Needs Surgery boolean)"
-echo "Created 3 protocol encounter types"
+echo "Created 3 protocol encounter types (for protocol forms)"
 echo "Created 5 queues (one per workflow stage)"
+echo ""
+echo "Data Model:"
+echo "-----------"
+echo "- Workflow stages are managed via QUEUES (not encounters)"
+echo "- Each patient visit has ONE encounter (aa001100-...0001)"
+echo "- Protocol forms attach to the visit encounter"
+echo "- Queue entries track which stage a patient is in"
 echo ""
 echo "Note: All queues use the standard 'Triage' service concept."
 echo "These UUIDs match the defaults in src/config-schema.ts"
 echo "The module is now ready to work with this OpenMRS instance."
-echo ""
-echo "Queue-Based Workflow:"
-echo "--------------------"
-echo "Each workflow stage now has a dedicated queue."
-echo "When patients move between stages, they are added to the appropriate queue."
-echo "This allows each station to automatically see patients in their stage."
 echo ""
 echo "Next Steps:"
 echo "1. Create forms in Form Builder for each protocol"

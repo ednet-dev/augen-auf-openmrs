@@ -44,7 +44,7 @@ export async function fetchPatientsByWorkflowStage(
   queueUuid: string,
   statusWaitingUuid: string,
   needsSurgeryConceptUuid: string,
-  workflowStages: Array<{ id: WorkflowStageId; encounterTypeUuid: string }>
+  workflowStages: Array<{ id: WorkflowStageId; queueUuid: string }>
 ): Promise<PatientListItem[]> {
   if (stage === 'all') {
     // 'all' should not be calling this function - return empty array
@@ -96,7 +96,7 @@ export async function fetchPatientsByWorkflowStage(
 export async function fetchPatientsByQueue(
   queueUuid: string,
   statusWaitingUuid: string,
-  workflowStages: Array<{ id: WorkflowStageId; encounterTypeUuid: string }>,
+  workflowStages: Array<{ id: WorkflowStageId; queueUuid: string }>,
   needsSurgeryConceptUuid: string
 ): Promise<PatientListItem[]> {
   try {
@@ -155,40 +155,36 @@ async function fetchPatientByUuid(uuid: string): Promise<PatientListItem | null>
 }
 
 /**
- * Fetch patient workflow data based on encounters
+ * Fetch patient workflow data based on active queue entry
  */
 export async function fetchPatientWorkflowData(
   patientUuid: string,
-  workflowStages: Array<{ id: WorkflowStageId; encounterTypeUuid: string }>,
+  workflowStages: Array<{ id: WorkflowStageId; queueUuid: string }>,
   needsSurgeryConceptUuid: string
 ): Promise<PatientWorkflowData | null> {
   try {
-    // Fetch all encounters for this patient
-    const encountersUrl = `${restBaseUrl}/encounter?patient=${patientUuid}&v=full&limit=100`;
-    const encountersResponse = await openmrsFetch(encountersUrl);
-    const encountersData = await encountersResponse.json();
+    // Fetch active queue entries for this patient
+    const queueUrl = `${restBaseUrl}/queue-entry?patient=${patientUuid}&v=full&limit=100`;
+    const queueResponse = await openmrsFetch(queueUrl);
+    const queueData = await queueResponse.json();
 
-    // Determine current stage based on most recent encounter type
+    // Determine current stage based on active queue entry
     let currentStage: WorkflowStageId = 'registration';
     let completedProtocols: ProtocolId[] = [];
     let lastUpdated = new Date().toISOString();
 
-    if (encountersData.results && encountersData.results.length > 0) {
-      // Sort encounters by date (most recent first)
-      const sortedEncounters = encountersData.results.sort(
-        (a: any, b: any) =>
-          new Date(b.encounterDatetime).getTime() - new Date(a.encounterDatetime).getTime()
-      );
+    if (queueData.results && queueData.results.length > 0) {
+      // Find the active queue entry (one without endedAt)
+      const activeEntry = queueData.results.find((entry: any) => !entry.endedAt);
 
-      // Find the most recent workflow stage encounter
-      for (const encounter of sortedEncounters) {
+      if (activeEntry) {
+        // Find which workflow stage this queue belongs to
         const stage = workflowStages.find(
-          (s) => s.encounterTypeUuid === encounter.encounterType.uuid
+          (s) => s.queueUuid === activeEntry.queue.uuid
         );
         if (stage) {
           currentStage = stage.id as WorkflowStageId;
-          lastUpdated = encounter.encounterDatetime;
-          break;
+          lastUpdated = activeEntry.startedAt;
         }
       }
 
@@ -241,49 +237,30 @@ async function checkNeedsSurgery(
 }
 
 /**
- * Move patient to a new workflow stage by creating an encounter AND a queue entry
+ * Move patient to a new workflow stage by updating queue entries
  *
  * This function:
- * 1. Creates an encounter to track the workflow progression
- * 2. Ends any existing queue entries for this patient
- * 3. Creates a new queue entry for the target stage
+ * 1. Ends any existing queue entries for this patient
+ * 2. Creates a new queue entry for the target stage
+ *
+ * Note: We use a single encounter per patient visit, not per stage transition.
+ * The encounter is created during registration and protocol forms attach to it.
  */
 export async function movePatientToStage(
   patientUuid: string,
   targetStage: WorkflowStageId,
-  encounterTypeUuid: string,
   queueUuid: string,
-  statusWaitingUuid: string,
-  locationUuid?: string
+  statusWaitingUuid: string
 ): Promise<void> {
-  if (!encounterTypeUuid) {
-    throw new Error(`No encounter type UUID configured for stage: ${targetStage}`);
-  }
-
   if (!queueUuid) {
     throw new Error(`No queue UUID configured for stage: ${targetStage}`);
   }
 
   try {
-    // Step 1: Create encounter to mark workflow progression
-    const encounterPayload = {
-      patient: patientUuid,
-      encounterType: encounterTypeUuid,
-      encounterDatetime: new Date().toISOString(),
-      location: locationUuid,
-      obs: [],
-    };
-
-    await openmrsFetch(`${restBaseUrl}/encounter`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(encounterPayload),
-    });
-
-    // Step 2: End any existing queue entries for this patient
+    // Step 1: End any existing queue entries for this patient
     await endPatientQueueEntries(patientUuid);
 
-    // Step 3: Create new queue entry for target stage
+    // Step 2: Create new queue entry for target stage
     await createQueueEntry(patientUuid, queueUuid, statusWaitingUuid);
 
   } catch (error) {

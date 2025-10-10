@@ -25,10 +25,10 @@ export function validateConfig(config: AugenAufConfig): ValidationResult {
       if (!stage.label) {
         warnings.push(`Workflow stage '${stage.id}' is missing 'label'`);
       }
-      if (!stage.encounterTypeUuid || stage.encounterTypeUuid === '') {
-        errors.push(`Workflow stage '${stage.id}' is missing 'encounterTypeUuid'`);
-      } else if (!isValidUuid(stage.encounterTypeUuid)) {
-        errors.push(`Workflow stage '${stage.id}' has invalid UUID format: ${stage.encounterTypeUuid}`);
+      if (!stage.queueUuid || stage.queueUuid === '') {
+        errors.push(`Workflow stage '${stage.id}' is missing 'queueUuid'`);
+      } else if (!isValidUuid(stage.queueUuid)) {
+        errors.push(`Workflow stage '${stage.id}' has invalid queueUuid format: ${stage.queueUuid}`);
       }
     });
   }
@@ -122,7 +122,7 @@ export function getConfigSummary(config: AugenAufConfig): string {
   lines.push('─────────────────────');
   lines.push(`Workflow Stages: ${config.workflowStages.length}`);
 
-  const configuredStages = config.workflowStages.filter(s => s.encounterTypeUuid && s.encounterTypeUuid !== '').length;
+  const configuredStages = config.workflowStages.filter(s => s.queueUuid && s.queueUuid !== '').length;
   lines.push(`  Configured: ${configuredStages}/${config.workflowStages.length}`);
 
   const protocolCount = Object.keys(config.protocols).length;

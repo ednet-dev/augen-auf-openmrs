@@ -58,7 +58,6 @@ const SurgeryWorkflow: React.FC = () => {
       await movePatientToStage(
         patientUuid,
         targetStage,
-        stage.encounterTypeUuid,
         stage.queueUuid,
         config.queueStatusWaitingUuid
       );

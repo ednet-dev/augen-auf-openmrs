@@ -11,7 +11,6 @@ export interface WorkflowStage {
   id: WorkflowStageId;
   label: string;
   color: string;
-  encounterTypeUuid: string;
   queueUuid: string;
 }
 
