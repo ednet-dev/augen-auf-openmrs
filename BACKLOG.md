@@ -359,7 +359,7 @@ import { FormEngineRenderer } from '@/services/form-engine.service';
 - [x] ✅ [AGENT-1760124525] `BCVAInput.tsx` + tests (COMPLETED)
   - [x] 🔴 RED: 28 tests written (all failing)
   - [x] 🟢 GREEN: Implementation complete (all 28 tests passing)
-- [ ] `CataractTypeSelector.tsx` + tests - 7-type multi-select (Incipiens, Brunescens, Corticalis, Subcaps, Polaris, Matura, Intumescens)
+- [ ] 🔒 [AGENT-1760124525] 2025-10-10T20:10:07Z `CataractTypeSelector.tsx` + tests - 7-type multi-select (Incipiens, Brunescens, Corticalis, Subcaps, Polaris, Matura, Intumescens)
 - [ ] 🔒 [AGENT-1760126008] `MeasurementInput.tsx` + tests - Numeric with units (dpt, mm, decimal) - 2025-10-10T22:05:33+02:00
 - [ ] `PterygiumAssessment.tsx` + tests - Classification + "needs surgery" checkbox
 - [ ] `AnesthesiaSelector.tsx` + tests - Radio buttons (ic, st/pb, AN)
