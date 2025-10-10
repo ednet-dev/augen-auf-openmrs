@@ -2,11 +2,28 @@ import { openmrsFetch, restBaseUrl } from '@openmrs/esm-framework';
 import { PatientListItem, PatientWorkflowData, WorkflowStageId } from '../types';
 
 /**
+ * Delay helper for retry logic
+ */
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/**
+ * Retry configuration
+ */
+const RETRY_CONFIG = {
+  maxRetries: 3,
+  baseDelay: 1000, // 1 second
+  timeout: 5000, // 5 seconds per request
+};
+
+/**
  * Fetch patients based on search query and filters
  */
 export async function searchPatients(
   searchQuery: string = '',
-  limit: number = 50
+  limit: number = 50,
+  retryCount: number = 0
 ): Promise<PatientListItem[]> {
   const query = searchQuery.trim();
 
@@ -23,7 +40,18 @@ export async function searchPatients(
 
     return data.results.map((patient: any) => transformPatient(patient));
   } catch (error) {
-    console.error('Error searching patients:', error);
+    console.error(`Error searching patients (attempt ${retryCount + 1}/${RETRY_CONFIG.maxRetries + 1}):`, error);
+
+    // Retry with exponential backoff if we haven't exceeded max retries
+    if (retryCount < RETRY_CONFIG.maxRetries) {
+      const delayMs = RETRY_CONFIG.baseDelay * Math.pow(2, retryCount);
+      console.log(`Retrying search in ${delayMs}ms...`);
+      await delay(delayMs);
+      return searchPatients(searchQuery, limit, retryCount + 1);
+    }
+
+    // After all retries exhausted, return empty array
+    console.error('All retry attempts exhausted. Returning empty search results.');
     return [];
   }
 }
@@ -31,8 +59,10 @@ export async function searchPatients(
 /**
  * Fetch recent patients (for initial load)
  */
-export async function fetchRecentPatients(limit: number = 50): Promise<PatientListItem[]> {
-  // TODO: This endpoint might need adjustment based on your OpenMRS setup
+export async function fetchRecentPatients(
+  limit: number = 50,
+  retryCount: number = 0
+): Promise<PatientListItem[]> {
   const url = `${restBaseUrl}/patient?v=full&limit=${limit}`;
 
   try {
@@ -41,9 +71,20 @@ export async function fetchRecentPatients(limit: number = 50): Promise<PatientLi
 
     return data.results.map((patient: any) => transformPatient(patient));
   } catch (error) {
-    console.error('Error fetching recent patients:', error);
-    // Return mock data for development
-    return getMockPatients();
+    console.error(`Error fetching recent patients (attempt ${retryCount + 1}/${RETRY_CONFIG.maxRetries + 1}):`, error);
+
+    // Retry with exponential backoff if we haven't exceeded max retries
+    if (retryCount < RETRY_CONFIG.maxRetries) {
+      const delayMs = RETRY_CONFIG.baseDelay * Math.pow(2, retryCount);
+      console.log(`Retrying in ${delayMs}ms...`);
+      await delay(delayMs);
+      return fetchRecentPatients(limit, retryCount + 1);
+    }
+
+    // After all retries exhausted, return empty array
+    // UI will show "No patients found" - better than returning stale mock data
+    console.error('All retry attempts exhausted. Returning empty patient list.');
+    return [];
   }
 }
 
@@ -52,21 +93,46 @@ export async function fetchRecentPatients(limit: number = 50): Promise<PatientLi
  */
 export async function fetchPatientsByWorkflowStage(
   stage: WorkflowStageId | 'all' | 'needs-surgery',
-  workflowConceptUuid: string
+  workflowConceptUuid: string,
+  retryCount: number = 0
 ): Promise<PatientListItem[]> {
   if (stage === 'all') {
     return fetchRecentPatients();
   }
 
-  // TODO: Implement filtering by workflow stage using obs or custom attribute
-  // This will depend on how you're storing workflow data in OpenMRS
-  const patients = await fetchRecentPatients();
+  try {
+    // Fetch all patients first
+    const patients = await fetchRecentPatients();
 
-  if (stage === 'needs-surgery') {
-    return patients.filter(p => p.workflowData?.needsSurgery);
+    // Fetch workflow data for each patient in parallel
+    const patientsWithWorkflow = await Promise.all(
+      patients.map(async (patient) => {
+        const workflowData = await fetchPatientWorkflowData(patient.uuid, workflowConceptUuid);
+        return { ...patient, workflowData };
+      })
+    );
+
+    // Filter based on stage
+    if (stage === 'needs-surgery') {
+      return patientsWithWorkflow.filter(p => p.workflowData?.needsSurgery);
+    }
+
+    return patientsWithWorkflow.filter(p => p.workflowData?.currentStage === stage);
+  } catch (error) {
+    console.error(`Error fetching patients by workflow stage (attempt ${retryCount + 1}/${RETRY_CONFIG.maxRetries + 1}):`, error);
+
+    // Retry with exponential backoff
+    if (retryCount < RETRY_CONFIG.maxRetries) {
+      const delayMs = RETRY_CONFIG.baseDelay * Math.pow(2, retryCount);
+      console.log(`Retrying workflow stage fetch in ${delayMs}ms...`);
+      await delay(delayMs);
+      return fetchPatientsByWorkflowStage(stage, workflowConceptUuid, retryCount + 1);
+    }
+
+    // After all retries exhausted, return empty array
+    console.error('All retry attempts exhausted. Returning empty patient list.');
+    return [];
   }
-
-  return patients.filter(p => p.workflowData?.currentStage === stage);
 }
 
 /**
@@ -171,75 +237,3 @@ function parseWorkflowObs(obs: any): PatientWorkflowData | null {
   }
 }
 
-/**
- * Mock data for development
- */
-function getMockPatients(): PatientListItem[] {
-  return [
-    {
-      uuid: '002',
-      display: 'Patient 002',
-      identifiers: [],
-      person: { age: 45, birthdate: '1979-01-01', gender: 'M', display: 'Patient 002' },
-      workflowData: {
-        patientUuid: '002',
-        currentStage: 'eye-exam',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '003',
-      display: 'Patient 003',
-      identifiers: [],
-      person: { age: 52, birthdate: '1972-01-01', gender: 'F', display: 'Patient 003' },
-      workflowData: {
-        patientUuid: '003',
-        currentStage: 'refraction',
-        needsSurgery: true,
-        completedProtocols: [],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '005',
-      display: 'Patient 005',
-      identifiers: [],
-      person: { age: 38, birthdate: '1986-01-01', gender: 'M', display: 'Patient 005' },
-      workflowData: {
-        patientUuid: '005',
-        currentStage: 'registration',
-        needsSurgery: false,
-        completedProtocols: [],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '001',
-      display: 'Patient 001',
-      identifiers: [],
-      person: { age: 60, birthdate: '1964-01-01', gender: 'F', display: 'Patient 001' },
-      workflowData: {
-        patientUuid: '001',
-        currentStage: 'finished',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1', 'protocol-2', 'protocol-3'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '004',
-      display: 'Patient 004',
-      identifiers: [],
-      person: { age: 55, birthdate: '1969-01-01', gender: 'M', display: 'Patient 004' },
-      workflowData: {
-        patientUuid: '004',
-        currentStage: 'finished',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1', 'protocol-2'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-  ];
-}
