@@ -61,115 +61,118 @@ const SurgeryWorkflow: React.FC = () => {
       </div>
 
       <div className={styles.mainContent}>
-        {/* Left Sidebar - Filters and Patient List */}
-        <aside className={styles.sidebar}>
-          {/* Filter Section (A) */}
-          <Layer className={styles.filterSection}>
-            <Dropdown
-              id="date-filter"
-              titleText="Filter by Date"
-              label="Select date range"
-              items={dateFilterItems}
-              itemToString={(item) => item?.label || ''}
-              selectedItem={dateFilterItems.find((item) => item.id === filterState.dateFilter)}
-              onChange={({ selectedItem }) =>
-                setFilterState({
-                  ...filterState,
-                  dateFilter: selectedItem.id as keyof typeof config.dateFilters,
-                })
-              }
-            />
+        {/* Top Filter Section (A) */}
+        <Layer className={styles.filterSection}>
+          <Dropdown
+            id="date-filter"
+            titleText="Filter by Date"
+            label="Select date range"
+            items={dateFilterItems}
+            itemToString={(item) => item?.label || ''}
+            selectedItem={dateFilterItems.find((item) => item.id === filterState.dateFilter)}
+            onChange={({ selectedItem }) =>
+              setFilterState({
+                ...filterState,
+                dateFilter: selectedItem.id as keyof typeof config.dateFilters,
+              })
+            }
+          />
 
-            <Search
-              id="patient-search"
-              labelText="Search for Patient"
-              placeholder="Search for Patient"
-              value={filterState.searchQuery}
-              onChange={(e) =>
-                setFilterState({ ...filterState, searchQuery: e.target.value })
-              }
-              size="sm"
-            />
-          </Layer>
+          <Search
+            id="patient-search"
+            labelText="Search for Patient"
+            placeholder="Search for Patient"
+            value={filterState.searchQuery}
+            onChange={(e) =>
+              setFilterState({ ...filterState, searchQuery: e.target.value })
+            }
+            size="sm"
+          />
+        </Layer>
 
-          {/* Workflow Stage Filter (B) */}
-          <div className={styles.workflowStages}>
-            <ClickableTile
-              className={`${styles.stageItem} ${
-                filterState.workflowStage === 'all' ? styles.active : ''
-              }`}
-              onClick={() =>
-                setFilterState({ ...filterState, workflowStage: 'all' })
-              }
-            >
-              Show All
-            </ClickableTile>
-            {config.workflowStages.map((stage) => (
+        {/* Sidebar Area with Workflow Stages and Patient List */}
+        <div className={styles.sidebarContainer}>
+          {/* Left: Workflow Stage Filter (B) */}
+          <aside className={styles.workflowSidebar}>
+            <div className={styles.workflowStages}>
               <ClickableTile
-                key={stage.id}
                 className={`${styles.stageItem} ${
-                  filterState.workflowStage === stage.id ? styles.active : ''
+                  filterState.workflowStage === 'all' ? styles.active : ''
                 }`}
                 onClick={() =>
-                  setFilterState({ ...filterState, workflowStage: stage.id })
+                  setFilterState({ ...filterState, workflowStage: 'all' })
                 }
-                style={{ borderLeftColor: stage.color }}
               >
-                {stage.label} &gt;
+                Show All
               </ClickableTile>
-            ))}
-          </div>
+              {config.workflowStages.map((stage) => (
+                <ClickableTile
+                  key={stage.id}
+                  className={`${styles.stageItem} ${
+                    filterState.workflowStage === stage.id ? styles.active : ''
+                  }`}
+                  onClick={() =>
+                    setFilterState({ ...filterState, workflowStage: stage.id })
+                  }
+                  style={{ borderLeftColor: stage.color }}
+                >
+                  {stage.label} &gt;
+                </ClickableTile>
+              ))}
+            </div>
 
-          {/* Protocol Filter (B2) */}
-          <div className={styles.protocolFilter}>
-            <ClickableTile
-              className={`${styles.stageItem} ${
-                filterState.workflowStage === 'needs-surgery' ? styles.active : ''
-              }`}
-              onClick={() =>
-                setFilterState({ ...filterState, workflowStage: 'needs-surgery' })
-              }
-            >
-              Needs surgery &gt;
-            </ClickableTile>
-          </div>
-
-          {/* Patient List (C) */}
-          <div className={styles.patientList}>
-            <div className={styles.patientListHeader}>Patients</div>
-            <div className={styles.patientItems}>
+            {/* Protocol Filter (B2) */}
+            <div className={styles.protocolFilter}>
               <ClickableTile
-                className={`${styles.patientItem} ${
-                  selectedPatient === '002' ? styles.active : ''
+                className={`${styles.stageItem} ${
+                  filterState.workflowStage === 'needs-surgery' ? styles.active : ''
                 }`}
-                onClick={() => setSelectedPatient('002')}
+                onClick={() =>
+                  setFilterState({ ...filterState, workflowStage: 'needs-surgery' })
+                }
               >
-                Patient 002
-              </ClickableTile>
-              <ClickableTile
-                className={styles.patientItem}
-                onClick={() => setSelectedPatient('003')}
-              >
-                Patient 003
-              </ClickableTile>
-              <ClickableTile
-                className={styles.patientItem}
-                onClick={() => setSelectedPatient('005')}
-              >
-                Patient 005
-              </ClickableTile>
-              <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
-                (Patient 001)
-              </ClickableTile>
-              <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
-                (Patient 004)
+                Needs surgery &gt;
               </ClickableTile>
             </div>
-          </div>
-        </aside>
+          </aside>
 
-        {/* Main Content Area */}
-        <main className={styles.contentArea}>
+          {/* Right: Patient List (C) */}
+          <aside className={styles.patientListSidebar}>
+            <div className={styles.patientList}>
+              <div className={styles.patientListHeader}>Patients</div>
+              <div className={styles.patientItems}>
+                <ClickableTile
+                  className={`${styles.patientItem} ${
+                    selectedPatient === '002' ? styles.active : ''
+                  }`}
+                  onClick={() => setSelectedPatient('002')}
+                >
+                  Patient 002
+                </ClickableTile>
+                <ClickableTile
+                  className={styles.patientItem}
+                  onClick={() => setSelectedPatient('003')}
+                >
+                  Patient 003
+                </ClickableTile>
+                <ClickableTile
+                  className={styles.patientItem}
+                  onClick={() => setSelectedPatient('005')}
+                >
+                  Patient 005
+                </ClickableTile>
+                <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
+                  (Patient 001)
+                </ClickableTile>
+                <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
+                  (Patient 004)
+                </ClickableTile>
+              </div>
+            </div>
+          </aside>
+
+          {/* Main Content Area */}
+          <main className={styles.contentArea}>
           {/* Top Actions (D) */}
           <div className={styles.topActions}>
             <Button
@@ -228,6 +231,7 @@ const SurgeryWorkflow: React.FC = () => {
             </Button>
           </div>
         </main>
+        </div>
       </div>
     </div>
   );
