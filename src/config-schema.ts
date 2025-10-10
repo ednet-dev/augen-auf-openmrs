@@ -32,11 +32,36 @@ export const configSchema = {
     _type: Type.Array,
     _description: "Available workflow stages for patient filtering",
     _default: [
-      { id: "registration", label: "Registration", color: "#E0E0E0" },
-      { id: "refraction", label: "Refraction", color: "#C0C0C0" },
-      { id: "eye-exam", label: "Eye Exam", color: "#A0A0A0" },
-      { id: "therapy", label: "Therapy", color: "#808080" },
-      { id: "finished", label: "Finished", color: "#90EE90" }
+      {
+        id: "registration",
+        label: "Registration",
+        color: "#E0E0E0",
+        encounterTypeUuid: ""
+      },
+      {
+        id: "refraction",
+        label: "Refraction",
+        color: "#C0C0C0",
+        encounterTypeUuid: ""
+      },
+      {
+        id: "eye-exam",
+        label: "Eye Exam",
+        color: "#A0A0A0",
+        encounterTypeUuid: ""
+      },
+      {
+        id: "therapy",
+        label: "Therapy",
+        color: "#808080",
+        encounterTypeUuid: ""
+      },
+      {
+        id: "finished",
+        label: "Finished",
+        color: "#90EE90",
+        encounterTypeUuid: ""
+      }
     ]
   },
   surgeryWorkflowConceptUuid: {

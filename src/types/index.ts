@@ -11,6 +11,7 @@ export interface WorkflowStage {
   id: WorkflowStageId;
   label: string;
   color: string;
+  encounterTypeUuid: string;
 }
 
 export interface Protocol {

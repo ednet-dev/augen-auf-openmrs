@@ -38,10 +38,18 @@ export function usePatients(options: UsePatientsOptions = {}): UsePatientsResult
         // Search mode
         results = await searchPatients(searchQuery);
       } else if (workflowStage !== 'all') {
-        // Filter by workflow stage
+        // Filter by workflow stage using encounters
+        // Note: 'needs-surgery' uses observations (not encounters), so encounterTypeUuid is empty
+        const stage = config.workflowStages.find((s) => s.id === workflowStage);
+        const encounterTypeUuid =
+          workflowStage === 'needs-surgery'
+            ? '' // Not used for needs-surgery filter (uses observations instead)
+            : stage?.encounterTypeUuid || '';
+
         results = await fetchPatientsByWorkflowStage(
           workflowStage,
-          config.surgeryWorkflowConceptUuid
+          encounterTypeUuid,
+          config.needsSurgeryConceptUuid
         );
       } else {
         // Default: load recent patients
