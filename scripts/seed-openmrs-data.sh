@@ -97,6 +97,37 @@ api_call POST "encountertype" '{"name":"Augen Auf Post-Surgery Protocol","descri
 echo "✓ Post-Surgery Protocol: aa003300-1234-5678-90ab-000000000013"
 
 echo ""
+echo "Step 4: Creating Queues for Workflow Stages"
+echo "============================================"
+
+# Get default location UUID (Outpatient Clinic or first available)
+DEFAULT_LOCATION="44c3efb0-2583-4c80-a79e-1f756a03c0a1"
+
+# Use standard Triage service concept (works with OpenMRS queue module)
+# Note: In production, you may want to create custom service concepts
+SERVICE_UUID="d62d58e9-ec91-4108-9643-00f5f23bf51c"  # Triage service
+
+echo "Creating 'Augen Auf Registration' queue..."
+api_call POST "queue" "{\"name\":\"Augen Auf Registration\",\"description\":\"Queue for patients at registration stage\",\"location\":\"$DEFAULT_LOCATION\",\"service\":\"$SERVICE_UUID\",\"uuid\":\"aa004400-1234-5678-90ab-000000000001\"}" > /dev/null
+echo "✓ Registration Queue: aa004400-1234-5678-90ab-000000000001"
+
+echo "Creating 'Augen Auf Refraction' queue..."
+api_call POST "queue" "{\"name\":\"Augen Auf Refraction\",\"description\":\"Queue for patients at refraction stage\",\"location\":\"$DEFAULT_LOCATION\",\"service\":\"$SERVICE_UUID\",\"uuid\":\"aa004400-1234-5678-90ab-000000000002\"}" > /dev/null
+echo "✓ Refraction Queue: aa004400-1234-5678-90ab-000000000002"
+
+echo "Creating 'Augen Auf Eye Exam' queue..."
+api_call POST "queue" "{\"name\":\"Augen Auf Eye Exam\",\"description\":\"Queue for patients at eye exam stage\",\"location\":\"$DEFAULT_LOCATION\",\"service\":\"$SERVICE_UUID\",\"uuid\":\"aa004400-1234-5678-90ab-000000000003\"}" > /dev/null
+echo "✓ Eye Exam Queue: aa004400-1234-5678-90ab-000000000003"
+
+echo "Creating 'Augen Auf Therapy' queue..."
+api_call POST "queue" "{\"name\":\"Augen Auf Therapy\",\"description\":\"Queue for patients at therapy stage\",\"location\":\"$DEFAULT_LOCATION\",\"service\":\"$SERVICE_UUID\",\"uuid\":\"aa004400-1234-5678-90ab-000000000004\"}" > /dev/null
+echo "✓ Therapy Queue: aa004400-1234-5678-90ab-000000000004"
+
+echo "Creating 'Augen Auf Finished' queue..."
+api_call POST "queue" "{\"name\":\"Augen Auf Finished\",\"description\":\"Queue for patients at finished/discharge stage\",\"location\":\"$DEFAULT_LOCATION\",\"service\":\"$SERVICE_UUID\",\"uuid\":\"aa004400-1234-5678-90ab-000000000005\"}" > /dev/null
+echo "✓ Finished Queue: aa004400-1234-5678-90ab-000000000005"
+
+echo ""
 echo "==========================================="
 echo "✓ Seeding Complete!"
 echo "==========================================="
@@ -104,14 +135,23 @@ echo ""
 echo "Summary:"
 echo "--------"
 echo "Created 5 workflow stage encounter types"
-echo "Created 1 concept (Needs Surgery)"
+echo "Created 1 concept (Needs Surgery boolean)"
 echo "Created 3 protocol encounter types"
+echo "Created 5 queues (one per workflow stage)"
 echo ""
+echo "Note: All queues use the standard 'Triage' service concept."
 echo "These UUIDs match the defaults in src/config-schema.ts"
 echo "The module is now ready to work with this OpenMRS instance."
+echo ""
+echo "Queue-Based Workflow:"
+echo "--------------------"
+echo "Each workflow stage now has a dedicated queue."
+echo "When patients move between stages, they are added to the appropriate queue."
+echo "This allows each station to automatically see patients in their stage."
 echo ""
 echo "Next Steps:"
 echo "1. Create forms in Form Builder for each protocol"
 echo "2. Update form UUIDs in configuration if needed"
-echo "3. Test the Surgery Workflow page"
+echo "3. Test patient movement between stages"
+echo "4. Verify queue entries are created correctly"
 echo ""

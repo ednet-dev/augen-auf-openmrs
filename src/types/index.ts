@@ -12,6 +12,7 @@ export interface WorkflowStage {
   label: string;
   color: string;
   encounterTypeUuid: string;
+  queueUuid: string;
 }
 
 export interface Protocol {
@@ -45,6 +46,9 @@ export interface AugenAufConfig {
   surgeryWorkflowConceptUuid: string;
   needsSurgeryConceptUuid: string;
   dateFilters: DateFiltersConfig;
+  queueStatusWaitingUuid: string;
+  queueStatusInServiceUuid: string;
+  queueStatusFinishedUuid: string;
 }
 
 export interface PatientWorkflowData {

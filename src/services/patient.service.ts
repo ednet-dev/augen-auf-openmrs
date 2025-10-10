@@ -11,8 +11,8 @@ export async function searchPatients(
   const query = searchQuery.trim();
 
   if (!query) {
-    // If no search query, fetch recent patients
-    return fetchRecentPatients(limit);
+    // No search query provided - return empty array
+    return [];
   }
 
   const url = `${restBaseUrl}/patient?q=${encodeURIComponent(query)}&v=full&limit=${limit}`;
@@ -29,42 +29,26 @@ export async function searchPatients(
 }
 
 /**
- * Fetch recent patients (for initial load)
- */
-export async function fetchRecentPatients(limit: number = 50): Promise<PatientListItem[]> {
-  // TODO: This endpoint might need adjustment based on your OpenMRS setup
-  const url = `${restBaseUrl}/patient?v=full&limit=${limit}`;
-
-  try {
-    const response = await openmrsFetch(url);
-    const data = await response.json();
-
-    return data.results.map((patient: any) => transformPatient(patient));
-  } catch (error) {
-    console.error('Error fetching recent patients:', error);
-    // Return mock data for development
-    return getMockPatients();
-  }
-}
-
-/**
- * Fetch patients filtered by workflow stage using encounters
+ * Fetch patients filtered by workflow stage using queue entries
  *
  * Note: 'needs-surgery' is handled as a special case because it represents a
  * cross-cutting concern (a boolean flag/attribute) rather than a sequential workflow stage.
  * Patients can need surgery while being in ANY workflow stage (registration, refraction, etc.).
  *
  * Data sources:
- * - Workflow stages: Queried via encounters (encounterType) - represents sequential progression
+ * - Workflow stages: Queried via queue entries - patients currently in that stage's queue
  * - Needs surgery: Queried via observations (concept) - represents a patient attribute
  */
 export async function fetchPatientsByWorkflowStage(
   stage: WorkflowStageId | 'all' | 'needs-surgery',
-  encounterTypeUuid: string,
-  needsSurgeryConceptUuid: string
+  queueUuid: string,
+  statusWaitingUuid: string,
+  needsSurgeryConceptUuid: string,
+  workflowStages: Array<{ id: WorkflowStageId; encounterTypeUuid: string }>
 ): Promise<PatientListItem[]> {
   if (stage === 'all') {
-    return fetchRecentPatients();
+    // 'all' should not be calling this function - return empty array
+    return [];
   }
 
   try {
@@ -74,6 +58,11 @@ export async function fetchPatientsByWorkflowStage(
       const url = `${restBaseUrl}/obs?concept=${needsSurgeryConceptUuid}&v=full&limit=100`;
       const response = await openmrsFetch(url);
       const data = await response.json();
+
+      if (!data.results || data.results.length === 0) {
+        // No observations found
+        return [];
+      }
 
       // Extract unique patient UUIDs from observations
       const patientUuids = [...new Set(data.results.map((obs: any) => obs.person.uuid))] as string[];
@@ -85,29 +74,68 @@ export async function fetchPatientsByWorkflowStage(
 
       return patients.filter((p): p is PatientListItem => p !== null);
     } else {
-      // Standard case: Query encounters by type to find patients in a specific workflow stage
-      const url = `${restBaseUrl}/encounter?encounterType=${encounterTypeUuid}&v=full&limit=100`;
-      const response = await openmrsFetch(url);
-      const data = await response.json();
-
-      // Extract unique patient UUIDs from encounters
-      const patientUuids = [...new Set(data.results.map((enc: any) => enc.patient.uuid))] as string[];
-
-      // Fetch full patient data for each UUID
-      const patients = await Promise.all(
-        patientUuids.map((uuid) => fetchPatientByUuid(uuid))
+      // Standard workflow stage: Query queue entries
+      // This returns all patients currently in the specified queue
+      return await fetchPatientsByQueue(
+        queueUuid,
+        statusWaitingUuid,
+        workflowStages,
+        needsSurgeryConceptUuid
       );
-
-      return patients.filter((p): p is PatientListItem => p !== null);
     }
   } catch (error) {
     console.error('Error fetching patients by workflow stage:', error);
-    return getMockPatients().filter(p => {
-      if (stage === 'needs-surgery') {
-        return p.workflowData?.needsSurgery;
-      }
-      return p.workflowData?.currentStage === stage;
-    });
+    // Return empty array on error - don't fall back to mock data
+    return [];
+  }
+}
+
+/**
+ * Fetch patients currently in a specific queue
+ */
+export async function fetchPatientsByQueue(
+  queueUuid: string,
+  statusWaitingUuid: string,
+  workflowStages: Array<{ id: WorkflowStageId; encounterTypeUuid: string }>,
+  needsSurgeryConceptUuid: string
+): Promise<PatientListItem[]> {
+  try {
+    // Query for active queue entries in this queue with "Waiting" status
+    const url = `${restBaseUrl}/queue-entry?queue=${queueUuid}&status=${statusWaitingUuid}&v=full&limit=100`;
+    const response = await openmrsFetch(url);
+    const data = await response.json();
+
+    if (!data.results || data.results.length === 0) {
+      return [];
+    }
+
+    // Extract patient UUIDs and fetch full patient data
+    const patientUuids = data.results
+      .filter((entry: any) => !entry.endedAt) // Only active entries
+      .map((entry: any) => entry.patient.uuid);
+
+    const patients = await Promise.all(
+      patientUuids.map((uuid: string) => fetchPatientByUuid(uuid))
+    );
+
+    const validPatients = patients.filter((p): p is PatientListItem => p !== null);
+
+    // Fetch workflow data for each patient
+    const patientsWithWorkflow = await Promise.all(
+      validPatients.map(async (patient) => {
+        const workflowData = await fetchPatientWorkflowData(
+          patient.uuid,
+          workflowStages,
+          needsSurgeryConceptUuid
+        );
+        return { ...patient, workflowData };
+      })
+    );
+
+    return patientsWithWorkflow;
+  } catch (error) {
+    console.error('Error fetching patients by queue:', error);
+    return [];
   }
 }
 
@@ -213,23 +241,31 @@ async function checkNeedsSurgery(
 }
 
 /**
- * Move patient to a new workflow stage by creating an encounter
+ * Move patient to a new workflow stage by creating an encounter AND a queue entry
  *
- * This creates an encounter of the specified type, which marks the patient
- * as being in that workflow stage. The most recent encounter type determines
- * the patient's current stage.
+ * This function:
+ * 1. Creates an encounter to track the workflow progression
+ * 2. Ends any existing queue entries for this patient
+ * 3. Creates a new queue entry for the target stage
  */
 export async function movePatientToStage(
   patientUuid: string,
   targetStage: WorkflowStageId,
   encounterTypeUuid: string,
+  queueUuid: string,
+  statusWaitingUuid: string,
   locationUuid?: string
 ): Promise<void> {
   if (!encounterTypeUuid) {
     throw new Error(`No encounter type UUID configured for stage: ${targetStage}`);
   }
 
+  if (!queueUuid) {
+    throw new Error(`No queue UUID configured for stage: ${targetStage}`);
+  }
+
   try {
+    // Step 1: Create encounter to mark workflow progression
     const encounterPayload = {
       patient: patientUuid,
       encounterType: encounterTypeUuid,
@@ -243,10 +279,74 @@ export async function movePatientToStage(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(encounterPayload),
     });
+
+    // Step 2: End any existing queue entries for this patient
+    await endPatientQueueEntries(patientUuid);
+
+    // Step 3: Create new queue entry for target stage
+    await createQueueEntry(patientUuid, queueUuid, statusWaitingUuid);
+
   } catch (error) {
     console.error(`Error moving patient to stage ${targetStage}:`, error);
     throw error;
   }
+}
+
+/**
+ * End all active queue entries for a patient
+ */
+async function endPatientQueueEntries(patientUuid: string): Promise<void> {
+  try {
+    // Get all active queue entries for this patient (entries without endedAt)
+    const response = await openmrsFetch(
+      `${restBaseUrl}/queue-entry?patient=${patientUuid}&v=default&limit=100`
+    );
+    const data = await response.json();
+
+    if (data.results && data.results.length > 0) {
+      // End each active entry
+      await Promise.all(
+        data.results
+          .filter((entry: any) => !entry.endedAt)
+          .map((entry: any) =>
+            openmrsFetch(`${restBaseUrl}/queue-entry/${entry.uuid}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                endedAt: new Date().toISOString(),
+              }),
+            })
+          )
+      );
+    }
+  } catch (error) {
+    console.error('Error ending patient queue entries:', error);
+    // Don't throw - allow queue entry creation to continue
+  }
+}
+
+/**
+ * Create a new queue entry for a patient
+ */
+async function createQueueEntry(
+  patientUuid: string,
+  queueUuid: string,
+  statusUuid: string
+): Promise<void> {
+  const queueEntryPayload = {
+    patient: { uuid: patientUuid },
+    queue: { uuid: queueUuid },
+    status: { uuid: statusUuid },
+    priority: { uuid: 'f4620bfa-3625-4883-bd3f-84c2cce14470' }, // Not Urgent
+    startedAt: new Date().toISOString(),
+    sortWeight: 0,
+  };
+
+  await openmrsFetch(`${restBaseUrl}/queue-entry`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(queueEntryPayload),
+  });
 }
 
 /**
@@ -323,75 +423,3 @@ function parseWorkflowObs(obs: any): PatientWorkflowData | null {
   }
 }
 
-/**
- * Mock data for development
- */
-function getMockPatients(): PatientListItem[] {
-  return [
-    {
-      uuid: '002',
-      display: 'Patient 002',
-      identifiers: [],
-      person: { age: 45, birthdate: '1979-01-01', gender: 'M', display: 'Patient 002' },
-      workflowData: {
-        patientUuid: '002',
-        currentStage: 'eye-exam',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '003',
-      display: 'Patient 003',
-      identifiers: [],
-      person: { age: 52, birthdate: '1972-01-01', gender: 'F', display: 'Patient 003' },
-      workflowData: {
-        patientUuid: '003',
-        currentStage: 'refraction',
-        needsSurgery: true,
-        completedProtocols: [],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '005',
-      display: 'Patient 005',
-      identifiers: [],
-      person: { age: 38, birthdate: '1986-01-01', gender: 'M', display: 'Patient 005' },
-      workflowData: {
-        patientUuid: '005',
-        currentStage: 'registration',
-        needsSurgery: false,
-        completedProtocols: [],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '001',
-      display: 'Patient 001',
-      identifiers: [],
-      person: { age: 60, birthdate: '1964-01-01', gender: 'F', display: 'Patient 001' },
-      workflowData: {
-        patientUuid: '001',
-        currentStage: 'finished',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1', 'protocol-2', 'protocol-3'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-    {
-      uuid: '004',
-      display: 'Patient 004',
-      identifiers: [],
-      person: { age: 55, birthdate: '1969-01-01', gender: 'M', display: 'Patient 004' },
-      workflowData: {
-        patientUuid: '004',
-        currentStage: 'finished',
-        needsSurgery: false,
-        completedProtocols: ['protocol-1', 'protocol-2'],
-        lastUpdated: new Date().toISOString(),
-      },
-    },
-  ];
-}

@@ -55,7 +55,13 @@ const SurgeryWorkflow: React.FC = () => {
     }
 
     try {
-      await movePatientToStage(patientUuid, targetStage, stage.encounterTypeUuid);
+      await movePatientToStage(
+        patientUuid,
+        targetStage,
+        stage.encounterTypeUuid,
+        stage.queueUuid,
+        config.queueStatusWaitingUuid
+      );
 
       showToast({
         title: 'Success',
