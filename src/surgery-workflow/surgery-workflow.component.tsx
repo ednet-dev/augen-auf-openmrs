@@ -7,14 +7,15 @@ import {
   Tab,
   TabPanels,
   TabPanel,
-  Tile,
   InlineLoading,
 } from '@carbon/react';
-import { Settings, Printer, Add, Link, ArrowRight } from '@carbon/react/icons';
-import { AugenAufConfig, FilterState, WorkflowStageId } from '../types';
+import { Settings, Printer, Link, ArrowRight } from '@carbon/react/icons';
+import { AugenAufConfig, FilterState, WorkflowStageId, PatientListItem } from '../types';
 import FilterBar from '../components/filter-bar.component';
 import WorkflowStageFilter from '../components/workflow-stage-filter.component';
 import PatientList from '../components/patient-list.component';
+import { getStageComponent } from '../components/stage-views';
+import RegistrationStageLayout from '../components/stage-views/registration-stage-layout.component';
 import { usePatients } from '../hooks/usePatients';
 import { movePatientToStage } from '../services/patient.service';
 import { useConfigValidation } from '../utils/config-validation';
@@ -151,121 +152,127 @@ const SurgeryWorkflow: React.FC = () => {
           }
         />
 
-        {/* Sidebar Area with Workflow Stages and Patient List */}
-        <div className={styles.sidebarContainer}>
-          {/* Left: Workflow Stage Filter (B) */}
-          <WorkflowStageFilter
-            stages={config.workflowStages}
-            selectedStage={filterState.workflowStage}
-            onStageSelect={(stage) =>
-              setFilterState({ ...filterState, workflowStage: stage })
-            }
-          />
+        {/* Check if we're in registration stage view */}
+        {filterState.workflowStage === 'registration' ? (
+          <>
+            {/* Left: Workflow Stage Filter (B) */}
+            <div className={styles.sidebarContainer}>
+              <WorkflowStageFilter
+                stages={config.workflowStages}
+                selectedStage={filterState.workflowStage}
+                onStageSelect={(stage) =>
+                  setFilterState({ ...filterState, workflowStage: stage })
+                }
+              />
 
-          {/* Right: Patient List (C) */}
-          {isLoading ? (
-            <div className={styles.loadingContainer}>
-              <InlineLoading description="Loading patients..." />
+              {/* Registration Stage Layout with integrated patient list */}
+              <RegistrationStageLayout
+                config={config}
+                patients={patients}
+                isLoading={isLoading}
+                error={error}
+                selectedPatientUuid={selectedPatient}
+                onPatientSelect={(uuid) => setSelectedPatient(uuid)}
+                onMovePatient={handleMovePatient}
+              />
             </div>
-          ) : error ? (
-            <div className={styles.errorContainer}>
-              <p>Error loading patients: {error.message}</p>
+          </>
+        ) : (
+          <>
+            {/* Sidebar Area with Workflow Stages and Patient List */}
+            <div className={styles.sidebarContainer}>
+              {/* Left: Workflow Stage Filter (B) */}
+              <WorkflowStageFilter
+                stages={config.workflowStages}
+                selectedStage={filterState.workflowStage}
+                onStageSelect={(stage) =>
+                  setFilterState({ ...filterState, workflowStage: stage })
+                }
+              />
+
+              {/* Right: Patient List (C) */}
+              {isLoading ? (
+                <div className={styles.loadingContainer}>
+                  <InlineLoading description="Loading patients..." />
+                </div>
+              ) : error ? (
+                <div className={styles.errorContainer}>
+                  <p>Error loading patients: {error.message}</p>
+                </div>
+              ) : (
+                <PatientList
+                  patients={patients}
+                  selectedPatientUuid={selectedPatient}
+                  workflowStages={config.workflowStages}
+                  onPatientSelect={(uuid) => setSelectedPatient(uuid)}
+                  onMovePatient={handleMovePatient}
+                />
+              )}
+
+              {/* Main Content Area */}
+              <main className={styles.contentArea}>
+                {/* Stage Tabs (E) - 2 tabs: Form for current stage and Info from previous stages */}
+                {selectedPatient ? (() => {
+                  const patient = patients.find((p) => p.uuid === selectedPatient);
+                  const currentStage = patient?.workflowData?.currentStage || 'registration';
+                  const stage = config.workflowStages.find((s) => s.id === currentStage);
+
+                  if (!stage || !patient) return null;
+
+                  // Get the appropriate stage component
+                  const StageComponent = getStageComponent(currentStage);
+
+                  // Other stages show tabs
+                  return (
+                    <Tabs>
+                      <TabList aria-label="Stage content tabs" contained>
+                        <Tab>Form</Tab>
+                        <Tab>Info</Tab>
+                      </TabList>
+
+                      <TabPanels>
+                        {/* Form Tab Panel */}
+                        <TabPanel>
+                          <StageComponent patient={patient} stage={stage} mode="form" />
+                        </TabPanel>
+
+                        {/* Info Tab Panel */}
+                        <TabPanel>
+                          <StageComponent patient={patient} stage={stage} mode="info" />
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
+                  );
+                })() : (
+                  <div className={styles.noPatientSelected}>
+                    <p>Select a patient from the list to view their information</p>
+                  </div>
+                )}
+
+                {/* Action Bar (F) */}
+                <div className={styles.actionBar}>
+                  {selectedPatient && getNextStage() && (
+                    <Button
+                      kind="primary"
+                      renderIcon={ArrowRight}
+                      size="md"
+                      onClick={handleMoveToNextStage}
+                    >
+                      Move to {config.workflowStages.find((s) => s.id === getNextStage())?.label}
+                    </Button>
+                  )}
+                  <Button
+                    kind="secondary"
+                    renderIcon={Printer}
+                    size="md"
+                  >
+                    Print
+                  </Button>
+                </div>
+              </main>
             </div>
-          ) : (
-            <PatientList
-              patients={patients}
-              selectedPatientUuid={selectedPatient}
-              workflowStages={config.workflowStages}
-              onPatientSelect={(uuid) => setSelectedPatient(uuid)}
-              onMovePatient={handleMovePatient}
-            />
-          )}
-
-          {/* Main Content Area */}
-          <main className={styles.contentArea}>
-          {/* Top Actions (D) */}
-          <div className={styles.topActions}>
-            <Button
-              kind="primary"
-              renderIcon={Add}
-              size="md"
-            >
-              Add new patient
-            </Button>
-          </div>
-
-          {/* Stage Tabs (E) - 2 tabs: Form for current stage and Info from previous stages */}
-          {selectedPatient && (() => {
-            const patient = patients.find((p) => p.uuid === selectedPatient);
-            const currentStage = patient?.workflowData?.currentStage || 'registration';
-            const stage = config.workflowStages.find((s) => s.id === currentStage);
-
-            if (!stage) return null;
-
-            return (
-              <Tabs>
-                <TabList aria-label="Stage content tabs" contained>
-                  <Tab>Form</Tab>
-                  <Tab>Info</Tab>
-                </TabList>
-
-                <TabPanels>
-                  {/* Form Tab Panel */}
-                  <TabPanel>
-                    <div className={styles.formArea}>
-                      <Tile className={styles.formPlaceholder}>
-                        <h2>ID: {selectedPatient}</h2>
-                        <h3>{stage.label} Form</h3>
-                        <p>Form engine will render here</p>
-                        <p>Form UUID: {stage.formUuid || 'Not configured'}</p>
-                      </Tile>
-                    </div>
-                  </TabPanel>
-
-                  {/* Info Tab Panel */}
-                  <TabPanel>
-                    <div className={styles.formArea}>
-                      <Tile className={styles.formPlaceholder}>
-                        <h2>ID: {selectedPatient}</h2>
-                        <h3>Accumulated Information</h3>
-                        <p>Display gathered data from previous stages here</p>
-                        {/* TODO: Fetch and display encounter data from completed stages */}
-                      </Tile>
-                    </div>
-                  </TabPanel>
-                </TabPanels>
-              </Tabs>
-            );
-          })()}
-
-          {!selectedPatient && (
-            <div className={styles.noSelection}>
-              <p>Select a patient to view their stage forms</p>
-            </div>
-          )}
-
-          {/* Action Bar (F) */}
-          <div className={styles.actionBar}>
-            {selectedPatient && getNextStage() && (
-              <Button
-                kind="primary"
-                renderIcon={ArrowRight}
-                size="md"
-                onClick={handleMoveToNextStage}
-              >
-                Move to {config.workflowStages.find((s) => s.id === getNextStage())?.label}
-              </Button>
-            )}
-            <Button
-              kind="secondary"
-              renderIcon={Printer}
-              size="md"
-            >
-              Print
-            </Button>
-          </div>
-        </main>
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,0 +1,98 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/type';
+
+.stageView {
+  width: 100%;
+  height: 100%;
+  padding: spacing.$spacing-05;
+}
+
+.registrationLayout {
+  display: flex;
+  gap: spacing.$spacing-05;
+  width: 100%;
+  height: 100%;
+}
+
+.registrationPatientList {
+  flex: 0 0 350px;
+  overflow-y: auto;
+}
+
+.registrationFormArea {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.formContainer,
+.infoContainer {
+  padding: spacing.$spacing-06;
+  min-height: 400px;
+}
+
+.registrationActions {
+  display: flex;
+  gap: spacing.$spacing-05;
+  margin-bottom: spacing.$spacing-06;
+  padding-bottom: spacing.$spacing-05;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.patientInfo {
+  margin-bottom: spacing.$spacing-05;
+  padding-bottom: spacing.$spacing-05;
+  border-bottom: 1px solid #e0e0e0;
+
+  p {
+    margin: spacing.$spacing-03 0;
+    @include type.type-style('body-01');
+  }
+}
+
+.formPlaceholder {
+  margin-top: spacing.$spacing-05;
+  padding: spacing.$spacing-05;
+  background-color: #f4f4f4;
+  border: 1px dashed #c6c6c6;
+  border-radius: 4px;
+
+  p {
+    margin: spacing.$spacing-03 0;
+    @include type.type-style('body-01');
+    color: #525252;
+  }
+
+  .formNote {
+    margin-top: spacing.$spacing-05;
+    padding-top: spacing.$spacing-04;
+    border-top: 1px solid #c6c6c6;
+    font-style: italic;
+  }
+}
+
+.infoContent {
+  p {
+    margin: spacing.$spacing-03 0;
+    @include type.type-style('body-01');
+  }
+
+  ul {
+    margin: spacing.$spacing-03 0;
+    padding-left: spacing.$spacing-06;
+    list-style-type: disc;
+
+    li {
+      margin: spacing.$spacing-02 0;
+      @include type.type-style('body-01');
+    }
+  }
+
+  .placeholder {
+    margin-top: spacing.$spacing-06;
+    padding: spacing.$spacing-05;
+    background-color: #f4f4f4;
+    border-radius: 4px;
+    font-style: italic;
+    color: #525252;
+  }
+}
