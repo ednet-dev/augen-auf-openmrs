@@ -1,0 +1,290 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/type';
+@use '@carbon/colors';
+
+.surgeryWorkflowContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: colors.$gray-10;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: spacing.$spacing-05;
+  background-color: colors.$gray-90;
+  color: colors.$white;
+
+  h1 {
+    @include type.type-style('heading-03');
+    margin: 0;
+  }
+}
+
+.headerRight {
+  display: flex;
+  gap: spacing.$spacing-03;
+}
+
+.linkButton,
+.settingsButton {
+  padding: spacing.$spacing-03 spacing.$spacing-05;
+  background-color: colors.$teal-40;
+  border: none;
+  border-radius: 4px;
+  color: colors.$white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: colors.$teal-50;
+  }
+}
+
+.settingsButton {
+  background-color: colors.$gray-70;
+  padding: spacing.$spacing-03;
+
+  &:hover {
+    background-color: colors.$gray-60;
+  }
+}
+
+.mainContent {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 280px;
+  background-color: colors.$gray-20;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.filterSection {
+  padding: spacing.$spacing-05;
+  background-color: colors.$orange-20;
+  border-bottom: 1px solid colors.$gray-30;
+}
+
+.dateFilter {
+  margin-bottom: spacing.$spacing-03;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: spacing.$spacing-02;
+  }
+
+  select {
+    width: 100%;
+    padding: spacing.$spacing-03;
+    border: 1px solid colors.$gray-40;
+    border-radius: 4px;
+  }
+}
+
+.searchBox {
+  input {
+    width: 100%;
+    padding: spacing.$spacing-03;
+    border: 1px solid colors.$gray-40;
+    border-radius: 4px;
+
+    &::placeholder {
+      color: colors.$gray-60;
+    }
+  }
+}
+
+.workflowStages,
+.protocolFilter {
+  padding: spacing.$spacing-03;
+  background-color: colors.$blue-10;
+}
+
+.protocolFilter {
+  background-color: colors.$cyan-10;
+}
+
+.stageItem {
+  padding: spacing.$spacing-03;
+  margin-bottom: spacing.$spacing-02;
+  background-color: colors.$white;
+  border-left: 4px solid transparent;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: colors.$gray-10;
+  }
+
+  &.active {
+    background-color: colors.$blue-20;
+    border-left-color: colors.$blue-60;
+    font-weight: 600;
+  }
+}
+
+.patientList {
+  flex: 1;
+  padding: spacing.$spacing-03;
+  background-color: colors.$cyan-10;
+  overflow-y: auto;
+}
+
+.patientListHeader {
+  font-weight: 600;
+  margin-bottom: spacing.$spacing-03;
+  padding: spacing.$spacing-03;
+}
+
+.patientItems {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-02;
+}
+
+.patientItem {
+  padding: spacing.$spacing-03;
+  background-color: colors.$white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: colors.$blue-60;
+
+  &:hover {
+    background-color: colors.$blue-10;
+  }
+
+  &.active {
+    background-color: colors.$blue-40;
+    color: colors.$white;
+    font-weight: 600;
+  }
+
+  &.finished {
+    color: colors.$green-50;
+  }
+}
+
+.contentArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: colors.$white;
+  overflow: hidden;
+}
+
+.topActions {
+  padding: spacing.$spacing-05;
+  border-bottom: 1px solid colors.$gray-20;
+}
+
+.addPatientButton {
+  padding: spacing.$spacing-03 spacing.$spacing-05;
+  background-color: colors.$teal-40;
+  border: none;
+  border-radius: 4px;
+  color: colors.$white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: colors.$teal-50;
+  }
+}
+
+.protocolTabs {
+  display: flex;
+  gap: spacing.$spacing-03;
+  padding: spacing.$spacing-05;
+  background-color: colors.$gray-10;
+  border-bottom: 1px solid colors.$gray-30;
+}
+
+.protocolTab {
+  padding: spacing.$spacing-04 spacing.$spacing-06;
+  background-color: colors.$gray-20;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &.activeTab {
+    color: colors.$white;
+    font-weight: 600;
+  }
+}
+
+.formArea {
+  flex: 1;
+  padding: spacing.$spacing-05;
+  overflow-y: auto;
+  background-color: colors.$yellow-10;
+}
+
+.formPlaceholder {
+  background-color: colors.$white;
+  padding: spacing.$spacing-06;
+  border-radius: 8px;
+  border: 2px solid colors.$orange-40;
+
+  h2 {
+    @include type.type-style('heading-04');
+    margin-bottom: spacing.$spacing-05;
+  }
+
+  h3 {
+    @include type.type-style('heading-02');
+    margin-bottom: spacing.$spacing-03;
+  }
+
+  p {
+    color: colors.$gray-70;
+    margin: spacing.$spacing-03 0;
+  }
+}
+
+.noSelection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: colors.$gray-60;
+
+  p {
+    @include type.type-style('heading-02');
+  }
+}
+
+.actionBar {
+  padding: spacing.$spacing-05;
+  background-color: colors.$gray-10;
+  border-top: 1px solid colors.$gray-30;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.printButton {
+  padding: spacing.$spacing-04 spacing.$spacing-06;
+  background-color: colors.$purple-60;
+  border: none;
+  border-radius: 4px;
+  color: colors.$white;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: colors.$purple-70;
+  }
+}

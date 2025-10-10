@@ -1,5 +1,6 @@
-import { defineConfigSchema, getAsyncLifecycle } from "@openmrs/esm-framework";
+import { defineConfigSchema, getAsyncLifecycle, getSyncLifecycle } from "@openmrs/esm-framework";
 import { configSchema } from "./config-schema";
+import SurgeryWorkflowMenuLink from "./surgery-workflow-menu-link.component";
 
 const moduleName = "@augen-auf/openmrs-esm-augen-auf";
 
@@ -14,5 +15,15 @@ export function startupApp() {
 
 export const root = getAsyncLifecycle(
   () => import("./root.component"),
+  options
+);
+
+export const surgeryWorkflow = getAsyncLifecycle(
+  () => import("./surgery-workflow/surgery-workflow.component"),
+  options
+);
+
+export const surgeryWorkflowMenuLink = getSyncLifecycle(
+  SurgeryWorkflowMenuLink,
   options
 );
