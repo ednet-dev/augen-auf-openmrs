@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.openmrs.org/routes.schema.json",
+  "backendDependencies": {},
+  "pages": [
+    {
+      "component": "root",
+      "route": "augen-auf",
+      "online": true,
+      "offline": true
+    }
+  ],
+  "extensions": []
+}
