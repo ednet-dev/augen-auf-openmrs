@@ -2,19 +2,18 @@ import React, { useState } from 'react';
 import { useConfig } from '@openmrs/esm-framework';
 import {
   Button,
-  Dropdown,
-  Search,
   Tabs,
   TabList,
   Tab,
   TabPanels,
   TabPanel,
   Tile,
-  ClickableTile,
-  Layer,
 } from '@carbon/react';
 import { Settings, Printer, Add, Link } from '@carbon/react/icons';
-import { AugenAufConfig, FilterState } from '../types';
+import { AugenAufConfig, FilterState, PatientListItem } from '../types';
+import FilterBar from '../components/filter-bar.component';
+import WorkflowStageFilter from '../components/workflow-stage-filter.component';
+import PatientList from '../components/patient-list.component';
 import styles from './surgery-workflow.scss';
 
 const SurgeryWorkflow: React.FC = () => {
@@ -30,10 +29,53 @@ const SurgeryWorkflow: React.FC = () => {
   const [selectedPatient, setSelectedPatient] = useState<string | null>(null);
   const [selectedProtocol, setSelectedProtocol] = useState<string>('protocol-1');
 
-  const dateFilterItems = Object.entries(config.dateFilters).map(([key, filter]) => ({
-    id: key,
-    label: filter.label,
-  }));
+  // Mock patient data - will be replaced with real API calls
+  const mockPatients: PatientListItem[] = [
+    {
+      uuid: '002',
+      display: 'Patient 002',
+      identifiers: [],
+      person: { age: 45, birthdate: '1979-01-01', gender: 'M', display: 'Patient 002' },
+    },
+    {
+      uuid: '003',
+      display: 'Patient 003',
+      identifiers: [],
+      person: { age: 52, birthdate: '1972-01-01', gender: 'F', display: 'Patient 003' },
+    },
+    {
+      uuid: '005',
+      display: 'Patient 005',
+      identifiers: [],
+      person: { age: 38, birthdate: '1986-01-01', gender: 'M', display: 'Patient 005' },
+    },
+    {
+      uuid: '001',
+      display: 'Patient 001',
+      identifiers: [],
+      person: { age: 60, birthdate: '1964-01-01', gender: 'F', display: 'Patient 001' },
+      workflowData: {
+        patientUuid: '001',
+        currentStage: 'finished',
+        needsSurgery: false,
+        completedProtocols: ['protocol-1', 'protocol-2', 'protocol-3'],
+        lastUpdated: new Date().toISOString(),
+      },
+    },
+    {
+      uuid: '004',
+      display: 'Patient 004',
+      identifiers: [],
+      person: { age: 55, birthdate: '1969-01-01', gender: 'M', display: 'Patient 004' },
+      workflowData: {
+        patientUuid: '004',
+        currentStage: 'finished',
+        needsSurgery: false,
+        completedProtocols: ['protocol-1', 'protocol-2'],
+        lastUpdated: new Date().toISOString(),
+      },
+    },
+  ];
 
   return (
     <div className={styles.surgeryWorkflowContainer}>
@@ -62,114 +104,35 @@ const SurgeryWorkflow: React.FC = () => {
 
       <div className={styles.mainContent}>
         {/* Top Filter Section (A) */}
-        <Layer className={styles.filterSection}>
-          <Dropdown
-            id="date-filter"
-            titleText="Filter by Date"
-            label="Select date range"
-            items={dateFilterItems}
-            itemToString={(item) => item?.label || ''}
-            selectedItem={dateFilterItems.find((item) => item.id === filterState.dateFilter)}
-            onChange={({ selectedItem }) =>
-              setFilterState({
-                ...filterState,
-                dateFilter: selectedItem.id as keyof typeof config.dateFilters,
-              })
-            }
-          />
-
-          <Search
-            id="patient-search"
-            labelText="Search for Patient"
-            placeholder="Search for Patient"
-            value={filterState.searchQuery}
-            onChange={(e) =>
-              setFilterState({ ...filterState, searchQuery: e.target.value })
-            }
-            size="sm"
-          />
-        </Layer>
+        <FilterBar
+          dateFilters={config.dateFilters}
+          selectedDateFilter={filterState.dateFilter}
+          searchQuery={filterState.searchQuery}
+          onDateFilterChange={(filter) =>
+            setFilterState({ ...filterState, dateFilter: filter })
+          }
+          onSearchChange={(query) =>
+            setFilterState({ ...filterState, searchQuery: query })
+          }
+        />
 
         {/* Sidebar Area with Workflow Stages and Patient List */}
         <div className={styles.sidebarContainer}>
           {/* Left: Workflow Stage Filter (B) */}
-          <aside className={styles.workflowSidebar}>
-            <div className={styles.workflowStages}>
-              <ClickableTile
-                className={`${styles.stageItem} ${
-                  filterState.workflowStage === 'all' ? styles.active : ''
-                }`}
-                onClick={() =>
-                  setFilterState({ ...filterState, workflowStage: 'all' })
-                }
-              >
-                Show All
-              </ClickableTile>
-              {config.workflowStages.map((stage) => (
-                <ClickableTile
-                  key={stage.id}
-                  className={`${styles.stageItem} ${
-                    filterState.workflowStage === stage.id ? styles.active : ''
-                  }`}
-                  onClick={() =>
-                    setFilterState({ ...filterState, workflowStage: stage.id })
-                  }
-                  style={{ borderLeftColor: stage.color }}
-                >
-                  {stage.label} &gt;
-                </ClickableTile>
-              ))}
-            </div>
-
-            {/* Protocol Filter (B2) */}
-            <div className={styles.protocolFilter}>
-              <ClickableTile
-                className={`${styles.stageItem} ${
-                  filterState.workflowStage === 'needs-surgery' ? styles.active : ''
-                }`}
-                onClick={() =>
-                  setFilterState({ ...filterState, workflowStage: 'needs-surgery' })
-                }
-              >
-                Needs surgery &gt;
-              </ClickableTile>
-            </div>
-          </aside>
+          <WorkflowStageFilter
+            stages={config.workflowStages}
+            selectedStage={filterState.workflowStage}
+            onStageSelect={(stage) =>
+              setFilterState({ ...filterState, workflowStage: stage })
+            }
+          />
 
           {/* Right: Patient List (C) */}
-          <aside className={styles.patientListSidebar}>
-            <div className={styles.patientList}>
-              <div className={styles.patientListHeader}>Patients</div>
-              <div className={styles.patientItems}>
-                <ClickableTile
-                  className={`${styles.patientItem} ${
-                    selectedPatient === '002' ? styles.active : ''
-                  }`}
-                  onClick={() => setSelectedPatient('002')}
-                >
-                  Patient 002
-                </ClickableTile>
-                <ClickableTile
-                  className={styles.patientItem}
-                  onClick={() => setSelectedPatient('003')}
-                >
-                  Patient 003
-                </ClickableTile>
-                <ClickableTile
-                  className={styles.patientItem}
-                  onClick={() => setSelectedPatient('005')}
-                >
-                  Patient 005
-                </ClickableTile>
-                <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
-                  (Patient 001)
-                </ClickableTile>
-                <ClickableTile className={`${styles.patientItem} ${styles.finished}`}>
-                  (Patient 004)
-                </ClickableTile>
-              </div>
-            </div>
-          </aside>
+          <PatientList
+            patients={mockPatients}
+            selectedPatientUuid={selectedPatient}
+            onPatientSelect={(uuid) => setSelectedPatient(uuid)}
+          />
 
           {/* Main Content Area */}
           <main className={styles.contentArea}>

@@ -37,109 +37,10 @@
   overflow: hidden;
 }
 
-.filterSection {
-  padding: spacing.$spacing-05;
-  background-color: theme.$layer-accent-01;
-  border-bottom: 1px solid theme.$border-subtle-01;
-  display: flex;
-  gap: spacing.$spacing-05;
-  align-items: flex-end;
-
-  > * {
-    flex: 1;
-    min-width: 200px;
-  }
-}
-
 .sidebarContainer {
   display: flex;
   flex: 1;
   overflow: hidden;
-}
-
-.workflowSidebar {
-  width: 250px;
-  background-color: theme.$layer-02;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  border-right: 1px solid theme.$border-subtle-01;
-}
-
-.patientListSidebar {
-  width: 250px;
-  background-color: theme.$layer-01;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  border-right: 1px solid theme.$border-subtle-01;
-}
-
-.workflowStages,
-.protocolFilter {
-  padding: spacing.$spacing-04;
-  background-color: theme.$layer-01;
-  border-bottom: 1px solid theme.$border-subtle-01;
-}
-
-.stageItem {
-  margin-bottom: spacing.$spacing-02;
-  border-left: 4px solid transparent !important;
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: theme.$layer-hover-01 !important;
-  }
-
-  &.active {
-    background-color: theme.$layer-selected-01 !important;
-    border-left-color: theme.$border-interactive !important;
-    font-weight: 600;
-  }
-}
-
-.patientList {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-
-.patientListHeader {
-  @include type.type-style('label-01');
-  font-weight: 600;
-  padding: spacing.$spacing-04;
-  color: theme.$text-secondary;
-  background-color: theme.$layer-02;
-  border-bottom: 1px solid theme.$border-subtle-01;
-}
-
-.patientItems {
-  display: flex;
-  flex-direction: column;
-  gap: spacing.$spacing-02;
-  padding: spacing.$spacing-04;
-  flex: 1;
-  overflow-y: auto;
-}
-
-.patientItem {
-  transition: all 0.2s;
-
-  &:hover {
-    background-color: theme.$layer-hover-01 !important;
-  }
-
-  &.active {
-    background-color: theme.$layer-selected-01 !important;
-    border-left: 4px solid theme.$border-interactive !important;
-    font-weight: 600;
-  }
-
-  &.finished {
-    color: theme.$text-secondary;
-    font-style: italic;
-  }
 }
 
 .contentArea {

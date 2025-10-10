@@ -1,0 +1,34 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/theme';
+
+.workflowSidebar {
+  width: 250px;
+  background-color: theme.$layer-02;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border-right: 1px solid theme.$border-subtle-01;
+}
+
+.workflowStages,
+.protocolFilter {
+  padding: spacing.$spacing-04;
+  background-color: theme.$layer-01;
+  border-bottom: 1px solid theme.$border-subtle-01;
+}
+
+.stageItem {
+  margin-bottom: spacing.$spacing-02;
+  border-left: 4px solid transparent !important;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: theme.$layer-hover-01 !important;
+  }
+
+  &.active {
+    background-color: theme.$layer-selected-01 !important;
+    border-left-color: theme.$border-interactive !important;
+    font-weight: 600;
+  }
+}
