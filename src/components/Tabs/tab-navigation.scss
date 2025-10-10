@@ -1,0 +1,39 @@
+@use '@carbon/styles/scss/spacing' as *;
+@use '@carbon/styles/scss/theme' as *;
+
+.tabNavigationContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  :global(.cds--tabs) {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  :global(.cds--tab-content) {
+    flex: 1;
+    overflow: auto;
+    padding: $spacing-05;
+  }
+}
+
+.tabContent {
+  height: 100%;
+  width: 100%;
+}
+
+.placeholderContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: $text-secondary;
+
+  p {
+    font-size: 1rem;
+    text-align: center;
+  }
+}

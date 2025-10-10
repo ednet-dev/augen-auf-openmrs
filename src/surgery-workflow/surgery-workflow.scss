@@ -122,3 +122,17 @@
   display: flex;
   justify-content: flex-end;
 }
+
+.placeholderTab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: spacing.$spacing-05;
+
+  p {
+    @include type.type-style('body-01');
+    color: theme.$text-secondary;
+    text-align: center;
+  }
+}

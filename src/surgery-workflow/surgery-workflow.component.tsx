@@ -15,6 +15,8 @@ import { AugenAufConfig, FilterState } from '../types';
 import FilterBar from '../components/filter-bar.component';
 import WorkflowStageFilter from '../components/workflow-stage-filter.component';
 import PatientList from '../components/patient-list.component';
+import { TabProvider } from '../components/Tabs';
+import TabNavigation from '../components/Tabs/TabNavigation';
 import { usePatients } from '../hooks/usePatients';
 import styles from './surgery-workflow.scss';
 
@@ -37,35 +39,84 @@ const SurgeryWorkflow: React.FC = () => {
     workflowStage: filterState.workflowStage,
   });
 
-  // Handler for opening patient registration workspace
+  // Handler for opening patient registration workspace (Stream D)
   const handleAddPatient = () => {
     launchWorkspace('patient-registration');
   };
 
-  return (
-    <div className={styles.surgeryWorkflowContainer}>
-      {/* Header Section */}
-      <div className={styles.header}>
-        <div className={styles.headerLeft}>
-          <h1>Surgery Workflow</h1>
-        </div>
-        <div className={styles.headerRight}>
-          <Button
-            kind="tertiary"
-            renderIcon={Link}
-            size="sm"
-          >
-            Link to Database
-          </Button>
-          <Button
-            kind="ghost"
-            renderIcon={Settings}
-            hasIconOnly
-            iconDescription="Settings"
-            size="sm"
-          />
-        </div>
+  // Render the Form tab content (Protocol tabs)
+  const renderFormTab = () => (
+    <>
+      {/* Top Actions */}
+      <div className={styles.topActions}>
+        <Button kind="primary" renderIcon={Add} size="md" onClick={handleAddPatient}>
+          Add new patient
+        </Button>
       </div>
+
+      {/* Protocol Tabs */}
+      <Tabs selectedIndex={Object.keys(config.protocols).indexOf(selectedProtocol)}>
+        <TabList aria-label="Protocol tabs" contained>
+          {Object.entries(config.protocols).map(([key, protocol]) => (
+            <Tab key={key} onClick={() => setSelectedProtocol(key)}>
+              {protocol.name}
+            </Tab>
+          ))}
+        </TabList>
+
+        <TabPanels>
+          {Object.entries(config.protocols).map(([key, protocol]) => (
+            <TabPanel key={key}>
+              {/* Form Display Area */}
+              <div className={styles.formArea}>
+                {selectedPatient ? (
+                  <Tile className={styles.formPlaceholder}>
+                    <h2>ID: {selectedPatient}</h2>
+                    <h3>{protocol.name}</h3>
+                    <p>Form engine will render here</p>
+                    <p>Form UUID: {protocol.formUuid || 'Not configured'}</p>
+                  </Tile>
+                ) : (
+                  <div className={styles.noSelection}>
+                    <p>Select a patient to view their protocol forms</p>
+                  </div>
+                )}
+              </div>
+            </TabPanel>
+          ))}
+        </TabPanels>
+      </Tabs>
+
+      {/* Print Button */}
+      <div className={styles.actionBar}>
+        <Button kind="secondary" renderIcon={Printer} size="md">
+          Print
+        </Button>
+      </div>
+    </>
+  );
+
+  return (
+    <TabProvider defaultTab="form">
+      <div className={styles.surgeryWorkflowContainer}>
+        {/* Header Section */}
+        <div className={styles.header}>
+          <div className={styles.headerLeft}>
+            <h1>Surgery Workflow</h1>
+          </div>
+          <div className={styles.headerRight}>
+            <Button kind="tertiary" renderIcon={Link} size="sm">
+              Link to Database
+            </Button>
+            <Button
+              kind="ghost"
+              renderIcon={Settings}
+              hasIconOnly
+              iconDescription="Settings"
+              size="sm"
+            />
+          </div>
+        </div>
 
       <div className={styles.mainContent}>
         {/* Top Filter Section (A) */}
@@ -109,70 +160,37 @@ const SurgeryWorkflow: React.FC = () => {
             />
           )}
 
-          {/* Main Content Area */}
+          {/* Main Content Area - Tab Navigation */}
           <main className={styles.contentArea}>
-          {/* Top Actions (D) */}
-          <div className={styles.topActions}>
-            <Button
-              kind="primary"
-              renderIcon={Add}
-              size="md"
-              onClick={handleAddPatient}
-            >
-              Add new patient
-            </Button>
-          </div>
-
-          {/* Protocol Tabs (E) */}
-          <Tabs selectedIndex={Object.keys(config.protocols).indexOf(selectedProtocol)}>
-            <TabList aria-label="Protocol tabs" contained>
-              {Object.entries(config.protocols).map(([key, protocol]) => (
-                <Tab
-                  key={key}
-                  onClick={() => setSelectedProtocol(key)}
-                >
-                  {protocol.name}
-                </Tab>
-              ))}
-            </TabList>
-
-            <TabPanels>
-              {Object.entries(config.protocols).map(([key, protocol]) => (
-                <TabPanel key={key}>
-                  {/* Form Display Area */}
-                  <div className={styles.formArea}>
-                    {selectedPatient ? (
-                      <Tile className={styles.formPlaceholder}>
-                        <h2>ID: {selectedPatient}</h2>
-                        <h3>{protocol.name}</h3>
-                        <p>Form engine will render here</p>
-                        <p>Form UUID: {protocol.formUuid || 'Not configured'}</p>
-                      </Tile>
-                    ) : (
-                      <div className={styles.noSelection}>
-                        <p>Select a patient to view their protocol forms</p>
-                      </div>
-                    )}
+            <TabNavigation>
+              {{
+                registration: (
+                  <div className={styles.placeholderTab}>
+                    <p>Registration tab - Stream D will implement patient search</p>
                   </div>
-                </TabPanel>
-              ))}
-            </TabPanels>
-          </Tabs>
-
-          {/* Print Button (F) */}
-          <div className={styles.actionBar}>
-            <Button
-              kind="secondary"
-              renderIcon={Printer}
-              size="md"
-            >
-              Print
-            </Button>
-          </div>
-        </main>
+                ),
+                form: renderFormTab(),
+                visits: (
+                  <div className={styles.placeholderTab}>
+                    <p>Visits tab - Stream B will implement visits integration</p>
+                  </div>
+                ),
+                conditions: (
+                  <div className={styles.placeholderTab}>
+                    <p>Conditions tab - Stream B will implement conditions widget</p>
+                  </div>
+                ),
+                therapies: (
+                  <div className={styles.placeholderTab}>
+                    <p>Therapies tab - To be implemented</p>
+                  </div>
+                ),
+              }}
+            </TabNavigation>
+          </main>
         </div>
       </div>
-    </div>
+    </TabProvider>
   );
 };
 
