@@ -1,0 +1,13 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Edit(contracts/**/*.ts)|Write(contracts/**/*.ts)",
+  "command": "./scripts/contract-diff.sh $TOOL_INPUT | grep -q 'BREAKING' && echo '⚠️  WARNING: Breaking change detected in contract. Requires negotiation with ALL consumers.' || echo '✅ Non-breaking change (additive or refactor)'",
+  "description": "Detect breaking changes in contract modifications",
+  "blocking": false,
+  "enabled": true,
+  "configuration": {
+    "warnOnBreaking": true,
+    "requireApproval": true,
+    "affectedStreamNotification": true
+  }
+}

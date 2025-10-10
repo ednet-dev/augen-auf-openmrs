@@ -1,0 +1,13 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Bash(git commit*)",
+  "command": "./scripts/contract-validate.sh all || (echo '❌ Contract compliance failed. Implementation diverges from contracts.' && exit 1)",
+  "description": "Validate all stream implementations match published contracts",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "timeout": 60000,
+    "streams": ["foundation", "layout", "forms", "workflows"],
+    "requireFrozenContracts": true
+  }
+}
