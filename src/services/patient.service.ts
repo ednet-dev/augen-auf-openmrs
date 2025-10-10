@@ -213,6 +213,43 @@ async function checkNeedsSurgery(
 }
 
 /**
+ * Move patient to a new workflow stage by creating an encounter
+ *
+ * This creates an encounter of the specified type, which marks the patient
+ * as being in that workflow stage. The most recent encounter type determines
+ * the patient's current stage.
+ */
+export async function movePatientToStage(
+  patientUuid: string,
+  targetStage: WorkflowStageId,
+  encounterTypeUuid: string,
+  locationUuid?: string
+): Promise<void> {
+  if (!encounterTypeUuid) {
+    throw new Error(`No encounter type UUID configured for stage: ${targetStage}`);
+  }
+
+  try {
+    const encounterPayload = {
+      patient: patientUuid,
+      encounterType: encounterTypeUuid,
+      encounterDatetime: new Date().toISOString(),
+      location: locationUuid,
+      obs: [],
+    };
+
+    await openmrsFetch(`${restBaseUrl}/encounter`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(encounterPayload),
+    });
+  } catch (error) {
+    console.error(`Error moving patient to stage ${targetStage}:`, error);
+    throw error;
+  }
+}
+
+/**
  * Update patient workflow data
  */
 export async function updatePatientWorkflowData(

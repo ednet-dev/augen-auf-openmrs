@@ -36,7 +36,15 @@
   overflow-y: auto;
 }
 
+.patientItemWrapper {
+  display: flex;
+  align-items: center;
+  gap: spacing.$spacing-02;
+  position: relative;
+}
+
 .patientItem {
+  flex: 1;
   transition: all 0.2s;
 
   &:hover {
@@ -53,4 +61,8 @@
     color: theme.$text-secondary;
     font-style: italic;
   }
+}
+
+.patientMenu {
+  flex-shrink: 0;
 }

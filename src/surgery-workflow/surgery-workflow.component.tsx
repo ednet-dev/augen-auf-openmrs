@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConfig } from '@openmrs/esm-framework';
+import { useConfig, showToast } from '@openmrs/esm-framework';
 import {
   Button,
   Tabs,
@@ -10,12 +10,13 @@ import {
   Tile,
   InlineLoading,
 } from '@carbon/react';
-import { Settings, Printer, Add, Link } from '@carbon/react/icons';
-import { AugenAufConfig, FilterState } from '../types';
+import { Settings, Printer, Add, Link, ArrowRight } from '@carbon/react/icons';
+import { AugenAufConfig, FilterState, WorkflowStageId } from '../types';
 import FilterBar from '../components/filter-bar.component';
 import WorkflowStageFilter from '../components/workflow-stage-filter.component';
 import PatientList from '../components/patient-list.component';
 import { usePatients } from '../hooks/usePatients';
+import { movePatientToStage } from '../services/patient.service';
 import styles from './surgery-workflow.scss';
 
 const SurgeryWorkflow: React.FC = () => {
@@ -32,10 +33,76 @@ const SurgeryWorkflow: React.FC = () => {
   const [selectedProtocol, setSelectedProtocol] = useState<string>('protocol-1');
 
   // Load patients using the service
-  const { patients, isLoading, error } = usePatients({
+  const { patients, isLoading, error, refetch } = usePatients({
     searchQuery: filterState.searchQuery,
     workflowStage: filterState.workflowStage,
   });
+
+  // Handle moving patient to a new stage
+  const handleMovePatient = async (patientUuid: string, targetStage: WorkflowStageId) => {
+    const stage = config.workflowStages.find((s) => s.id === targetStage);
+    if (!stage) {
+      showToast({
+        title: 'Error',
+        kind: 'error',
+        description: `Invalid workflow stage: ${targetStage}`,
+      });
+      return;
+    }
+
+    try {
+      await movePatientToStage(patientUuid, targetStage, stage.encounterTypeUuid);
+
+      showToast({
+        title: 'Success',
+        kind: 'success',
+        description: `Patient moved to ${stage.label}`,
+      });
+
+      // Refresh patient list
+      refetch();
+    } catch (error) {
+      showToast({
+        title: 'Error',
+        kind: 'error',
+        description: `Failed to move patient: ${error.message || 'Unknown error'}`,
+      });
+    }
+  };
+
+  // Get the next workflow stage for the selected patient
+  const getNextStage = (): WorkflowStageId | null => {
+    if (!selectedPatient) return null;
+
+    const patient = patients.find((p) => p.uuid === selectedPatient);
+    const currentStage = patient?.workflowData?.currentStage;
+
+    if (!currentStage) return config.workflowStages[0]?.id || null;
+
+    const currentIndex = config.workflowStages.findIndex((s) => s.id === currentStage);
+    if (currentIndex === -1 || currentIndex >= config.workflowStages.length - 1) {
+      return null; // Already at last stage
+    }
+
+    return config.workflowStages[currentIndex + 1].id;
+  };
+
+  // Handle moving patient to next stage
+  const handleMoveToNextStage = async () => {
+    if (!selectedPatient) return;
+
+    const nextStage = getNextStage();
+    if (!nextStage) {
+      showToast({
+        title: 'Info',
+        kind: 'info',
+        description: 'Patient is already at the final stage',
+      });
+      return;
+    }
+
+    await handleMovePatient(selectedPatient, nextStage);
+  };
 
   return (
     <div className={styles.surgeryWorkflowContainer}>
@@ -100,7 +167,9 @@ const SurgeryWorkflow: React.FC = () => {
             <PatientList
               patients={patients}
               selectedPatientUuid={selectedPatient}
+              workflowStages={config.workflowStages}
               onPatientSelect={(uuid) => setSelectedPatient(uuid)}
+              onMovePatient={handleMovePatient}
             />
           )}
 
@@ -153,8 +222,18 @@ const SurgeryWorkflow: React.FC = () => {
             </TabPanels>
           </Tabs>
 
-          {/* Print Button (F) */}
+          {/* Action Bar (F) */}
           <div className={styles.actionBar}>
+            {selectedPatient && getNextStage() && (
+              <Button
+                kind="primary"
+                renderIcon={ArrowRight}
+                size="md"
+                onClick={handleMoveToNextStage}
+              >
+                Move to {config.workflowStages.find((s) => s.id === getNextStage())?.label}
+              </Button>
+            )}
             <Button
               kind="secondary"
               renderIcon={Printer}
