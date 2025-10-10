@@ -514,7 +514,7 @@ import { FormEngineRenderer } from '@/services/form-engine.service';
 **Imports**: TabContext (from B), searchPatients (from C)
 
 #### Week 1: Patient Registration
-- [ ] Wire "Add new patient" button in `surgery-workflow.component.tsx:114`
+- [x] ✅ Wire "Add new patient" button in `surgery-workflow.component.tsx:114` (COMPLETED - AGENT-1760124509)
 - [ ] Integrate `@openmrs/esm-patient-registration-app`:
   ```typescript
   import { launchPatientWorkspace } from '@openmrs/esm-patient-common-lib';

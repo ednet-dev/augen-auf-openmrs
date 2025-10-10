@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useConfig } from '@openmrs/esm-framework';
+import { useConfig, launchWorkspace } from '@openmrs/esm-framework';
 import {
   Button,
   Tabs,
@@ -36,6 +36,11 @@ const SurgeryWorkflow: React.FC = () => {
     searchQuery: filterState.searchQuery,
     workflowStage: filterState.workflowStage,
   });
+
+  // Handler for opening patient registration workspace
+  const handleAddPatient = () => {
+    launchWorkspace('patient-registration');
+  };
 
   return (
     <div className={styles.surgeryWorkflowContainer}>
@@ -112,6 +117,7 @@ const SurgeryWorkflow: React.FC = () => {
               kind="primary"
               renderIcon={Add}
               size="md"
+              onClick={handleAddPatient}
             >
               Add new patient
             </Button>
