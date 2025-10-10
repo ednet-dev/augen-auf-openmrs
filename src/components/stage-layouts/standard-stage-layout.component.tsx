@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
+import { Button, Tabs, TabList, Tab, TabPanels, TabPanel, Tile } from '@carbon/react';
 import { Printer, ArrowRight } from '@carbon/react/icons';
 import { AugenAufConfig, PatientListItem, WorkflowStageId } from '../../types';
 import PatientList from '../patient-list.component';
-import { getStageComponent } from '../stage-views';
 import styles from './stage-layout.scss';
+import stageViewStyles from './stage-view.scss';
 
 interface StandardStageLayoutProps {
   config: AugenAufConfig;
@@ -29,7 +29,6 @@ const StandardStageLayout: React.FC<StandardStageLayoutProps> = ({
   const selectedPatient = patients.find((p) => p.uuid === selectedPatientUuid);
   const currentStage = selectedPatient?.workflowData?.currentStage || 'registration';
   const stage = config.workflowStages.find((s) => s.id === currentStage);
-  const StageComponent = stage ? getStageComponent(currentStage) : null;
   const nextStage = getNextStage();
 
   const handleMoveClick = async () => {
@@ -54,7 +53,7 @@ const StandardStageLayout: React.FC<StandardStageLayoutProps> = ({
 
       {/* Content area on the right */}
       <div className={styles.contentSection}>
-        {selectedPatient && stage && StageComponent ? (
+        {selectedPatient && stage ? (
           <>
             {/* Tabs for Form and Info */}
             <Tabs>
@@ -66,12 +65,48 @@ const StandardStageLayout: React.FC<StandardStageLayoutProps> = ({
               <TabPanels>
                 {/* Form Tab Panel */}
                 <TabPanel>
-                  <StageComponent patient={selectedPatient} stage={stage} mode="form" />
+                  <div className={stageViewStyles.stageView}>
+                    <Tile className={stageViewStyles.formContainer}>
+                      <h2>{stage.label} Form</h2>
+                      <div className={stageViewStyles.patientInfo}>
+                        <p><strong>Patient:</strong> {selectedPatient.display}</p>
+                        <p><strong>ID:</strong> {selectedPatient.uuid}</p>
+                      </div>
+                      <div className={stageViewStyles.formPlaceholder}>
+                        <p>Form engine will render here</p>
+                        <p>Form UUID: {stage.formUuid || 'Not configured'}</p>
+                      </div>
+                    </Tile>
+                  </div>
                 </TabPanel>
 
                 {/* Info Tab Panel */}
                 <TabPanel>
-                  <StageComponent patient={selectedPatient} stage={stage} mode="info" />
+                  <div className={stageViewStyles.stageView}>
+                    <Tile className={stageViewStyles.infoContainer}>
+                      <h2>Accumulated Information</h2>
+                      <div className={stageViewStyles.infoContent}>
+                        <p><strong>Patient:</strong> {selectedPatient.display}</p>
+                        <p><strong>Current Stage:</strong> {stage.label}</p>
+                        {selectedPatient.workflowData && (
+                          <>
+                            <p><strong>Completed Stages:</strong></p>
+                            <ul>
+                              {selectedPatient.workflowData.completedStages.map((stageId, idx) => (
+                                <li key={idx}>{stageId}</li>
+                              ))}
+                            </ul>
+                            {selectedPatient.workflowData.needsSurgery && (
+                              <p><strong>Status:</strong> Needs Surgery</p>
+                            )}
+                          </>
+                        )}
+                        <p className={stageViewStyles.placeholder}>
+                          Encounter data from previous stages will be displayed here
+                        </p>
+                      </div>
+                    </Tile>
+                  </div>
                 </TabPanel>
               </TabPanels>
             </Tabs>
