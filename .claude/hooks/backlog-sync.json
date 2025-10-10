@@ -1,0 +1,13 @@
+{
+  "event": "PreToolUse",
+  "matcher": "Edit(BACKLOG.md)",
+  "command": "./scripts/sync-upstream.sh && echo '✅ Backlog synced with upstream'",
+  "description": "Sync with upstream before editing backlog (multi-agent safety)",
+  "blocking": true,
+  "enabled": true,
+  "configuration": {
+    "timeout": 30000,
+    "multiAgentCoordination": true,
+    "preventConflicts": true
+  }
+}

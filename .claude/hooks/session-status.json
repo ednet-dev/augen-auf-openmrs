@@ -1,0 +1,14 @@
+{
+  "event": "UserPromptSubmit",
+  "matcher": "*",
+  "command": "if [ ! -f .session_started ]; then ./scripts/task-status.sh && touch .session_started; fi",
+  "description": "Display work stream status at session start",
+  "blocking": false,
+  "enabled": true,
+  "configuration": {
+    "runOnce": true,
+    "showBacklogStatus": true,
+    "showClaimedTasks": true,
+    "showTeamActivity": true
+  }
+}
