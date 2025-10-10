@@ -1,122 +1,210 @@
 ---
-description: Claim task with upstream sync and FCFS conflict resolution
-scope: project
+description: Claim task with automatic lock and upstream sync
+argument-hint: <task-description-pattern>
+allowed-tools: Read(BACKLOG.md), Edit(BACKLOG.md), Bash(git*), Bash(./scripts/*)
+model: sonnet
 ---
 
-# Claim Task
+# Claim Task - Multi-Agent Safe
 
-Atomically claim a task with upstream sync. First-come-first-serve timestamp resolution for conflicts.
+**Purpose**: Claim a task from BACKLOG.md with automatic sync and lock to prevent conflicts
 
-## Usage
+**Arguments**: `$1` - Task description pattern (grep pattern to find task)
 
+STARTER_SYMBOL=🎯
+
+---
+
+## Phase 1: Sync Before Claiming
+
+STARTER_SYMBOL=🔄
+
+1. **Sync with upstream**:
+   ```bash
+   ./scripts/sync-upstream.sh
+   git pull origin main --rebase
+   ```
+
+2. **Verify BACKLOG.md is current**:
+   ```bash
+   git log -1 --oneline -- BACKLOG.md
+   ```
+
+---
+
+## Phase 2: Find Task
+
+STARTER_SYMBOL=🔍
+
+1. **Search for unclaimed task**:
+   ```bash
+   grep -n "- \[ \] $1" BACKLOG.md | grep -v "🔒"
+   ```
+
+2. **Verify task exists and is unclaimed**:
+   - ✅ Task found and has `- [ ]` (unclaimed)
+   - ❌ Task has `🔒` (already claimed)
+   - ❌ Task not found (check pattern)
+
+3. **Display task details**:
+   ```markdown
+   Found task:
+   Stream: [Stream name from BACKLOG.md]
+   Task: $TASK_DESCRIPTION
+   Line: $LINE_NUMBER
+   Status: Unclaimed ✅
+   ```
+
+---
+
+## Phase 3: Claim Task
+
+STARTER_SYMBOL=🔒
+
+1. **Generate agent ID** (if not exists):
+   ```bash
+   if [ ! -f .agent_id ]; then
+     echo "AGENT-$(date +%s)" > .agent_id
+   fi
+   export AGENT_ID=$(cat .agent_id)
+   ```
+
+2. **Lock task in BACKLOG.md**:
+   ```bash
+   # Original: - [ ] Create BilateralInput component
+   # Updated:  - [ ] 🔒 [AGENT-1234567890] Create BilateralInput component - 2025-10-10T14:30:00Z
+
+   sed -i '' "s/- \[ \] $TASK_PATTERN/- [ ] 🔒 [$AGENT_ID] $TASK_PATTERN - $(date -Iseconds)/" BACKLOG.md
+   ```
+
+3. **Commit lock immediately**:
+   ```bash
+   git add BACKLOG.md
+   git commit -m "Lock task: $TASK_DESCRIPTION
+
+Agent: $AGENT_ID
+Stream: $STREAM_NAME
+Timestamp: $(date -Iseconds)
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+   git push origin main
+   ```
+
+---
+
+## Phase 4: Initialize Work Context
+
+STARTER_SYMBOL=🛠️
+
+1. **Create agent work directory**:
+   ```bash
+   mkdir -p .agent/$AGENT_ID
+   ```
+
+2. **Create work log**:
+   ```markdown
+   # Agent $AGENT_ID Work Log
+
+   ## Task: $TASK_DESCRIPTION
+   **Stream**: $STREAM_NAME
+   **Claimed**: $(date -Iseconds)
+   **Status**: In Progress
+
+   ## Progress
+   - [ ] RED: Write failing test
+   - [ ] GREEN: Implement minimal code
+   - [ ] REFACTOR: Clean code
+   - [ ] Quality gate: Pass
+   - [ ] Commit: Done
+
+   ## Notes
+   [Add notes as work progresses]
+   ```
+
+3. **Start TDD cycle**:
+   ```bash
+   echo "Ready to start TDD cycle for: $TASK_DESCRIPTION"
+   echo ""
+   echo "Next step: /tdd-red $FEATURE_NAME"
+   ```
+
+---
+
+## Phase 5: Display Claimed Task Info
+
+STARTER_SYMBOL=📋
+
+```markdown
+✅ TASK CLAIMED SUCCESSFULLY
+
+**Agent ID**: $AGENT_ID
+**Task**: $TASK_DESCRIPTION
+**Stream**: $STREAM_NAME
+**Lock Time**: $(date)
+
+**Your claimed tasks** (from BACKLOG.md):
+$(grep "🔒 \[$AGENT_ID\]" BACKLOG.md)
+
+**Recommended workflow**:
+1. /tdd-red $FEATURE_NAME     # Write failing test
+2. /tdd-green $FEATURE_NAME   # Implement code
+3. /quality-gate              # Verify quality
+4. git commit                 # Commit changes
+5. Mark complete in BACKLOG.md
+
+**Work directory**: .agent/$AGENT_ID/
+```
+
+---
+
+## Conflict Handling
+
+**If task was just claimed by another agent**:
+
+```markdown
+❌ TASK ALREADY CLAIMED
+
+Task: $TASK_DESCRIPTION
+Claimed by: [AGENT-XXXXXXXXX]
+Claimed at: [TIMESTAMP]
+
+Options:
+1. Choose different task: grep "- \[ \]" BACKLOG.md | grep -v "🔒"
+2. Wait if lock is stale (>15 min): Check timestamp
+3. Coordinate: Add comment in BACKLOG.md about dependency
+```
+
+**Automatic retry**:
 ```bash
-/claim-task <task_number>
+LOCK_TIME=$(grep "🔒.*$TASK_PATTERN" BACKLOG.md | sed 's/.*- //')
+if [ "$(( $(date +%s) - $(date -d "$LOCK_TIME" +%s) ))" -gt 900 ]; then
+  echo "⚠️  Lock is stale (>15 min) - proceeding to claim"
+  # Claim task
+else
+  echo "❌ Task recently claimed - choose another task"
+  exit 1
+fi
 ```
 
-## Arguments
+---
 
-- `<task_number>` - Task number from `/next-task` output (e.g., 1, 2, 3)
+## Multi-Agent Safety Features
 
-## Example
+1. **Sync before claim**: Ensures BACKLOG.md is current
+2. **Atomic lock**: Single sed command + immediate commit
+3. **Push immediately**: Makes lock visible to other agents
+4. **Timestamp tracking**: Detects stale locks (>15 min)
+5. **Agent ID**: Unique identifier for each agent session
 
-```bash
-# Find available tasks
-/next-task
+---
 
-# Output shows:
-# [1] ✅ STREAM 1: INFRA - Create scripts/test.sh
+## Success Criteria
 
-# Claim task #1
-/claim-task 1
-```
-
-## What It Does
-
-### 1. Sync with Upstream (FCFS Resolution)
-```bash
-git fetch origin main
-git pull --rebase origin main
-```
-
-If conflict in BACKLOG.md → earlier timestamp wins, abort claim.
-
-### 2. Generate/Load Agent ID
-First claim: `AGENT-$(date +%s)` → saved to `.agent_id`
-Subsequent: Load from `.agent_id`
-
-### 3. Atomic Lock
-Transform:
-```diff
-- - [ ] Create scripts/test.sh
-+ - [ ] 🔒 [AGENT-1728561234] 2025-10-10T14:30:00Z Create scripts/test.sh
-```
-
-Lock format: `🔒 [AGENT-{id}] {ISO8601-timestamp} {task}`
-
-### 4. Verify Success
-```
-✅ Claimed task: Create scripts/test.sh
-🔒 Lock: [AGENT-1728561234] @ 2025-10-10T14:30:00Z
-
-📋 Next steps:
-   1. Start TDD: ./scripts/test.sh --watch
-   2. Implement: Follow RED → GREEN → REFACTOR
-   3. Complete: /complete-task
-```
-
-## Conflict Scenarios
-
-### Scenario 1: Already Locked
-```
-❌ Task already locked:
-   - [ ] 🔒 [AGENT-9999] 2025-10-10T14:25:00Z Create scripts/test.sh
-
-Check lock age with: /task-status
-```
-
-If lock >15min stale → may be claimed (shows in status).
-
-### Scenario 2: Merge Conflict
-```
-❌ Merge conflict detected. Resolve manually:
-    git status
-    # Fix conflicts in BACKLOG.md
-    git add BACKLOG.md
-    git rebase --continue
-```
-
-Resolution: Keep both locks, earlier timestamp wins. Update your claim.
-
-### Scenario 3: Task Already Completed
-```
-❌ Line 45 is not an unclaimed task:
-   - [x] ✅ [AGENT-8888] Create scripts/test.sh
-```
-
-Find new task: `/next-task`
-
-## Implementation
-
-Delegates to `./scripts/task-claim.sh` which:
-- Syncs git (atomic pull with rebase)
-- Resolves task number → line number in BACKLOG.md
-- Validates task is unclaimed
-- Atomic sed replacement with lock
-- Creates `.agent_id` if missing
-
-## Advanced Usage
-
-```bash
-# Claim by line number (for manual selection)
-./scripts/task-claim.sh 45
-
-# Claim by task number (from /next-task)
-./scripts/task-claim.sh 1
-```
-
-## Related Commands
-
-- `/next-task` - Find tasks
-- `/task-status` - Check locks
-- `/complete-task` - Mark done
-- `/sync-backlog` - Team sync
+- [✅] Synced with upstream before claiming
+- [✅] Task found and unclaimed
+- [✅] Lock committed and pushed immediately
+- [✅] Agent work directory created
+- [✅] Ready to start TDD workflow
+- [✅] No conflicts with other agents
