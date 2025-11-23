@@ -1,0 +1,68 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/theme';
+
+.patientListSidebar {
+  width: 250px;
+  background-color: theme.$layer-01;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  border-right: 1px solid theme.$border-subtle-01;
+}
+
+.patientList {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.patientListHeader {
+  @include type.type-style('label-01');
+  font-weight: 600;
+  padding: spacing.$spacing-04;
+  color: theme.$text-secondary;
+  background-color: theme.$layer-02;
+  border-bottom: 1px solid theme.$border-subtle-01;
+}
+
+.patientItems {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-02;
+  padding: spacing.$spacing-04;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.patientItemWrapper {
+  display: flex;
+  align-items: center;
+  gap: spacing.$spacing-02;
+  position: relative;
+}
+
+.patientItem {
+  flex: 1;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: theme.$layer-hover-01 !important;
+  }
+
+  &.active {
+    background-color: theme.$layer-selected-01 !important;
+    border-left: 4px solid theme.$border-interactive !important;
+    font-weight: 600;
+  }
+
+  &.finished {
+    color: theme.$text-secondary;
+    font-style: italic;
+  }
+}
+
+.patientMenu {
+  flex-shrink: 0;
+}

@@ -5,6 +5,11 @@ const defaultConfig = require('openmrs/default-webpack-config');
 module.exports = (env, argv = {}) => {
   const config = defaultConfig(env, argv);
 
+  // Add resolve alias for form-engine-lib to use source files in development
+  config.resolve = config.resolve || {};
+  config.resolve.alias = config.resolve.alias || {};
+  config.resolve.alias['@openmrs/esm-form-engine-lib'] = '@openmrs/esm-form-engine-lib/src/index';
+
   // Find and replace the ForkTsCheckerWebpackPlugin to only check src/ directory
   const forkTsCheckerIndex = config.plugins.findIndex(
     plugin => plugin instanceof ForkTsCheckerWebpackPlugin

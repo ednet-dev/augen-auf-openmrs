@@ -27,3 +27,8 @@ export const surgeryWorkflowMenuLink = getSyncLifecycle(
   SurgeryWorkflowMenuLink,
   options
 );
+
+export const surgeryWorkflowNew = getAsyncLifecycle(
+  () => import("./_new/surgery-workflow-new.component"),
+  options
+);
