@@ -17,8 +17,13 @@ type Props = {
 }
 
 export const GenericWorkflow = (props: Props) => {
-    const queueEntries = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
+    const { queueEntries, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+    
+    const handleMoveComplete = () => {
+        setSelectedPatient(null);
+        refresh();
+    };
 
     // Dummy form schema for testing
     const dummySchema: FormSchema = {
@@ -88,6 +93,7 @@ export const GenericWorkflow = (props: Props) => {
                                             queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
                                             nextStage={props.nextStage} 
                                             allStages={props.allStages}
+                                            onMoveComplete={handleMoveComplete}
                                         />
                                     </div>
                                 </div>
