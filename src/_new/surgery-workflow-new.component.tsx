@@ -17,17 +17,20 @@ const SurgeryWorkflowNew = () => {
         {
             id: "refraction",
             label: "Refraction Workflow",
-            component: <GenericWorkflow stage={refractionStage} nextStage={eyeExamStage} />,
+            stage: refractionStage,
+            nextStage: eyeExamStage,
         },
         {
             id: "eye-exam",
             label: "Eye Exam Workflow",
-            component: <GenericWorkflow stage={eyeExamStage} nextStage={therapyStage} />,
+            stage: eyeExamStage,
+            nextStage: therapyStage,
         },
         {
             id: "therapy",
             label: "Therapy Workflow",
-            component: <GenericWorkflow stage={therapyStage} nextStage={refractionStage} />,
+            stage: therapyStage,
+            nextStage: refractionStage,
         },
     ];
 
@@ -54,7 +57,11 @@ const SurgeryWorkflowNew = () => {
                 </SideNavItems>
             </SideNav>
             <div className={styles.workflowContentColumn}>
-                {workflows[selectedWorkflow]?.component}
+                <GenericWorkflow 
+                    key={workflows[selectedWorkflow].id}
+                    stage={workflows[selectedWorkflow].stage}
+                    nextStage={workflows[selectedWorkflow].nextStage}
+                />
             </div>
         </div>
     );
