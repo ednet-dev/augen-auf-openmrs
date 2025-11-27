@@ -37,6 +37,14 @@
   overflow-y: auto;
 }
 
+.centeredContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: spacing.$spacing-05;
+}
+
 .patientItemWrapper {
   display: flex;
   align-items: center;

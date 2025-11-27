@@ -17,7 +17,7 @@ type Props = {
 }
 
 export const GenericWorkflow = (props: Props) => {
-    const { queueEntries, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
+    const { queueEntries, isLoading, error, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
     
     const handleMoveComplete = () => {
@@ -62,7 +62,9 @@ export const GenericWorkflow = (props: Props) => {
                 <PatientList 
                     patients={queueEntries.map(entry => entry.patient)} 
                     selectedPatient={selectedPatient} 
-                    onPatientSelect={(patient) => setSelectedPatient(patient)} 
+                    onPatientSelect={(patient) => setSelectedPatient(patient)}
+                    isLoading={isLoading}
+                    error={error}
                 />
             </div>
 

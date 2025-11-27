@@ -241,4 +241,151 @@ describe('useQueueEntries', () => {
 
     expect(firstRefresh).toBe(secondRefresh);
   });
+
+  it('should set isLoading to true initially and false after data is loaded', async () => {
+    mockFetchQueueEntries.mockResolvedValue(mockQueueEntries);
+
+    const { result } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    // Initially should be loading
+    expect(result.current.isLoading).toBe(true);
+
+    // After data is fetched, should not be loading
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.queueEntries).toEqual(mockQueueEntries);
+  });
+
+  it('should set isLoading to true when refresh is called', async () => {
+    mockFetchQueueEntries.mockResolvedValue(mockQueueEntries);
+
+    const { result } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    // Wait for initial load to complete
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    // Setup a delayed response to test loading state
+    let resolvePromise: (value: QueueEntry[]) => void;
+    const delayedPromise = new Promise<QueueEntry[]>((resolve) => {
+      resolvePromise = resolve;
+    });
+    
+    mockFetchQueueEntries.mockReturnValueOnce(delayedPromise);
+
+    // Call refresh
+    result.current.refresh();
+
+    // Should be loading immediately after refresh
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(true);
+    });
+
+    // Resolve the promise
+    resolvePromise!(mockQueueEntries);
+
+    // Should eventually complete
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+  });
+
+  it('should set isLoading to false even when fetch fails', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    mockFetchQueueEntries.mockRejectedValue(new Error('Fetch failed'));
+
+    const { result } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    // Initially should be loading
+    expect(result.current.isLoading).toBe(true);
+
+    // After error, should not be loading
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('should set error state when fetch fails', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const testError = new Error('Network error');
+    mockFetchQueueEntries.mockRejectedValue(testError);
+
+    const { result } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    // Initially should have no error
+    expect(result.current.error).toBeNull();
+
+    // After fetch fails, should have error
+    await waitFor(() => {
+      expect(result.current.error).toBe(testError);
+    });
+
+    expect(result.current.isLoading).toBe(false);
+    expect(result.current.queueEntries).toEqual([]);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('should clear error on successful fetch', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    
+    // First fetch fails
+    mockFetchQueueEntries.mockRejectedValueOnce(new Error('Network error'));
+
+    const { result } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    // Wait for error to be set
+    await waitFor(() => {
+      expect(result.current.error).not.toBeNull();
+    });
+
+    expect(result.current.error?.message).toBe('Network error');
+
+    // Second fetch succeeds
+    mockFetchQueueEntries.mockResolvedValueOnce(mockQueueEntries);
+    
+    result.current.refresh();
+
+    // Error should be cleared on successful fetch
+    await waitFor(() => {
+      expect(result.current.error).toBeNull();
+    });
+
+    expect(result.current.queueEntries).toEqual(mockQueueEntries);
+    expect(result.current.isLoading).toBe(false);
+
+    consoleErrorSpy.mockRestore();
+  });
+
+  it('should set error to null initially', () => {
+    mockFetchQueueEntries.mockResolvedValue(mockQueueEntries);
+
+    const { result } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should maintain error state until next fetch', async () => {
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const testError = new Error('Persistent error');
+    mockFetchQueueEntries.mockRejectedValue(testError);
+
+    const { result, rerender } = renderHook(() => useQueueEntries(mockQueueUuid, mockStatusUuid));
+
+    await waitFor(() => {
+      expect(result.current.error).toBe(testError);
+    });
+
+    // Rerender shouldn't clear error
+    rerender();
+
+    expect(result.current.error).toBe(testError);
+
+    consoleErrorSpy.mockRestore();
+  });
 });
