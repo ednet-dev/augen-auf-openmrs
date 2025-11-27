@@ -23,7 +23,26 @@
 
   :global(.cds--tab-content) {
     flex: 1;
-    overflow: auto;
-    padding: spacing.$spacing-05;
+    overflow: hidden;
+    padding: 0;
   }
+}
+
+.formTabContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.formScrollContainer {
+  flex: 1;
+  overflow: auto;
+  padding: spacing.$spacing-05;
+}
+
+.moveButtonContainer {
+  display: flex;
+  justify-content: flex-end;
+  padding: spacing.$spacing-05;
 }

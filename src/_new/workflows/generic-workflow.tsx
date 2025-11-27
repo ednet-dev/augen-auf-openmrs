@@ -70,15 +70,19 @@ export const GenericWorkflow = (props: Props) => {
                     <TabPanels>
                         <TabPanel>
                             {selectedPatient ? (
-                                <div>
-                                    <h3>Patient Form</h3>
-                                    <FormEngine 
-                                        formJson={dummySchema} 
-                                        patientUUID={selectedPatient.uuid}
-                                        visit={undefined}
-                                        formSessionIntent="enter"
-                                    />
-                                    <MoveButton queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} nextStage={props.nextStage} />
+                                <div className={styles.formTabContent}>
+                                    <div className={styles.formScrollContainer}>
+                                        <h3>Patient Form</h3>
+                                        <FormEngine 
+                                            formJson={dummySchema} 
+                                            patientUUID={selectedPatient.uuid}
+                                            visit={undefined}
+                                            formSessionIntent="enter"
+                                        />
+                                    </div>
+                                    <div className={styles.moveButtonContainer}>
+                                        <MoveButton queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} nextStage={props.nextStage} />
+                                    </div>
                                 </div>
                             ) : (
                                 <div>
