@@ -13,6 +13,7 @@ import styles from "./generic-workflow.scss";
 type Props = {
     stage: Stage;
     nextStage: Stage;
+    allStages: Stage[];
 }
 
 export const GenericWorkflow = (props: Props) => {
@@ -83,7 +84,11 @@ export const GenericWorkflow = (props: Props) => {
                                         />
                                     </div>
                                     <div className={styles.moveButtonContainer}>
-                                        <MoveButton queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} nextStage={props.nextStage} />
+                                        <MoveButton 
+                                            queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
+                                            nextStage={props.nextStage} 
+                                            allStages={props.allStages}
+                                        />
                                     </div>
                                 </div>
                             </TabPanel>

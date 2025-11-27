@@ -11,7 +11,9 @@ const SurgeryWorkflowNew = () => {
 
     const refractionStage = { label:"Refraction", queueUuid: "aa004400-1234-5678-90ab-000000000002", waitingStatusUuid: config.queueStatusWaitingUuid };
     const eyeExamStage = { label:"Eye Exam", queueUuid: "aa004400-1234-5678-90ab-000000000003", waitingStatusUuid: config.queueStatusWaitingUuid };
-    const therapyStage = { label:"Therapy", queueUuid: "aa004400-1234-5678-90ab-000000000004", waitingStatusUuid: config.queueStatusWaitingUuid }; 
+    const therapyStage = { label:"Therapy", queueUuid: "aa004400-1234-5678-90ab-000000000004", waitingStatusUuid: config.queueStatusWaitingUuid };
+    
+    const allStages = [refractionStage, eyeExamStage, therapyStage];
     
     const workflows = [
         {
@@ -61,6 +63,7 @@ const SurgeryWorkflowNew = () => {
                     key={workflows[selectedWorkflow].id}
                     stage={workflows[selectedWorkflow].stage}
                     nextStage={workflows[selectedWorkflow].nextStage}
+                    allStages={allStages}
                 />
             </div>
         </div>
