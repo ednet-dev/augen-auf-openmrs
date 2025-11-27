@@ -75,6 +75,7 @@ export const GenericWorkflow = (props: Props) => {
                                     <div className={styles.formScrollContainer}>
                                         <h3>Patient Form</h3>
                                         <FormEngine 
+                                            key={selectedPatient.uuid}
                                             formJson={dummySchema} 
                                             patientUUID={selectedPatient.uuid}
                                             visit={undefined}
