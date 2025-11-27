@@ -6,7 +6,7 @@
 .workflowContainer {
   display: grid;
   grid-template-columns: 256px 1fr;
-  height: 100vh;
+  height: calc(100vh - 3rem);
   background-color: #ffffff;
   overflow: hidden;
 }
@@ -27,6 +27,8 @@
   grid-column: 2;
   padding: spacing.$spacing-06;
   height: 100%;
-  overflow-y: auto;
+  overflow: hidden;
   background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
 }

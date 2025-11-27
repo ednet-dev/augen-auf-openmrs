@@ -1,0 +1,29 @@
+@use '@carbon/styles/scss/spacing';
+
+.workflowWrapper {
+  display: flex;
+  gap: spacing.$spacing-05;
+  height: 100%;
+  overflow: hidden;
+}
+
+.patientListContainer {
+  width: 300px;
+  height: 100%;
+  overflow: auto;
+  border-right: 1px solid #e0e0e0;
+}
+
+.tabsContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+
+  :global(.cds--tab-content) {
+    flex: 1;
+    overflow: auto;
+    padding: spacing.$spacing-05;
+  }
+}
