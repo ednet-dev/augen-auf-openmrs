@@ -1,0 +1,32 @@
+@use '@carbon/styles/scss/spacing';
+@use '@carbon/styles/scss/type';
+@use '@carbon/styles/scss/theme';
+
+/* Workflow container using CSS Grid layout */
+.workflowContainer {
+  display: grid;
+  grid-template-columns: 256px 1fr;
+  height: 100vh;
+  background-color: #ffffff;
+  overflow: hidden;
+}
+
+.workflowSideNav {
+  grid-column: 1;
+  height: 100%;
+  overflow-y: auto;
+  
+  :global(.cds--side-nav__link.cds--side-nav__link--current),
+  :global(.cds--side-nav__link[aria-current="page"]) {
+    background-color: theme.$layer-selected-01;
+    border-left: 3px solid theme.$border-interactive;
+  }
+}
+
+.workflowContentColumn {
+  grid-column: 2;
+  padding: spacing.$spacing-06;
+  height: 100%;
+  overflow-y: auto;
+  background-color: #ffffff;
+}

@@ -7,7 +7,7 @@
 set -e
 
 # Configuration
-API_URL="${OPENMRS_API_URL:-https://dev3.openmrs.org/openmrs}"
+API_URL="${OPENMRS_API_URL:-http://localhost:8080/openmrs}"
 USERNAME="${OPENMRS_USERNAME:-admin}"
 PASSWORD="${OPENMRS_PASSWORD:-Admin123}"
 BASE_URL="$API_URL/ws/rest/v1"
