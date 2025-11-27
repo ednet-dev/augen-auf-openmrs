@@ -6,7 +6,8 @@ import { CalendarHeatMapIcon, ConditionsIcon, Patient, ProgramsIcon } from "@ope
 import { MoveButton } from "../move-button";
 import { useQueueEntries } from "../hooks/use-queue-entries";
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
-import { AlignBoxTopLeft } from "@carbon/react/icons";
+import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
+import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
 
 type Props = {
@@ -60,16 +61,16 @@ export const GenericWorkflow = (props: Props) => {
             </div>
 
             <div className={styles.tabsContainer}>
-                <Tabs>
-                    <TabList contained>
-                        <Tab renderIcon={AlignBoxTopLeft}>Form</Tab>
-                        <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
-                        <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
-                        <Tab renderIcon={ProgramsIcon}>Therapies</Tab>
-                    </TabList>
-                    <TabPanels>
-                        <TabPanel>
-                            {selectedPatient ? (
+                {selectedPatient ? (
+                    <Tabs>
+                        <TabList contained>
+                            <Tab renderIcon={AlignBoxTopLeft}>Form</Tab>
+                            <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
+                            <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
+                            <Tab renderIcon={ProgramsIcon}>Therapies</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel>
                                 <div className={styles.formTabContent}>
                                     <div className={styles.formScrollContainer}>
                                         <h3>Patient Form</h3>
@@ -84,18 +85,19 @@ export const GenericWorkflow = (props: Props) => {
                                         <MoveButton queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} nextStage={props.nextStage} />
                                     </div>
                                 </div>
-                            ) : (
-                                <div>
-                                    <h3>Select a patient</h3>
-                                    <p>Choose a patient from the queue to view and fill out their form</p>
-                                </div>
-                            )}
-                        </TabPanel>
-                        <TabPanel>Coming soon...</TabPanel>
-                        <TabPanel>Coming soon...</TabPanel>
-                        <TabPanel>Coming soon...</TabPanel>
-                    </TabPanels>
-                </Tabs>
+                            </TabPanel>
+                            <TabPanel>Coming soon...</TabPanel>
+                            <TabPanel>Coming soon...</TabPanel>
+                            <TabPanel>Coming soon...</TabPanel>
+                        </TabPanels>
+                    </Tabs>
+                ) : (
+                    <EmptyState
+                        icon={Person}
+                        title="No patient selected"
+                        description="Select a patient from the queue on the left to view their information and fill out forms"
+                    />
+                )}
             </div>
         </div>
     );
