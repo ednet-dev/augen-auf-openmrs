@@ -18,11 +18,6 @@ export const root = getAsyncLifecycle(
   options
 );
 
-export const surgeryWorkflow = getAsyncLifecycle(
-  () => import("./surgery-workflow/surgery-workflow.component"),
-  options
-);
-
 export const surgeryWorkflowMenuLink = getSyncLifecycle(
   SurgeryWorkflowMenuLink,
   options

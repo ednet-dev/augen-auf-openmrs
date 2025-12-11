@@ -1,5 +1,4 @@
 export interface StageConfig {
-    stageConceptUuid: string;
     queueUuid: string;
     formUuid: string;
 }
@@ -16,5 +15,8 @@ export interface NewConfig {
         waitingUuid: string;
         inServiceUuid: string;
         finishedUuid: string;
+    }
+    priorities: {
+        normalUuid: string;
     }
 }

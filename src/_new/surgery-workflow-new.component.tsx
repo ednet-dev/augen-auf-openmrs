@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { useConfig } from "@openmrs/esm-framework";
-import { AugenAufConfig } from "../types";
 import { GenericWorkflow } from "./workflows/generic-workflow";
 import { RegistrationWorkflow } from "./workflows/registration-workflow";
 import { SideNav, SideNavItems, SideNavLink } from "@carbon/react";
 import styles from "./surgery-workflow-new.scss";
+import { NewConfig } from "./new-config";
 
 const SurgeryWorkflowNew = () => {
-    const config = useConfig() as AugenAufConfig;
+    const config = useConfig() as NewConfig;
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
-    const refractionStage = { label:"Refraction", queueUuid: "aa004400-1234-5678-90ab-000000000002", waitingStatusUuid: config.queueStatusWaitingUuid };
-    const eyeExamStage = { label:"Eye Exam", queueUuid: "aa004400-1234-5678-90ab-000000000003", waitingStatusUuid: config.queueStatusWaitingUuid };
-    const therapyStage = { label:"Therapy", queueUuid: "aa004400-1234-5678-90ab-000000000004", waitingStatusUuid: config.queueStatusWaitingUuid };
+    const refractionStage = { label:"Refraction", queueUuid: config.stages.refraction.queueUuid, waitingStatusUuid: config.status.waitingUuid };
+    const eyeExamStage = { label:"Eye Exam", queueUuid: config.stages.eyeExam.queueUuid, waitingStatusUuid: config.status.waitingUuid };
+    const therapyStage = { label:"Therapy", queueUuid: config.stages.therapy.queueUuid, waitingStatusUuid: config.status.waitingUuid };
     
     const allStages = [refractionStage, eyeExamStage, therapyStage];
     
@@ -20,16 +20,17 @@ const SurgeryWorkflowNew = () => {
         {
             id: "registration",
             label: "Registration Workflow",
-            component: () => <RegistrationWorkflow nextStage={refractionStage} allStages={allStages} />
+            component: () => <RegistrationWorkflow nextStage={refractionStage} allStages={allStages} config={config} />
         },
         {
             id: "refraction",
             label: "Refraction Workflow",
             component: () => (
-                <GenericWorkflow 
+                <GenericWorkflow
                     stage={refractionStage}
                     nextStage={eyeExamStage}
                     allStages={allStages}
+                    config={config}
                 />
             )
         },
@@ -41,6 +42,7 @@ const SurgeryWorkflowNew = () => {
                     stage={eyeExamStage}
                     nextStage={therapyStage}
                     allStages={allStages}
+                    config={config}
                 />
             )
         },
@@ -52,6 +54,7 @@ const SurgeryWorkflowNew = () => {
                     stage={therapyStage}
                     nextStage={refractionStage}
                     allStages={allStages}
+                    config={config}
                 />
             )
         },

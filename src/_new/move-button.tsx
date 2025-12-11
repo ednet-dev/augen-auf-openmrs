@@ -1,15 +1,17 @@
 import { ComboButton, MenuItem } from "@carbon/react";
 import React from "react";
 import { movePatientToStage, QueueEntry } from "./patient-service";
+import { NewConfig } from "./new-config";
 
 type Props = {
     queueEntry: QueueEntry;
     nextStage: Stage;
     allStages: Stage[];
+    config: NewConfig;
     onMoveComplete?: () => void;
 }
 
-export const MoveButton: React.FC<Props> = ({ queueEntry, nextStage, allStages, onMoveComplete }) => {
+export const MoveButton: React.FC<Props> = ({ queueEntry, nextStage, allStages, config, onMoveComplete }) => {
     const [isMoving, setIsMoving] = React.useState(false);
 
     const handleMovePatient = (targetStage: Stage) => {
@@ -18,7 +20,7 @@ export const MoveButton: React.FC<Props> = ({ queueEntry, nextStage, allStages, 
             queueEntry.uuid,
             queueEntry.patient.uuid,
             targetStage.queueUuid,
-            targetStage.waitingStatusUuid
+            config
         ).then(() => {
             setIsMoving(false);
             onMoveComplete?.();

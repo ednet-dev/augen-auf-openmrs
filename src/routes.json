@@ -12,12 +12,6 @@
       "offline": true
     },
     {
-      "component": "surgeryWorkflow",
-      "route": "surgery-workflow",
-      "online": true,
-      "offline": true
-    },
-    {
       "component": "surgeryWorkflowNew",
       "route": "surgery-workflow-new",
       "online": true,

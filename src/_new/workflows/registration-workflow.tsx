@@ -4,10 +4,12 @@ import { PatientList } from "../patient-list.component";
 import { TextInput } from "@carbon/react";
 import { MoveButton } from "../move-button";
 import { Patient } from "@openmrs/esm-framework/src";
+import { NewConfig } from "../new-config";
 
 type Props = {
     nextStage: Stage;
     allStages: Stage[];
+    config: NewConfig;
 }
 
 export const RegistrationWorkflow = (props: Props) => {
@@ -37,6 +39,7 @@ export const RegistrationWorkflow = (props: Props) => {
                         queueEntry={{ uuid: "", patient }}
                         nextStage={props.nextStage}
                         allStages={props.allStages}
+                        config={props.config}
                         onMoveComplete={refresh}
                         />
                 )}

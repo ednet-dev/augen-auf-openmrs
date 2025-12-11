@@ -9,11 +9,13 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
+import { NewConfig } from "../new-config";
 
 type Props = {
     stage: Stage;
     nextStage: Stage;
     allStages: Stage[];
+    config: NewConfig;
 }
 
 export const GenericWorkflow = (props: Props) => {
@@ -95,6 +97,7 @@ export const GenericWorkflow = (props: Props) => {
                                             queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
                                             nextStage={props.nextStage} 
                                             allStages={props.allStages}
+                                            config={props.config}
                                             onMoveComplete={handleMoveComplete}
                                         />
                                     </div>

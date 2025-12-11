@@ -1,5 +1,6 @@
 import { openmrsFetch, Patient, restBaseUrl } from '@openmrs/esm-framework';
 import { fetchAll } from "./fetch-utils";
+import { NewConfig } from './new-config';
 
 export const fetchAllPatients = async (): Promise<Patient[]> => {
       const url = `${restBaseUrl}/patient?q=all`;
@@ -48,19 +49,19 @@ export async function movePatientToStage(
   queueEntryUuid: string,
   patientUuid: string,
   queueUuid: string,
-  statusWaitingUuid: string
+  config: NewConfig
 ): Promise<void> {
   const url = `${restBaseUrl}/queue-entry/transition`;
 
   if (!queueEntryUuid) {
-    return createQueueEntry(queueUuid, patientUuid, statusWaitingUuid);
+    return createQueueEntry(queueUuid, patientUuid, config.status.waitingUuid);
   }
 
   const body = {
     queueEntryToTransition: queueEntryUuid,
     newQueue: queueUuid,
-    newStatus: statusWaitingUuid,
-    newPriority: "f4620bfa-3625-4883-bd3f-84c2cce14470",
+    newStatus: config.status.waitingUuid,
+    newPriority: config.priorities.normalUuid,
     newPriorityComment: ""
   };
 
