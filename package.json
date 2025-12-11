@@ -20,6 +20,9 @@
     "url": "git+https://github.com/augen-auf/augen-auf-openmrs.git"
   },
   "license": "MIT",
+  "files": [
+    "dist/*"
+  ],
   "peerDependencies": {
     "@openmrs/esm-framework": "*",
     "react": "18.x",
