@@ -14,6 +14,19 @@ export const fetchAllPatients = async (): Promise<Patient[]> => {
       }
 }
 
+export const searchPatients = async (query: string): Promise<Patient[]> => {
+    const url = `${restBaseUrl}/patient?q=${encodeURIComponent(query)}`;
+  
+    try {
+      const response = await fetchAll<Patient>(url);
+
+      return response.results;
+    } catch (error) {
+      console.error('Error searching patients:', error);
+      return [];
+    }
+}
+
 export interface QueueEntry {
     uuid: string;
     patient: Patient;
@@ -33,10 +46,15 @@ export const fetchQueueEntries = async (queueUuid: string, statusWaitingUuid: st
 
 export async function movePatientToStage(
   queueEntryUuid: string,
+  patientUuid: string,
   queueUuid: string,
   statusWaitingUuid: string
 ): Promise<void> {
   const url = `${restBaseUrl}/queue-entry/transition`;
+
+  if (!queueEntryUuid) {
+    return createQueueEntry(queueUuid, patientUuid, statusWaitingUuid);
+  }
 
   const body = {
     queueEntryToTransition: queueEntryUuid,
@@ -55,5 +73,23 @@ export async function movePatientToStage(
   });
 }
 
+async function createQueueEntry(
+  queueUuid: string,
+  patientUuid: string,
+  statusUuid: string
+): Promise<void> {
+  const queueEntryPayload = {
+    patient: { uuid: patientUuid },
+    queue: { uuid: queueUuid },
+    status: { uuid: statusUuid },
+    priority: { uuid: 'f4620bfa-3625-4883-bd3f-84c2cce14470' }, // Not Urgent
+    startedAt: new Date().toISOString(),
+    sortWeight: 0,
+  };
 
-
+  await openmrsFetch(`${restBaseUrl}/queue-entry`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(queueEntryPayload),
+  });
+}

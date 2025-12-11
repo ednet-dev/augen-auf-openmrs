@@ -1,6 +1,4 @@
 import { ComboButton, MenuItem } from "@carbon/react";
-import { ArrowRight } from "@carbon/react/icons";
-import { Patient } from "@openmrs/esm-framework/src";
 import React from "react";
 import { movePatientToStage, QueueEntry } from "./patient-service";
 
@@ -18,6 +16,7 @@ export const MoveButton: React.FC<Props> = ({ queueEntry, nextStage, allStages, 
         setIsMoving(true);
         movePatientToStage(
             queueEntry.uuid,
+            queueEntry.patient.uuid,
             targetStage.queueUuid,
             targetStage.waitingStatusUuid
         ).then(() => {

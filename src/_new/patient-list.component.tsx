@@ -11,19 +11,32 @@ type Props = {
     onPatientSelect?: (patient: Patient) => void;
     isLoading?: boolean;
     error?: Error | null;
+    renderPatientActions?: (patient: Patient) => React.ReactNode;
+    emptyStateTitle?: string;
+    emptyStateDescription?: string;
 }
 
-const PatientTile = ({ patient, isSelected, onSelect }: { patient: Patient; isSelected: boolean; onSelect: () => void }) => {
+const PatientTile = ({ patient, isSelected, onSelect, renderActions }: { 
+    patient: Patient; 
+    isSelected: boolean; 
+    onSelect: () => void;
+    renderActions?: (patient: Patient) => React.ReactNode;
+}) => {
     return (
         <div className={styles.patientItemWrapper}>
             <ClickableTile onClick={onSelect} className={`${styles.patientItem} ${isSelected ? styles.active : ''}`}>
                 {patient.display}
             </ClickableTile>
+            {renderActions && (
+                <div className={styles.patientActions}>
+                    {renderActions(patient)}
+                </div>
+            )}
         </div>
     );
 }
 
-export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPatientSelect, isLoading, error }) => {
+export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPatientSelect, isLoading, error, renderPatientActions, emptyStateTitle, emptyStateDescription }) => {
     const renderContent = () => {
         if (isLoading) {
             return (
@@ -47,8 +60,8 @@ export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPati
             return (
                 <EmptyState 
                     icon={UserMultiple}
-                    title="No patients in queue"
-                    description="There are currently no patients waiting in this stage"
+                    title={emptyStateTitle || "No patients in queue"}
+                    description={emptyStateDescription || "There are currently no patients waiting in this stage"}
                 />
             );
         }
@@ -59,6 +72,7 @@ export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPati
                 patient={patient}
                 isSelected={selectedPatient?.uuid === patient.uuid}
                 onSelect={() => onPatientSelect?.(patient)}
+                renderActions={renderPatientActions}
             />
         ));
     };

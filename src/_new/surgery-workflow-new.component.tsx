@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useConfig } from "@openmrs/esm-framework";
 import { AugenAufConfig } from "../types";
 import { GenericWorkflow } from "./workflows/generic-workflow";
+import { RegistrationWorkflow } from "./workflows/registration-workflow";
 import { SideNav, SideNavItems, SideNavLink } from "@carbon/react";
 import styles from "./surgery-workflow-new.scss";
 
@@ -17,22 +18,42 @@ const SurgeryWorkflowNew = () => {
     
     const workflows = [
         {
+            id: "registration",
+            label: "Registration Workflow",
+            component: () => <RegistrationWorkflow nextStage={refractionStage} allStages={allStages} />
+        },
+        {
             id: "refraction",
             label: "Refraction Workflow",
-            stage: refractionStage,
-            nextStage: eyeExamStage,
+            component: () => (
+                <GenericWorkflow 
+                    stage={refractionStage}
+                    nextStage={eyeExamStage}
+                    allStages={allStages}
+                />
+            )
         },
         {
             id: "eye-exam",
             label: "Eye Exam Workflow",
-            stage: eyeExamStage,
-            nextStage: therapyStage,
+            component: () => (
+                <GenericWorkflow 
+                    stage={eyeExamStage}
+                    nextStage={therapyStage}
+                    allStages={allStages}
+                />
+            )
         },
         {
             id: "therapy",
             label: "Therapy Workflow",
-            stage: therapyStage,
-            nextStage: refractionStage,
+            component: () => (
+                <GenericWorkflow 
+                    stage={therapyStage}
+                    nextStage={refractionStage}
+                    allStages={allStages}
+                />
+            )
         },
     ];
 
@@ -59,12 +80,7 @@ const SurgeryWorkflowNew = () => {
                 </SideNavItems>
             </SideNav>
             <div className={styles.workflowContentColumn}>
-                <GenericWorkflow 
-                    key={workflows[selectedWorkflow].id}
-                    stage={workflows[selectedWorkflow].stage}
-                    nextStage={workflows[selectedWorkflow].nextStage}
-                    allStages={allStages}
-                />
+                {workflows[selectedWorkflow].component()}
             </div>
         </div>
     );
