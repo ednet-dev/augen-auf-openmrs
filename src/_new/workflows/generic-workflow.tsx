@@ -1,11 +1,11 @@
 
 import React, { useState } from "react";
-import { FormEngine, type FormSchema } from "@openmrs/esm-form-engine-lib";
+import { FormEngine } from "@openmrs/esm-form-engine-lib";
 import { PatientList } from "../patient-list.component";
 import { CalendarHeatMapIcon, ConditionsIcon, Patient, ProgramsIcon } from "@openmrs/esm-framework";
 import { MoveButton } from "../move-button";
 import { useQueueEntries } from "../hooks/use-queue-entries";
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
+import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
@@ -27,36 +27,29 @@ export const GenericWorkflow = (props: Props) => {
         refresh();
     };
 
-    // Dummy form schema for testing
-    const dummySchema: FormSchema = {
-        encounterType: 'aa003300-1234-5678-90ab-000000000002',
-        name: 'Eye Exam Form',
-        pages: [
-            {
-                label: 'Eye Exam',
-                sections: [
-                    {
-                        label: 'Visual Acuity',
-                        isExpanded: 'true',
-                        questions: [
-                            {
-                                label: 'Right Eye',
-                                type: 'obs',
-                                questionOptions: {
-                                    rendering: 'text' as const,
-                                    concept: '5090AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                                },
-                                id: 'rightEye', 
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-        processor: 'EncounterFormProcessor',
-        referencedForms: [],
-        uuid: 'eye-exam-form-uuid',
+    /*const triggerFormValidation = () => {
+         window.dispatchEvent(
+            new CustomEvent('ampath-form-action', {
+                detail: {
+                    formUuid: props.stage.formUuid,
+                    patientUuid: selectedPatient?.uuid,
+                    action: 'validateForm',
+                },
+            })
+        );
     };
+
+    const triggerFormSubmission = () => {
+         window.dispatchEvent(
+            new CustomEvent('ampath-form-action', {
+                detail: {
+                    formUuid: props.stage.formUuid,
+                    patientUuid: selectedPatient?.uuid,
+                    action: 'onSubmit',
+                },
+            })
+        );
+    }*/
     
     return (
         <div className={styles.workflowWrapper}>
@@ -81,27 +74,15 @@ export const GenericWorkflow = (props: Props) => {
                         </TabList>
                         <TabPanels>
                             <TabPanel>
-                                <div className={styles.formTabContent}>
-                                    <div className={styles.formScrollContainer}>
-                                        <h3>Patient Form</h3>
-                                        <FormEngine 
-                                            key={selectedPatient.uuid}
-                                            formJson={dummySchema} 
-                                            patientUUID={selectedPatient.uuid}
-                                            visit={undefined}
-                                            formSessionIntent="enter"
-                                        />
-                                    </div>
-                                    <div className={styles.moveButtonContainer}>
-                                        <MoveButton 
-                                            queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
-                                            nextStage={props.nextStage} 
-                                            allStages={props.allStages}
-                                            config={props.config}
-                                            onMoveComplete={handleMoveComplete}
-                                        />
-                                    </div>
-                                </div>
+                                <FormEngine 
+                                    key={selectedPatient.uuid}
+                                    onSubmit={(data) => console.log("onSubmit", data)}
+                                    formUUID={props.stage.formUuid}
+                                    patientUUID={selectedPatient.uuid}
+                                    visit={undefined}
+                                    formSessionIntent="enter"
+                                    hidePatientBanner={false}
+                                />
                             </TabPanel>
                             <TabPanel>Coming soon...</TabPanel>
                             <TabPanel>Coming soon...</TabPanel>
@@ -115,6 +96,16 @@ export const GenericWorkflow = (props: Props) => {
                         description="Select a patient from the queue on the left to view their information and fill out forms"
                     />
                 )}
+            </div>
+
+            <div className={styles.moveButtonContainer}>
+                    <MoveButton 
+                        queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
+                        nextStage={props.nextStage} 
+                        allStages={props.allStages}
+                        config={props.config}
+                        onMoveComplete={handleMoveComplete}
+                    />
             </div>
         </div>
     );

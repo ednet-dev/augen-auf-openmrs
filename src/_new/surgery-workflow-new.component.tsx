@@ -10,9 +10,9 @@ const SurgeryWorkflowNew = () => {
     const config = useConfig() as NewConfig;
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
-    const refractionStage = { label:"Refraction", queueUuid: config.stages.refraction.queueUuid, waitingStatusUuid: config.status.waitingUuid };
-    const eyeExamStage = { label:"Eye Exam", queueUuid: config.stages.eyeExam.queueUuid, waitingStatusUuid: config.status.waitingUuid };
-    const therapyStage = { label:"Therapy", queueUuid: config.stages.therapy.queueUuid, waitingStatusUuid: config.status.waitingUuid };
+    const refractionStage = { label:"Refraction", queueUuid: config.stages.refraction.queueUuid, formUuid: config.stages.refraction.formUuid, waitingStatusUuid: config.status.waitingUuid };
+    const eyeExamStage = { label:"Eye Exam", queueUuid: config.stages.eyeExam.queueUuid, formUuid: config.stages.eyeExam.formUuid, waitingStatusUuid: config.status.waitingUuid };
+    const therapyStage = { label:"Therapy", queueUuid: config.stages.therapy.queueUuid, formUuid: config.stages.therapy.formUuid, waitingStatusUuid: config.status.waitingUuid };
     
     const allStages = [refractionStage, eyeExamStage, therapyStage];
     

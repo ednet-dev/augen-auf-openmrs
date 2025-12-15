@@ -1,47 +1,45 @@
 @use '@carbon/styles/scss/spacing';
 
 .workflowWrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 1fr auto;
   gap: spacing.$spacing-05;
   height: 100%;
   overflow: hidden;
 }
 
 .patientListContainer {
-  width: 300px;
+  grid-row: 1 / 3;
+  grid-column: 1;
   height: 100%;
   overflow: auto;
 }
 
 .tabsContainer {
-  flex: 1;
+  grid-row: 1;
+  grid-column: 2;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  overflow: hidden;
+  min-height: 0;
+  overflow:hidden;
 
   :global(.cds--tab-content) {
-    flex: 1;
-    overflow: hidden;
-    padding: 0;
+    height: 100%;
+    overflow: auto;
+  }
+
+  :global([class*="formContentInner"]) {
+    height: auto !important;
   }
 }
 
-.formTabContent {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
-.formScrollContainer {
-  flex: 1;
-  overflow: auto;
-  padding: spacing.$spacing-05;
-}
 
 .moveButtonContainer {
+  grid-row: 2;
+  grid-column: 2;
   display: flex;
   justify-content: flex-end;
   padding: spacing.$spacing-05;
+  height: 60px;
 }
