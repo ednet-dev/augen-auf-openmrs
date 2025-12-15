@@ -82,7 +82,7 @@ const SurgeryWorkflowNew = () => {
                     ))}
                 </SideNavItems>
             </SideNav>
-            <div className={styles.workflowContentColumn}>
+            <div className={styles.workflowContentColumn} key={workflows[selectedWorkflow].id}>
                 {workflows[selectedWorkflow].component()}
             </div>
         </div>
