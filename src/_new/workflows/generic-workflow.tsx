@@ -22,7 +22,7 @@ type Props = {
 export const GenericWorkflow = (props: Props) => {
     const { queueEntries, isLoading, error, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-    const { activeVisit, isLoading: visitLoading } = useActiveVisit(selectedPatient?.uuid);
+    const { activeVisit, isLoading: visitLoading, encounterUuid } = useActiveVisit(selectedPatient?.uuid, props.stage.formUuid);
     
     const handleMoveComplete = () => {
         setSelectedPatient(null);
@@ -80,12 +80,14 @@ export const GenericWorkflow = (props: Props) => {
                                     <div>Loading visit...</div>
                                 ) : (
                                     <FormEngine 
-                                        key={`${selectedPatient.uuid}-${activeVisit?.uuid}`}
+                                        key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
                                         onSubmit={(data) => console.log("onSubmit", data)}
                                         formUUID={props.stage.formUuid}
                                         patientUUID={selectedPatient.uuid}
                                         visit={activeVisit}
-                                        formSessionIntent="enter"
+                                        encounterUUID={encounterUuid}
+                                        formSessionIntent={encounterUuid ? "edit" : "enter"}
+                                        mode="edit"
                                         hidePatientBanner={false}
                                     />
                                 )}
