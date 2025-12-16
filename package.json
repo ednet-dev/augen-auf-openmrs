@@ -9,7 +9,9 @@
     "start": "openmrs develop",
     "build": "webpack --mode production",
     "serve": "webpack serve --mode development",
-    "test": "jest"
+    "test": "jest",
+    "prepack": "node -e \"const fs = require('fs'); const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8')); fs.writeFileSync('.version-backup', pkg.version); const hash = require('child_process').execSync('git rev-parse --short HEAD').toString().trim(); pkg.version = pkg.version + '-' + hash; fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\\n');\"",
+    "postpack": "node -e \"const fs = require('fs'); const originalVersion = fs.readFileSync('.version-backup', 'utf8'); const pkg = JSON.parse(fs.readFileSync('./package.json', 'utf8')); pkg.version = originalVersion; fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\\n'); fs.unlinkSync('.version-backup');\""
   },
   "keywords": [
     "openmrs",
