@@ -5,6 +5,7 @@ import { PatientList } from "../patient-list.component";
 import { CalendarHeatMapIcon, ConditionsIcon, Patient, ProgramsIcon } from "@openmrs/esm-framework";
 import { MoveButton } from "../move-button";
 import { useQueueEntries } from "../hooks/use-queue-entries";
+import { useActiveVisit } from "../hooks/use-active-visit";
 import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
@@ -21,6 +22,7 @@ type Props = {
 export const GenericWorkflow = (props: Props) => {
     const { queueEntries, isLoading, error, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+    const { activeVisit, isLoading: visitLoading } = useActiveVisit(selectedPatient?.uuid);
     
     const handleMoveComplete = () => {
         setSelectedPatient(null);
@@ -74,15 +76,19 @@ export const GenericWorkflow = (props: Props) => {
                         </TabList>
                         <TabPanels>
                             <TabPanel>
-                                <FormEngine 
-                                    key={selectedPatient.uuid}
-                                    onSubmit={(data) => console.log("onSubmit", data)}
-                                    formUUID={props.stage.formUuid}
-                                    patientUUID={selectedPatient.uuid}
-                                    visit={undefined}
-                                    formSessionIntent="enter"
-                                    hidePatientBanner={false}
-                                />
+                                {visitLoading ? (
+                                    <div>Loading visit...</div>
+                                ) : (
+                                    <FormEngine 
+                                        key={`${selectedPatient.uuid}-${activeVisit?.uuid}`}
+                                        onSubmit={(data) => console.log("onSubmit", data)}
+                                        formUUID={props.stage.formUuid}
+                                        patientUUID={selectedPatient.uuid}
+                                        visit={activeVisit}
+                                        formSessionIntent="enter"
+                                        hidePatientBanner={false}
+                                    />
+                                )}
                             </TabPanel>
                             <TabPanel>Coming soon...</TabPanel>
                             <TabPanel>Coming soon...</TabPanel>
