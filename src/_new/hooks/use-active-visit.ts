@@ -15,6 +15,10 @@ interface Visit {
     encounterType: {
       uuid: string;
     };
+    form?: {
+      uuid: string;
+      name: string;
+    };
   }>;
 }
 
@@ -38,7 +42,7 @@ export function useActiveVisit(patientUuid: string | undefined, formUuid?: strin
       try {
         // Fetch active visits for the patient with encounters
         const response = await openmrsFetch(
-          `${restBaseUrl}/visit?patient=${patientUuid}&includeInactive=false&v=custom:(uuid,startDatetime,stopDatetime,visitType:(uuid,name,display),encounters:(uuid,encounterType:(uuid)))`
+          `${restBaseUrl}/visit?patient=${patientUuid}&includeInactive=false&v=custom:(uuid,startDatetime,stopDatetime,visitType:(uuid,name,display),encounters:(uuid,encounterType:(uuid),form:(uuid,name)))`
         );
 
         const visits = response.data?.results || [];
@@ -51,7 +55,7 @@ export function useActiveVisit(patientUuid: string | undefined, formUuid?: strin
           
           // If formUuid is provided, try to find the corresponding encounter
           if (formUuid) {
-            const existingEncounter = await findEncounterByForm(patientUuid, active.uuid, formUuid);
+            const existingEncounter = active.encounters?.find(enc => enc.form?.uuid === formUuid || enc.form?.name === formUuid);
             setEncounterUuid(existingEncounter?.uuid);
           }
         } else {
@@ -72,29 +76,6 @@ export function useActiveVisit(patientUuid: string | undefined, formUuid?: strin
   }, [patientUuid, formUuid]);
 
   return { activeVisit, encounterUuid, isLoading, error };
-}
-
-async function findEncounterByForm(
-  patientUuid: string,
-  visitUuid: string,
-  formUuid: string
-): Promise<{ uuid: string } | undefined> {
-  try {
-    // Fetch encounters for this patient and visit that match the form
-    const response = await openmrsFetch(
-      `${restBaseUrl}/encounter?patient=${patientUuid}&visit=${visitUuid}&v=custom:(uuid,form:(uuid))`
-    );
-
-    const encounters = response.data?.results || [];
-    
-    // Find the encounter that matches this form
-    const matchingEncounter = encounters.find((enc: any) => enc.form?.uuid === formUuid);
-    
-    return matchingEncounter;
-  } catch (err) {
-    console.error("Error finding encounter by form:", err);
-    return undefined;
-  }
 }
 
 async function createVisit(patientUuid: string): Promise<Visit> {
