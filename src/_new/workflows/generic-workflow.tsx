@@ -65,56 +65,60 @@ export const GenericWorkflow = (props: Props) => {
                 />
             </div>
 
-            <div className={styles.tabsContainer}>
-                {selectedPatient ? (
-                    <Tabs>
-                        <TabList contained>
-                            <Tab renderIcon={AlignBoxTopLeft}>Form</Tab>
-                            <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
-                            <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
-                            <Tab renderIcon={ProgramsIcon}>Therapies</Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel>
-                                {visitLoading ? (
-                                    <div>Loading visit...</div>
-                                ) : (
-                                    <FormEngine 
-                                        key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
-                                        onSubmit={(data) => console.log("onSubmit", data)}
-                                        formUUID={props.stage.formUuid}
-                                        patientUUID={selectedPatient.uuid}
-                                        visit={activeVisit}
-                                        encounterUUID={encounterUuid}
-                                        formSessionIntent={encounterUuid ? "edit" : "enter"}
-                                        mode="edit"
-                                        hidePatientBanner={false}
-                                    />
-                                )}
-                            </TabPanel>
-                            <TabPanel>Coming soon...</TabPanel>
-                            <TabPanel>Coming soon...</TabPanel>
-                            <TabPanel>Coming soon...</TabPanel>
-                        </TabPanels>
-                    </Tabs>
-                ) : (
+            {selectedPatient ? (
+                <>
+                    <div className={styles.tabsContainer}>
+                        <Tabs>
+                            <TabList contained>
+                                <Tab renderIcon={AlignBoxTopLeft}>Form</Tab>
+                                <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
+                                <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
+                                <Tab renderIcon={ProgramsIcon}>Therapies</Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel>
+                                    {visitLoading ? (
+                                        <div>Loading visit...</div>
+                                    ) : (
+                                        <FormEngine 
+                                            key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
+                                            onSubmit={(data) => console.log("onSubmit", data)}
+                                            formUUID={props.stage.formUuid}
+                                            patientUUID={selectedPatient.uuid}
+                                            visit={activeVisit}
+                                            encounterUUID={encounterUuid}
+                                            formSessionIntent={encounterUuid ? "edit" : "enter"}
+                                            mode="edit"
+                                            hidePatientBanner={false}
+                                        />
+                                    )}
+                                </TabPanel>
+                                <TabPanel>Coming soon...</TabPanel>
+                                <TabPanel>Coming soon...</TabPanel>
+                                <TabPanel>Coming soon...</TabPanel>
+                            </TabPanels>
+                        </Tabs>
+                    </div>
+
+                    <div className={styles.moveButtonContainer}>
+                        <MoveButton 
+                            queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
+                            nextStage={props.nextStage} 
+                            allStages={props.allStages}
+                            config={props.config}
+                            onMoveComplete={handleMoveComplete}
+                        />
+                    </div>
+                </>
+            ) : (
+                <div className={styles.emptyStateContainer}>
                     <EmptyState
                         icon={Person}
                         title="No patient selected"
                         description="Select a patient from the queue on the left to view their information and fill out forms"
                     />
-                )}
-            </div>
-
-            <div className={styles.moveButtonContainer}>
-                    <MoveButton 
-                        queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
-                        nextStage={props.nextStage} 
-                        allStages={props.allStages}
-                        config={props.config}
-                        onMoveComplete={handleMoveComplete}
-                    />
-            </div>
+                </div>
+            )}
         </div>
     );
 }
