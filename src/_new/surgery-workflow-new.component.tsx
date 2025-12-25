@@ -10,54 +10,41 @@ const SurgeryWorkflowNew = () => {
     const config = useConfig() as NewConfig;
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
-    const refractionStage = { label:"Refraction", queueUuid: config.stages.refraction.queueUuid, formUuid: config.stages.refraction.formUuid, waitingStatusUuid: config.status.waitingUuid };
-    const eyeExamStage = { label:"Eye Exam", queueUuid: config.stages.eyeExam.queueUuid, formUuid: config.stages.eyeExam.formUuid, waitingStatusUuid: config.status.waitingUuid };
-    const therapyStage = { label:"Therapy", queueUuid: config.stages.therapy.queueUuid, formUuid: config.stages.therapy.formUuid, waitingStatusUuid: config.status.waitingUuid };
+    // Build stages from dynamic configuration
+    const enabledSteps = config.workflowSteps.filter(step => step.enabled);
     
-    const allStages = [refractionStage, eyeExamStage, therapyStage];
+    const allStages = enabledSteps.map(step => ({
+        label: step.label,
+        queueUuid: step.queueUuid,
+        formUuid: step.formUuid,
+        waitingStatusUuid: config.status.waitingUuid
+    }));
     
+    // Build workflows dynamically
     const workflows = [
         {
             id: "registration",
             label: "Registration Workflow",
-            component: () => <RegistrationWorkflow nextStage={refractionStage} allStages={allStages} config={config} />
+            component: () => (
+                <RegistrationWorkflow 
+                    nextStage={allStages[0]} 
+                    allStages={allStages} 
+                    config={config} 
+                />
+            )
         },
-        {
-            id: "refraction",
-            label: "Refraction Workflow",
+        ...enabledSteps.map((step, index) => ({
+            id: step.id,
+            label: `${step.label} Workflow`,
             component: () => (
                 <GenericWorkflow
-                    stage={refractionStage}
-                    nextStage={eyeExamStage}
+                    stage={allStages[index]}
+                    nextStage={allStages[index + 1] || allStages[0]}
                     allStages={allStages}
                     config={config}
                 />
             )
-        },
-        {
-            id: "eye-exam",
-            label: "Eye Exam Workflow",
-            component: () => (
-                <GenericWorkflow 
-                    stage={eyeExamStage}
-                    nextStage={therapyStage}
-                    allStages={allStages}
-                    config={config}
-                />
-            )
-        },
-        {
-            id: "therapy",
-            label: "Therapy Workflow",
-            component: () => (
-                <GenericWorkflow 
-                    stage={therapyStage}
-                    nextStage={refractionStage}
-                    allStages={allStages}
-                    config={config}
-                />
-            )
-        },
+        }))
     ];
 
     return (

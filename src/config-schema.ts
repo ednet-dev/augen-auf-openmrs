@@ -3,31 +3,32 @@ import { Type } from "@openmrs/esm-framework";
 import { ref } from "process";
 
 export const configSchema = {
-  stages: {
-    _type: Type.Object,
-    _description: "Workflow stages configuration",
-    _default: {
-      registration: {
-        queueUuid: "",
-        formUuid: ""
-      },
-      refraction: {
+  workflowSteps: {
+    _type: Type.Array,
+    _description: "Dynamic workflow steps configuration. Array order determines workflow sequence.",
+    _default: [
+      {
+        id: "refraction",
+        label: "Refraction",
+        enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000002",
         formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
       },
-      eyeExam: {
+      {
+        id: "eye-exam",
+        label: "Eye Exam",
+        enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000003",
         formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
       },
-      therapy: {
+      {
+        id: "therapy",
+        label: "Therapy",
+        enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000004",
         formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
-      },
-      surgery: {
-        queueUuid: "",
-        formUuid: ""
       }
-    },
+    ]
   },
   status: {
     _type: Type.Object,

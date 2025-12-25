@@ -3,14 +3,16 @@ export interface StageConfig {
     formUuid: string;
 }
 
+export interface WorkflowStep {
+    id: string;
+    label: string;
+    enabled: boolean;
+    queueUuid: string;
+    formUuid: string;
+}
+
 export interface NewConfig {
-    stages: {
-        refraction: StageConfig;
-        eyeExam: StageConfig;
-        therapy: StageConfig;
-        preSurgery: StageConfig;
-        surgery: StageConfig;
-    }
+    workflowSteps: WorkflowStep[];
     status: {
         waitingUuid: string;
         inServiceUuid: string;
