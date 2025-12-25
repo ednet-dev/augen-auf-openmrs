@@ -6,6 +6,29 @@ export const configSchema = {
   workflowSteps: {
     _type: Type.Array,
     _description: "Dynamic workflow steps configuration. Array order determines workflow sequence.",
+    _elements: {
+      id: {
+        _type: Type.String,
+        _description: "Unique identifier for this workflow step"
+      },
+      label: {
+        _type: Type.String,
+        _description: "Display name for the workflow step"
+      },
+      enabled: {
+        _type: Type.Boolean,
+        _description: "Whether this workflow step is active",
+        _default: true
+      },
+      queueUuid: {
+        _type: Type.UUID,
+        _description: "UUID of the queue for this workflow step"
+      },
+      formUuid: {
+        _type: Type.UUID,
+        _description: "UUID of the form for this workflow step"
+      }
+    },
     _default: [
       {
         id: "refraction",
