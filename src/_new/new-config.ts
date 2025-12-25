@@ -1,9 +1,4 @@
-export interface StageConfig {
-    queueUuid: string;
-    formUuid: string;
-}
-
-export interface WorkflowStep {
+export interface Stage {
     id: string;
     label: {
         en: string;
@@ -17,7 +12,7 @@ export interface WorkflowStep {
 }
 
 export interface NewConfig {
-    workflowSteps: WorkflowStep[];
+    stages: Stage[];
     status: {
         waitingUuid: string;
         inServiceUuid: string;

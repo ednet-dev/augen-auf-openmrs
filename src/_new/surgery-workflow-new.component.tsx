@@ -13,15 +13,15 @@ const SurgeryWorkflowNew = () => {
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
     // Build stages from dynamic configuration
-    const enabledSteps = config.workflowSteps.filter(step => step.enabled);
+    const enabledStages = config.stages.filter(stage => stage.enabled);
     
     // Get current language or fallback to English
     const currentLanguage = i18n.language || 'en';
     
-    const allStages = enabledSteps.map(step => ({
-        label: step.label[currentLanguage] || step.label['en'] || Object.values(step.label)[0],
-        queueUuid: step.queueUuid,
-        formUuid: step.formUuid,
+    const allStages = enabledStages.map(stage => ({
+        label: stage.label[currentLanguage] || stage.label['en'] || Object.values(stage.label)[0],
+        queueUuid: stage.queueUuid,
+        formUuid: stage.formUuid,
         waitingStatusUuid: config.status.waitingUuid
     }));
     
@@ -38,7 +38,7 @@ const SurgeryWorkflowNew = () => {
                 />
             )
         },
-        ...enabledSteps.map((step, index) => ({
+        ...enabledStages.map((step, index) => ({
             id: step.id,
             label: step.label[currentLanguage] || step.label['en'] || Object.values(step.label)[0],
             component: () => (

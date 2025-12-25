@@ -3,7 +3,7 @@ import { Type } from "@openmrs/esm-framework";
 import { ref } from "process";
 
 export const configSchema = {
-  workflowSteps: {
+  stages: {
     _type: Type.Array,
     _description: "Dynamic workflow steps configuration. Array order determines workflow sequence.",
     _elements: {
