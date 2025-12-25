@@ -5,7 +5,12 @@ export interface StageConfig {
 
 export interface WorkflowStep {
     id: string;
-    label: string;
+    label: {
+        en: string;
+        de: string;
+        es: string;
+        [key: string]: string; // Allow other language codes
+    };
     enabled: boolean;
     queueUuid: string;
     formUuid: string;

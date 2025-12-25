@@ -12,8 +12,24 @@ export const configSchema = {
         _description: "Unique identifier for this workflow step"
       },
       label: {
-        _type: Type.String,
-        _description: "Display name for the workflow step"
+        _type: Type.Object,
+        _description: "Display name for the workflow step in multiple languages",
+        _default: {},
+        en: {
+          _type: Type.String,
+          _description: "English label",
+          _default: ""
+        },
+        de: {
+          _type: Type.String,
+          _description: "German label",
+          _default: ""
+        },
+        es: {
+          _type: Type.String,
+          _description: "Spanish label",
+          _default: ""
+        }
       },
       enabled: {
         _type: Type.Boolean,
@@ -32,21 +48,33 @@ export const configSchema = {
     _default: [
       {
         id: "refraction",
-        label: "Refraction",
+        label: {
+          en: "Refraction",
+          de: "Refraktion",
+          es: "Refracción"
+        },
         enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000002",
         formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
       },
       {
         id: "eye-exam",
-        label: "Eye Exam",
+        label: {
+          en: "Eye Exam",
+          de: "Augenuntersuchung",
+          es: "Examen Ocular"
+        },
         enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000003",
         formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
       },
       {
         id: "therapy",
-        label: "Therapy",
+        label: {
+          en: "Therapy",
+          de: "Therapie",
+          es: "Terapia"
+        },
         enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000004",
         formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"

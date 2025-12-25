@@ -9,14 +9,17 @@ import { NewConfig } from "./new-config";
 
 const SurgeryWorkflowNew = () => {
     const config = useConfig() as NewConfig;
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
     // Build stages from dynamic configuration
     const enabledSteps = config.workflowSteps.filter(step => step.enabled);
     
+    // Get current language or fallback to English
+    const currentLanguage = i18n.language || 'en';
+    
     const allStages = enabledSteps.map(step => ({
-        label: step.label,
+        label: step.label[currentLanguage] || step.label['en'] || Object.values(step.label)[0],
         queueUuid: step.queueUuid,
         formUuid: step.formUuid,
         waitingStatusUuid: config.status.waitingUuid
@@ -37,7 +40,7 @@ const SurgeryWorkflowNew = () => {
         },
         ...enabledSteps.map((step, index) => ({
             id: step.id,
-            label: step.label,
+            label: step.label[currentLanguage] || step.label['en'] || Object.values(step.label)[0],
             component: () => (
                 <GenericWorkflow
                     stage={allStages[index]}
