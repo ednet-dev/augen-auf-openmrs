@@ -71,9 +71,9 @@ export const GenericWorkflow = (props: Props) => {
                         <Tabs>
                             <TabList contained>
                                 <Tab renderIcon={AlignBoxTopLeft}>Form</Tab>
-                                <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
+                                {/* <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
                                 <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
-                                <Tab renderIcon={ProgramsIcon}>Therapies</Tab>
+                                <Tab renderIcon={ProgramsIcon}>Therapies</Tab> */}
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
@@ -93,9 +93,9 @@ export const GenericWorkflow = (props: Props) => {
                                         />
                                     )}
                                 </TabPanel>
+                                {/* <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel>
-                                <TabPanel>Coming soon...</TabPanel>
-                                <TabPanel>Coming soon...</TabPanel>
+                                <TabPanel>Coming soon...</TabPanel> */}
                             </TabPanels>
                         </Tabs>
                     </div>
