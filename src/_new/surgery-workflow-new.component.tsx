@@ -24,7 +24,7 @@ const SurgeryWorkflowNew = () => {
     const workflows = [
         {
             id: "registration",
-            label: "Registration Workflow",
+            label: "Registration",
             component: () => (
                 <RegistrationWorkflow 
                     nextStage={allStages[0]} 
@@ -35,7 +35,7 @@ const SurgeryWorkflowNew = () => {
         },
         ...enabledSteps.map((step, index) => ({
             id: step.id,
-            label: `${step.label} Workflow`,
+            label: step.label,
             component: () => (
                 <GenericWorkflow
                     stage={allStages[index]}
