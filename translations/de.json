@@ -1,0 +1,32 @@
+{
+  "appTitle": "Augen Auf",
+  "navigation": {
+    "surgeryWorkflow": "Chirurgie-Workflow",
+    "workflowNavigation": "Workflow-Navigation"
+  },
+  "search": {
+    "searchPatients": "Patienten suchen",
+    "enterNameOrId": "Name oder ID des Patienten eingeben"
+  },
+  "patientList": {
+    "loading": "Patienten werden geladen...",
+    "errorTitle": "Fehler beim Laden der Patienten",
+    "errorDescription": "Beim Laden der Patientenwarteschlange ist ein Fehler aufgetreten",
+    "emptyQueueTitle": "Keine Patienten in der Warteschlange",
+    "emptyQueueDescription": "Derzeit warten keine Patienten in dieser Phase",
+    "noPatientsFound": "Keine Patienten gefunden",
+    "adjustSearchCriteria": "Versuchen Sie, Ihre Suchkriterien anzupassen",
+    "patientsHeader": "Patienten"
+  },
+  "workflow": {
+    "registration": "Registrierung",
+    "formTab": "Formular",
+    "loadingVisit": "Besuch wird geladen...",
+    "noPatientSelected": "Kein Patient ausgewählt",
+    "selectPatientDescription": "Wählen Sie einen Patienten aus der Warteschlange links aus, um seine Informationen anzuzeigen und Formulare auszufüllen"
+  },
+  "moveButton": {
+    "moving": "Wird verschoben...",
+    "moveTo": "Verschieben nach {{stageName}}"
+  }
+}

@@ -1,5 +1,6 @@
 import React from "react";
-import { Patient } from "@openmrs/esm-framework/src";
+import { useTranslation } from "react-i18next";
+import { Patient } from "@openmrs/esm-framework";
 import { ClickableTile, InlineLoading } from "@carbon/react";
 import { EmptyState } from "./empty-state.component";
 import { UserMultiple, WarningAlt } from "@carbon/react/icons";
@@ -37,11 +38,13 @@ const PatientTile = ({ patient, isSelected, onSelect, renderActions }: {
 }
 
 export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPatientSelect, isLoading, error, renderPatientActions, emptyStateTitle, emptyStateDescription }) => {
+    const { t } = useTranslation();
+    
     const renderContent = () => {
         if (isLoading) {
             return (
                 <div className={styles.centeredContainer}>
-                    <InlineLoading description="Loading patients..." />
+                    <InlineLoading description={t('patientList.loading', 'Loading patients...')} />
                 </div>
             );
         }
@@ -50,8 +53,8 @@ export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPati
             return (
                 <EmptyState 
                     icon={WarningAlt}
-                    title="Failed to load patients"
-                    description={error.message || "An error occurred while loading the patient queue"}
+                    title={t('patientList.errorTitle', 'Failed to load patients')}
+                    description={error.message || t('patientList.errorDescription', 'An error occurred while loading the patient queue')}
                 />
             );
         }
@@ -60,8 +63,8 @@ export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPati
             return (
                 <EmptyState 
                     icon={UserMultiple}
-                    title={emptyStateTitle || "No patients in queue"}
-                    description={emptyStateDescription || "There are currently no patients waiting in this stage"}
+                    title={emptyStateTitle || t('patientList.emptyQueueTitle', 'No patients in queue')}
+                    description={emptyStateDescription || t('patientList.emptyQueueDescription', 'There are currently no patients waiting in this stage')}
                 />
             );
         }
@@ -80,7 +83,7 @@ export const PatientList: React.FC<Props> = ({ patients, selectedPatient, onPati
     return (
         <aside className={styles.patientListSidebar}>
             <div className={styles.patientList}>
-                <div className={styles.patientListHeader}>Patients</div>
+                <div className={styles.patientListHeader}>{t('patientList.patientsHeader', 'Patients')}</div>
                 <div className={styles.patientItems}>
                     {renderContent()}
                 </div>

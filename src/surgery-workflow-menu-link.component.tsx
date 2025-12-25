@@ -1,10 +1,13 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ConfigurableLink } from '@openmrs/esm-framework';
 
 export default function SurgeryWorkflowMenuLink() {
+  const { t } = useTranslation();
+  
   return (
     <ConfigurableLink to="${openmrsSpaBase}/surgery-workflow-new">
-      Surgery Workflow
+      {t('navigation.surgeryWorkflow', 'Surgery Workflow')}
     </ConfigurableLink>
   );
 }

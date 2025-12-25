@@ -1,0 +1,32 @@
+{
+  "appTitle": "Augen Auf",
+  "navigation": {
+    "surgeryWorkflow": "Flujo de Trabajo Quirúrgico",
+    "workflowNavigation": "Navegación del flujo de trabajo"
+  },
+  "search": {
+    "searchPatients": "Buscar Pacientes",
+    "enterNameOrId": "Ingrese el nombre o ID del paciente"
+  },
+  "patientList": {
+    "loading": "Cargando pacientes...",
+    "errorTitle": "Error al cargar pacientes",
+    "errorDescription": "Ocurrió un error al cargar la cola de pacientes",
+    "emptyQueueTitle": "No hay pacientes en la cola",
+    "emptyQueueDescription": "Actualmente no hay pacientes esperando en esta etapa",
+    "noPatientsFound": "No se encontraron pacientes",
+    "adjustSearchCriteria": "Intente ajustar sus criterios de búsqueda",
+    "patientsHeader": "Pacientes"
+  },
+  "workflow": {
+    "registration": "Registro",
+    "formTab": "Formulario",
+    "loadingVisit": "Cargando visita...",
+    "noPatientSelected": "Ningún paciente seleccionado",
+    "selectPatientDescription": "Seleccione un paciente de la cola de la izquierda para ver su información y completar formularios"
+  },
+  "moveButton": {
+    "moving": "Moviendo...",
+    "moveTo": "Mover a {{stageName}}"
+  }
+}

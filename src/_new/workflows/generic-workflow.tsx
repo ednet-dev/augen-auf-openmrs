@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { FormEngine } from "@openmrs/esm-form-engine-lib";
 import { PatientList } from "../patient-list.component";
 import { CalendarHeatMapIcon, ConditionsIcon, Patient, ProgramsIcon } from "@openmrs/esm-framework";
@@ -20,6 +21,7 @@ type Props = {
 }
 
 export const GenericWorkflow = (props: Props) => {
+    const { t } = useTranslation();
     const { queueEntries, isLoading, error, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
     const { activeVisit, isLoading: visitLoading, encounterUuid } = useActiveVisit(selectedPatient?.uuid, props.stage.formUuid);
@@ -70,7 +72,7 @@ export const GenericWorkflow = (props: Props) => {
                     <div className={styles.tabsContainer}>
                         <Tabs>
                             <TabList contained>
-                                <Tab renderIcon={AlignBoxTopLeft}>Form</Tab>
+                                <Tab renderIcon={AlignBoxTopLeft}>{t('workflow.formTab', 'Form')}</Tab>
                                 {/* <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
                                 <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
                                 <Tab renderIcon={ProgramsIcon}>Therapies</Tab> */}
@@ -78,7 +80,7 @@ export const GenericWorkflow = (props: Props) => {
                             <TabPanels>
                                 <TabPanel>
                                     {visitLoading ? (
-                                        <div>Loading visit...</div>
+                                        <div>{t('workflow.loadingVisit', 'Loading visit...')}</div>
                                     ) : (
                                         <FormEngine 
                                             key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
@@ -114,8 +116,8 @@ export const GenericWorkflow = (props: Props) => {
                 <div className={styles.emptyStateContainer}>
                     <EmptyState
                         icon={Person}
-                        title="No patient selected"
-                        description="Select a patient from the queue on the left to view their information and fill out forms"
+                        title={t('workflow.noPatientSelected', 'No patient selected')}
+                        description={t('workflow.selectPatientDescription', 'Select a patient from the queue on the left to view their information and fill out forms')}
                     />
                 </div>
             )}

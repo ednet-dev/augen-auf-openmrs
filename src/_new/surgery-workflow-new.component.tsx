@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useConfig } from "@openmrs/esm-framework";
 import { GenericWorkflow } from "./workflows/generic-workflow";
 import { RegistrationWorkflow } from "./workflows/registration-workflow";
@@ -8,6 +9,7 @@ import { NewConfig } from "./new-config";
 
 const SurgeryWorkflowNew = () => {
     const config = useConfig() as NewConfig;
+    const { t } = useTranslation();
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
     // Build stages from dynamic configuration
@@ -24,7 +26,7 @@ const SurgeryWorkflowNew = () => {
     const workflows = [
         {
             id: "registration",
-            label: "Registration",
+            label: t('workflow.registration', 'Registration'),
             component: () => (
                 <RegistrationWorkflow 
                     nextStage={allStages[0]} 
@@ -51,7 +53,7 @@ const SurgeryWorkflowNew = () => {
         <div className={styles.workflowContainer}>
             <SideNav 
                 expanded 
-                aria-label="Workflow navigation"
+                aria-label={t('navigation.workflowNavigation', 'Workflow navigation')}
                 className={styles.workflowSideNav}
             >
                 <SideNavItems>

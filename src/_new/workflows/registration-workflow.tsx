@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useSearchPatients } from "../hooks/use-search-patients";
 import { PatientList } from "../patient-list.component";
 import { TextInput } from "@carbon/react";
 import { MoveButton } from "../move-button";
-import { Patient } from "@openmrs/esm-framework/src";
+import { Patient } from "@openmrs/esm-framework";
 import { NewConfig } from "../new-config";
 
 type Props = {
@@ -13,6 +14,7 @@ type Props = {
 }
 
 export const RegistrationWorkflow = (props: Props) => {
+    const { t } = useTranslation();
     const { setQuery, patients, isLoading, error, refresh } = useSearchPatients();
     const [selectedPatient, setSelectedPatient] = React.useState<Patient | null>(null);
 
@@ -20,15 +22,15 @@ export const RegistrationWorkflow = (props: Props) => {
         <div>
             <TextInput
                 id="patient-search-input"
-                labelText="Search Patients"
-                placeholder="Enter patient name or ID"
+                labelText={t('search.searchPatients', 'Search Patients')}
+                placeholder={t('search.enterNameOrId', 'Enter patient name or ID')}
                 onChange={(e) => setQuery(e.target.value)}
                 style={{ marginBottom: '1rem' }}
             />
 
             <PatientList
-                emptyStateTitle="No patients found"
-                emptyStateDescription="Try adjusting your search criteria"
+                emptyStateTitle={t('patientList.noPatientsFound', 'No patients found')}
+                emptyStateDescription={t('patientList.adjustSearchCriteria', 'Try adjusting your search criteria')}
                 patients={patients}
                 selectedPatient={selectedPatient}
                 onPatientSelect={setSelectedPatient}

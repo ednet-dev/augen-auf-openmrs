@@ -5,6 +5,13 @@ import '@testing-library/jest-dom';
 import { PatientList } from './patient-list.component';
 import { Patient } from '@openmrs/esm-framework';
 
+// Mock react-i18next
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, defaultValue?: string) => defaultValue || key,
+  }),
+}));
+
 describe('PatientList', () => {
   const mockPatient1: Patient = {
     uuid: 'patient-1',

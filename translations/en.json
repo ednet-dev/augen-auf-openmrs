@@ -1,3 +1,32 @@
 {
-  "augen-auf": "Augen Auf"
+  "appTitle": "Augen Auf",
+  "navigation": {
+    "surgeryWorkflow": "Surgery Workflow",
+    "workflowNavigation": "Workflow navigation"
+  },
+  "search": {
+    "searchPatients": "Search Patients",
+    "enterNameOrId": "Enter patient name or ID"
+  },
+  "patientList": {
+    "loading": "Loading patients...",
+    "errorTitle": "Failed to load patients",
+    "errorDescription": "An error occurred while loading the patient queue",
+    "emptyQueueTitle": "No patients in queue",
+    "emptyQueueDescription": "There are currently no patients waiting in this stage",
+    "noPatientsFound": "No patients found",
+    "adjustSearchCriteria": "Try adjusting your search criteria",
+    "patientsHeader": "Patients"
+  },
+  "workflow": {
+    "registration": "Registration",
+    "formTab": "Form",
+    "loadingVisit": "Loading visit...",
+    "noPatientSelected": "No patient selected",
+    "selectPatientDescription": "Select a patient from the queue on the left to view their information and fill out forms"
+  },
+  "moveButton": {
+    "moving": "Moving...",
+    "moveTo": "Move to {{stageName}}"
+  }
 }
