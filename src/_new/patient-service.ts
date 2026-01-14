@@ -1,4 +1,4 @@
-import { openmrsFetch, Patient, restBaseUrl } from '@openmrs/esm-framework';
+import { openmrsFetch, Patient, restBaseUrl, Visit } from '@openmrs/esm-framework';
 import { fetchAll } from "./fetch-utils";
 import { NewConfig } from './new-config';
 
@@ -93,4 +93,36 @@ async function createQueueEntry(
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(queueEntryPayload),
   });
+}
+
+export async function endVisit(visit: Visit): Promise<void> {
+    const url = `${restBaseUrl}/visit/${visit.uuid}`;
+  
+    const body = {
+      stopDatetime: new Date().toISOString(),
+    };
+  
+    await openmrsFetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+}
+
+export async function endQueueEntry(queueEntryUuid: string): Promise<void> {
+    const url = `${restBaseUrl}/queue-entry/${queueEntryUuid}`;
+  
+    const body = {
+      endedAt: new Date().toISOString(),
+    };
+
+    await openmrsFetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
 }

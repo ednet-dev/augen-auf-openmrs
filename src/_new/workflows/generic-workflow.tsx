@@ -12,6 +12,7 @@ import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
 import { NewConfig } from "../new-config";
+import { EndVisitButton } from "../end-visit-button";
 
 type Props = {
     stage: Stage;
@@ -126,6 +127,15 @@ export const GenericWorkflow = (props: Props) => {
                     </div>
 
                     <div className={styles.moveButtonContainer}>
+                        <div style={{marginRight: '1em'}}>
+                            <EndVisitButton
+                                queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
+                                config={props.config} 
+                                activeVisit={activeVisit}
+                                onEndComplete={handleMoveComplete}
+                            />
+                        </div>
+
                         <MoveButton 
                             queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
                             nextStage={props.nextStage} 
