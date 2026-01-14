@@ -66,7 +66,7 @@ export const configSchema = {
         },
         enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000003",
-        formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
+        formUuid: "Laboratory Test Results"
       },
       {
         id: "therapy",
@@ -77,7 +77,7 @@ export const configSchema = {
         },
         enabled: true,
         queueUuid: "aa004400-1234-5678-90ab-000000000004",
-        formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
+        formUuid: "Mental Health Assessment Form"
       }
     ]
   },

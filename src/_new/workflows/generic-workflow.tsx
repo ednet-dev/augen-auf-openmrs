@@ -24,12 +24,14 @@ export const GenericWorkflow = (props: Props) => {
     const { t } = useTranslation();
     const { queueEntries, isLoading, error, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
     const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-    const { activeVisit, isLoading: visitLoading, encounterUuid } = useActiveVisit(selectedPatient?.uuid, props.stage.formUuid);
+    const { activeVisit, isLoading: visitLoading, encounterUuid, encounterUuidPerForm } = useActiveVisit(selectedPatient?.uuid, props.stage.formUuid);
     
     const handleMoveComplete = () => {
         setSelectedPatient(null);
         refresh();
     };
+
+    const otherStages = props.allStages.filter(stage => stage.formUuid !== props.stage.formUuid);
 
     /*const triggerFormValidation = () => {
          window.dispatchEvent(
@@ -76,6 +78,9 @@ export const GenericWorkflow = (props: Props) => {
                                 {/* <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
                                 <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
                                 <Tab renderIcon={ProgramsIcon}>Therapies</Tab> */}
+                                { otherStages.map((stage) => (
+                                    <Tab key={stage.formUuid}>Form: {stage.label}</Tab>
+                                )) }
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
@@ -95,6 +100,24 @@ export const GenericWorkflow = (props: Props) => {
                                         />
                                     )}
                                 </TabPanel>
+                                { otherStages.map((stage) => (
+                                    <TabPanel key={stage.formUuid}>
+                                     {visitLoading ? (
+                                        <div>{t('workflow.loadingVisit', 'Loading visit...')}</div>
+                                    ) : (
+                                        <FormEngine 
+                                            key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}-${stage.formUuid}`}
+                                            formUUID={stage.formUuid}
+                                            patientUUID={selectedPatient.uuid}
+                                            visit={activeVisit}
+                                            encounterUUID={encounterUuidPerForm[stage.formUuid]}
+                                            formSessionIntent={"enter"}
+                                            mode="embedded-view"
+                                            hidePatientBanner={true}
+                                        />
+                                    )}
+                                    </TabPanel>
+                                )) }
                                 {/* <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel> */}

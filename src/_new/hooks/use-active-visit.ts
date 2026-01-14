@@ -25,6 +25,7 @@ interface Visit {
 export function useActiveVisit(patientUuid: string | undefined, formUuid?: string) {
   const [activeVisit, setActiveVisit] = useState<Visit | null>(null);
   const [encounterUuid, setEncounterUuid] = useState<string | undefined>(undefined);
+  const [encounterUuidPerForm, setEncounterUuidPerForm] = useState<Record<string, string | undefined>>({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -52,7 +53,16 @@ export function useActiveVisit(patientUuid: string | undefined, formUuid?: strin
 
         if (active) {
           setActiveVisit(active);
-          
+        
+          let encountersPerForm: Record<string, string | undefined> = {};
+          active.encounters?.forEach(enc => {
+            if (enc.form) {
+              encountersPerForm[enc.form.uuid] = enc.uuid;
+              encountersPerForm[enc.form.name] = enc.uuid;
+            }
+          });
+          setEncounterUuidPerForm(encountersPerForm);
+
           // If formUuid is provided, try to find the corresponding encounter
           if (formUuid) {
             const existingEncounter = active.encounters?.find(enc => enc.form?.uuid === formUuid || enc.form?.name === formUuid);
@@ -62,6 +72,7 @@ export function useActiveVisit(patientUuid: string | undefined, formUuid?: strin
           // No active visit - create one
           const newVisit = await createVisit(patientUuid);
           setActiveVisit(newVisit);
+          setEncounterUuidPerForm({});
           setEncounterUuid(undefined);
         }
       } catch (err) {
@@ -75,7 +86,7 @@ export function useActiveVisit(patientUuid: string | undefined, formUuid?: strin
     fetchActiveVisit();
   }, [patientUuid, formUuid]);
 
-  return { activeVisit, encounterUuid, isLoading, error };
+  return { activeVisit, encounterUuid, encounterUuidPerForm, isLoading, error };
 }
 
 async function createVisit(patientUuid: string): Promise<Visit> {
