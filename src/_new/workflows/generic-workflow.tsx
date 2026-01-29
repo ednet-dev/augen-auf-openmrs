@@ -167,8 +167,9 @@ export const GenericWorkflow = (props: Props) => {
                       />
                   )}
                 </TabPanel>
-                {otherStages.map((stage) => (
-                 const { schema, formUuid: stageUuid, isLoading: stageLoading } = useO3FormSchema(stage.formUuid);
+                {otherStages.map((stage) => {
+                  const { schema, formUuid: stageUuid, isLoading: stageLoading } = useO3FormSchema(stage.formUuid);
+                  return(
                   <TabPanel key={stage.formUuid}>
                     {visitLoading ? (
                       <div>
@@ -203,6 +204,7 @@ export const GenericWorkflow = (props: Props) => {
                       />                    
                     )}
                   </TabPanel>
+                  );
                 ))}
                 {/* <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel>
