@@ -15,15 +15,16 @@ import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
-import { NewConfig } from "../new-config";
+import { ResolvedConfig } from "../new-config";
+import { RuntimeStage } from "../types";
 import { EndVisitButton } from "../end-visit-button";
-import { useO3FormSchema } from "../hooks/ugetFormUUID";
+import { useO3FormSchema } from "../hooks/getFormUUID";
 
 type Props = {
-  stage: Stage;
-  nextStage: Stage;
-  allStages: Stage[];
-  config: NewConfig;
+  stage: RuntimeStage;
+  nextStage: RuntimeStage;
+  allStages: RuntimeStage[];
+  config: ResolvedConfig;
 };
 
 export const GenericWorkflow = (props: Props) => {
@@ -55,7 +56,7 @@ export const GenericWorkflow = (props: Props) => {
   formUuid: resolvedFormUuid,
   isLoading: isFormLoading,
   error: formError,
-} = useO3FormSchema(props.stage.formUuid);
+  } = useO3FormSchema(props.stage.formUuid);
   
   /*const triggerFormValidation = () => {
          window.dispatchEvent(
@@ -81,7 +82,7 @@ export const GenericWorkflow = (props: Props) => {
         );
     }*/
 
-console.log(
+  console.log(
               `Rendering FormEngine for stage: ${props.stage.formUuid}`,
               {
                 formUUID: props.stage.formUuid,                      
@@ -141,10 +142,6 @@ console.log(
                       )}
                     </div>
                   ) : (
-                    <>
-                      {console.log(
-                        `Rendering FormEngine for stage: ${props.stage.formUuid}`,
-                        
                       <FormEngine
                         key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
                         onSubmit={(data) => console.log("onSubmit", data)}
@@ -155,7 +152,8 @@ console.log(
                         encounterUUID={encounterUuid}
                         // formSessionIntent=
                         mode={encounterUuid ? "edit" : "enter"}
-                        hidePatientBanner={false}                      />
+                        hidePatientBanner={false}
+                      />
                   )}
                 </TabPanel>
                 {otherStages.map((stage) => (
