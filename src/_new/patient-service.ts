@@ -53,8 +53,16 @@ export async function movePatientToStage(
 ): Promise<void> {
   const url = `${restBaseUrl}/queue-entry/transition`;
 
+  // If no queue entry UUID provided, check if patient already has an active queue entry
   if (!queueEntryUuid) {
-    return createQueueEntry(queueUuid, patientUuid, config.status.waitingUuid);
+    const existingEntry = await findActiveQueueEntryForPatient(patientUuid);
+    if (existingEntry) {
+      // Patient already has a queue entry - transition it instead
+      queueEntryUuid = existingEntry.uuid;
+    } else {
+      // No existing entry - create a new one
+      return createQueueEntry(queueUuid, patientUuid, config.status.waitingUuid);
+    }
   }
 
   const body = {
@@ -72,6 +80,22 @@ export async function movePatientToStage(
     },
     body: JSON.stringify(body),
   });
+}
+
+async function findActiveQueueEntryForPatient(patientUuid: string): Promise<{ uuid: string } | null> {
+  try {
+    const response = await openmrsFetch(
+      `${restBaseUrl}/queue-entry?patient=${patientUuid}&isEnded=false&v=default`
+    );
+    const data = await response.json();
+    if (data.results && data.results.length > 0) {
+      return { uuid: data.results[0].uuid };
+    }
+    return null;
+  } catch (error) {
+    console.error('Error finding existing queue entry:', error);
+    return null;
+  }
 }
 
 async function createQueueEntry(
