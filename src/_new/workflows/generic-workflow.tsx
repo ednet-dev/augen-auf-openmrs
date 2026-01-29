@@ -49,6 +49,13 @@ export const GenericWorkflow = (props: Props) => {
     (stage) => stage.formUuid !== props.stage.formUuid,
   );
 
+  const {
+  schema: currentFormSchema,
+  formUuid: resolvedFormUuid,
+  isLoading: isFormLoading,
+  error: formError,
+} = useO3FormSchema(props.stage.formUuid);
+  
   /*const triggerFormValidation = () => {
          window.dispatchEvent(
             new CustomEvent('ampath-form-action', {
@@ -124,7 +131,7 @@ export const GenericWorkflow = (props: Props) => {
                       {console.log(
                         `Rendering FormEngine for stage: ${props.stage.formUuid}`,
                         {
-                          formUUID: props.stage.formUuid,
+                          formUUID: props.stage.formUuid,                      
                           patientUUID: selectedPatient.uuid,
                           visitUuid: activeVisit.uuid,
                           encounterUUID: encounterUuid,
@@ -133,16 +140,17 @@ export const GenericWorkflow = (props: Props) => {
                           activeVisitExists: true,
                         },
                       )}
-
+<>
                       <FormEngine
                         key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
                         onSubmit={(data) => console.log("onSubmit", data)}
-                        formUUID={props.stage.formUuid}
+                       // formUUID={props.stage.formUuid}
+                        schema={currentFormSchema}
                         patientUUID={selectedPatient.uuid}
                         visit={activeVisit}
                         encounterUUID={encounterUuid}
-                        formSessionIntent={encounterUuid ? "edit" : "enter"}
-                        mode="edit"
+                        // formSessionIntent=
+                        mode={encounterUuid ? "edit" : "enter"}
                         hidePatientBanner={false}
                       />
                     </>
