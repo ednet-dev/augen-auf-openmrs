@@ -5,6 +5,9 @@ const defaultConfig = require('openmrs/default-webpack-config');
 module.exports = (env, argv = {}) => {
   const config = defaultConfig(env, argv);
 
+  // Add source maps for dev debugging
+  config.devtool = env.production ? false : 'eval-source-map';
+
   // Add resolve alias for form-engine-lib to use source files in development
   config.resolve = config.resolve || {};
   config.resolve.alias = config.resolve.alias || {};
