@@ -202,9 +202,10 @@ export const GenericWorkflow = (props: Props) => {
                         mode="embedded-view"
                         hidePatientBanner={true}
                       />                    
-                    )}
+                    )
+                    }
                   </TabPanel>
-                  );
+                    });
                 ))}
                 {/* <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel>
