@@ -18,6 +18,7 @@ import styles from "./generic-workflow.scss";
 import { ResolvedConfig } from "../new-config";
 import { RuntimeStage } from "../types";
 import { EndVisitButton } from "../end-visit-button";
+import { useO3FormSchema } from "../hooks/getFormUUID";
 
 type Props = {
   stage: RuntimeStage;
@@ -55,7 +56,7 @@ export const GenericWorkflow = (props: Props) => {
   formUuid: resolvedFormUuid,
   isLoading: isFormLoading,
   error: formError,
-} = useO3FormSchema(props.stage.formUuid);
+  } = useO3FormSchema(props.stage.formUuid);
   
   /*const triggerFormValidation = () => {
          window.dispatchEvent(
@@ -80,6 +81,19 @@ export const GenericWorkflow = (props: Props) => {
             })
         );
     }*/
+
+  console.log(
+              `Rendering FormEngine for stage: ${props.stage.formUuid}`,
+              {
+                formUUID: props.stage.formUuid,                      
+                patientUUID: selectedPatient.uuid,
+                visitUuid: activeVisit.uuid,
+                encounterUUID: encounterUuid,
+                formSessionIntent: encounterUuid ? "edit" : "enter",
+                mode: "edit",
+                activeVisitExists: true,
+              },
+            );
 
   return (
     <div className={styles.workflowWrapper}>
@@ -128,25 +142,11 @@ export const GenericWorkflow = (props: Props) => {
                       )}
                     </div>
                   ) : (
-                    <>
-                      {console.log(
-                        `Rendering FormEngine for stage: ${props.stage.formUuid}`,
-                        {
-                          formUUID: props.stage.formUuid,                      
-                          patientUUID: selectedPatient.uuid,
-                          visitUuid: activeVisit.uuid,
-                          encounterUUID: encounterUuid,
-                          formSessionIntent: encounterUuid ? "edit" : "enter",
-                          mode: "edit",
-                          activeVisitExists: true,
-                        },
-                      )}
-<>
                       <FormEngine
                         key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
                         onSubmit={(data) => console.log("onSubmit", data)}
                        // formUUID={props.stage.formUuid}
-                        schema={currentFormSchema}
+                        formJson={currentFormSchema}
                         patientUUID={selectedPatient.uuid}
                         visit={activeVisit}
                         encounterUUID={encounterUuid}
@@ -154,7 +154,6 @@ export const GenericWorkflow = (props: Props) => {
                         mode={encounterUuid ? "edit" : "enter"}
                         hidePatientBanner={false}
                       />
-                    </>
                   )}
                 </TabPanel>
                 {otherStages.map((stage) => (

@@ -2,7 +2,7 @@ import { openmrsFetch, useConfig } from '@openmrs/esm-framework';
 import { useEffect, useState } from 'react';
 
 // Reusable hook — returns the resolved form schema (which includes uuid)
-function useO3FormSchema(formNameOrUuid: string | undefined) {
+export function useO3FormSchema(formNameOrUuid: string | undefined) {
   const config = useConfig(); // optional: can override base URL if needed
   const [schema, setSchema] = useState<any>(null);
   const [formUuid, setFormUuid] = useState<string | null>(null);
