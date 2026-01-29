@@ -82,17 +82,17 @@ export const GenericWorkflow = (props: Props) => {
         );
     }*/
 
-  console.log(
-              `Rendering FormEngine for stage: ${props.stage.formUuid}`,
-              {
-                formUUID: props.stage.formUuid,                      
-                patientUUID: selectedPatient.uuid,
-                visitUuid: activeVisit.uuid,
-                encounterUUID: encounterUuid ? encounterUuid : "",                
-                mode: encounterUuid ? "edit" : "enter",
-                activeVisitExists: true,
-              },
-            );
+//  console.log(
+//              `Rendering FormEngine for stage: ${props.stage.formUuid}`,
+//              {
+//                formUUID: props.stage.formUuid,                      
+//                patientUUID: selectedPatient.uuid ? selectedPatient.uuid : "",
+//                visitUuid: activeVisit.uuid ? activeVisit.uuid : "",
+//                encounterUUID: encounterUuid ? encounterUuid : "",                
+//                mode: encounterUuid ? "edit" : "enter",
+//                activeVisitExists: true,
+//              },
+//            );
 
   return (
     <div className={styles.workflowWrapper}>
@@ -123,7 +123,19 @@ export const GenericWorkflow = (props: Props) => {
               </TabList>
               <TabPanels>
                 <TabPanel>
-                  {visitLoading ? (
+                  {isFormLoading ? (
+                    <div>{t("workflow.loadingForm", "Loading form...")}</div>
+                      ) : formError ? (
+                    <div className={styles.errorState}>
+                      {t("workflow.formError", "Error loading form: {{error}}", {
+                      error: formError.message,
+                    })}
+                    </div>
+                  ) : !resolvedFormUuid || !currentFormSchema ? (
+                    <div className={styles.errorState}>
+                      {t("workflow.formNotFound", "Form not found or invalid.")}
+                    </div>
+                  ) : visitLoading ? (
                     <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
                   ) : visitError ? (
                     <div className={styles.errorState}>
@@ -156,6 +168,7 @@ export const GenericWorkflow = (props: Props) => {
                   )}
                 </TabPanel>
                 {otherStages.map((stage) => (
+                 const { schema, formUuid: stageUuid, isLoading: stageLoading } = useO3FormSchema(stage.formUuid);
                   <TabPanel key={stage.formUuid}>
                     {visitLoading ? (
                       <div>
@@ -178,15 +191,16 @@ export const GenericWorkflow = (props: Props) => {
                       </div>
                     ) : (
                       <FormEngine
-                        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}
-                        formUUID={stage.formUuid}
+                        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}                        
+                        // formUUID={stage.formUuid}
+                        formJson={schema}
                         patientUUID={selectedPatient.uuid}
                         visit={activeVisit}
                         encounterUUID={encounterUuidPerForm[stage.formUuid]}
-                        formSessionIntent={"enter"}
+                        // formSessionIntent={"enter"}
                         mode="embedded-view"
                         hidePatientBanner={true}
-                      />
+                      />                    
                     )}
                   </TabPanel>
                 ))}
