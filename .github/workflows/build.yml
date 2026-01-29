@@ -55,6 +55,6 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: augen-auf-openmrs.tgz
-        tag_name: $v{{env.RELEASE_NUMBER}}
+        tag_name: v${{ env.RELEASE_NUMBER }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
