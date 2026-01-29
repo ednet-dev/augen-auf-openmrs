@@ -34,13 +34,15 @@ export interface QueueEntry {
 }
 
 export const fetchQueueEntries = async (queueUuid: string, statusWaitingUuid: string): Promise<QueueEntry[]> => {
-    const url = `${restBaseUrl}/queue-entry?queue=${queueUuid}&status=${statusWaitingUuid}&v=full&isEnded=false`;
+    // Use custom representation to avoid previousQueueEntry resolution which can fail with data integrity issues
+    const customRep = 'custom:(uuid,patient:(uuid,display,person:(uuid,display,preferredName,gender,age,birthdate)),queue,status,priority,startedAt,endedAt,sortWeight)';
+    const url = `${restBaseUrl}/queue-entry?queue=${queueUuid}&status=${statusWaitingUuid}&v=${encodeURIComponent(customRep)}&isEnded=false`;
 
     try {
         const response = await fetchAll<QueueEntry>(url);
         return response.results;
     } catch (error) {
-        console.error('Error searching patients:', error);
+        console.error('Error fetching queue entries:', error);
         return [];
     }
 }
