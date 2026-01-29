@@ -46,11 +46,15 @@ jobs:
         path: augen-auf-openmrs.tgz
         retention-days: 30
 
+    - name: Create release number
+      id: create_release_number
+      run: echo "RELEASE_NUMBER=$(date -u +"%Y"."%m"."%d").${{ github.run_number }}" >> $GITHUB_ENV
+
     - name: Publish release (on main branch)
       if: github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v1
       with:
         files: augen-auf-openmrs.tgz
-        tag_name: ${{ github.run_number }}
+        tag_name: $v{{env.RELEASE_NUMBER}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
