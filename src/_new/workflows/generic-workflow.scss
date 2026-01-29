@@ -51,3 +51,11 @@
   align-items: center;
   justify-content: center;
 }
+
+.errorState {
+  padding: spacing.$spacing-05;
+  color: #da1e28;
+  background-color: #fff1f1;
+  border-left: 3px solid #da1e28;
+  margin: spacing.$spacing-05;
+}

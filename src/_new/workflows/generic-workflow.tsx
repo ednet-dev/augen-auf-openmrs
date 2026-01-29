@@ -1,9 +1,13 @@
-
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FormEngine } from "@openmrs/esm-form-engine-lib";
 import { PatientList } from "../patient-list.component";
-import { CalendarHeatMapIcon, ConditionsIcon, Patient, ProgramsIcon } from "@openmrs/esm-framework";
+import {
+  CalendarHeatMapIcon,
+  ConditionsIcon,
+  Patient,
+  ProgramsIcon,
+} from "@openmrs/esm-framework";
 import { MoveButton } from "../move-button";
 import { useQueueEntries } from "../hooks/use-queue-entries";
 import { useActiveVisit } from "../hooks/use-active-visit";
@@ -15,26 +19,37 @@ import { NewConfig } from "../new-config";
 import { EndVisitButton } from "../end-visit-button";
 
 type Props = {
-    stage: Stage;
-    nextStage: Stage;
-    allStages: Stage[];
-    config: NewConfig;
-}
+  stage: Stage;
+  nextStage: Stage;
+  allStages: Stage[];
+  config: NewConfig;
+};
 
 export const GenericWorkflow = (props: Props) => {
-    const { t } = useTranslation();
-    const { queueEntries, isLoading, error, refresh } = useQueueEntries(props.stage.queueUuid, props.stage.waitingStatusUuid);
-    const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
-    const { activeVisit, isLoading: visitLoading, encounterUuid, encounterUuidPerForm } = useActiveVisit(selectedPatient?.uuid, props.stage.formUuid);
-    
-    const handleMoveComplete = () => {
-        setSelectedPatient(null);
-        refresh();
-    };
+  const { t } = useTranslation();
+  const { queueEntries, isLoading, error, refresh } = useQueueEntries(
+    props.stage.queueUuid,
+    props.stage.waitingStatusUuid,
+  );
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const {
+    activeVisit,
+    isLoading: visitLoading,
+    encounterUuid,
+    encounterUuidPerForm,
+    error: visitError,
+  } = useActiveVisit(selectedPatient?.uuid, props.stage.formUuid);
 
-    const otherStages = props.allStages.filter(stage => stage.formUuid !== props.stage.formUuid);
+  const handleMoveComplete = () => {
+    setSelectedPatient(null);
+    refresh();
+  };
 
-    /*const triggerFormValidation = () => {
+  const otherStages = props.allStages.filter(
+    (stage) => stage.formUuid !== props.stage.formUuid,
+  );
+
+  /*const triggerFormValidation = () => {
          window.dispatchEvent(
             new CustomEvent('ampath-form-action', {
                 detail: {
@@ -57,117 +72,163 @@ export const GenericWorkflow = (props: Props) => {
             })
         );
     }*/
-    
-    return (
-        <div className={styles.workflowWrapper}>
-            <div className={styles.patientListContainer}>
-                <PatientList 
-                    patients={queueEntries.map(entry => entry.patient)} 
-                    selectedPatient={selectedPatient} 
-                    onPatientSelect={(patient) => setSelectedPatient(patient)}
-                    isLoading={isLoading}
-                    error={error}
-                />
-            </div>
 
-            {selectedPatient ? (
-                <>
-                    <div className={styles.tabsContainer}>
-                        <Tabs>
-                            <TabList contained>
-                                <Tab renderIcon={AlignBoxTopLeft}>{t('workflow.formTab', 'Form')}</Tab>
-                                {/* <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
+  return (
+    <div className={styles.workflowWrapper}>
+      <div className={styles.patientListContainer}>
+        <PatientList
+          patients={queueEntries.map((entry) => entry.patient)}
+          selectedPatient={selectedPatient}
+          onPatientSelect={(patient) => setSelectedPatient(patient)}
+          isLoading={isLoading}
+          error={error}
+        />
+      </div>
+
+      {selectedPatient ? (
+        <>
+          <div className={styles.tabsContainer}>
+            <Tabs>
+              <TabList contained>
+                <Tab renderIcon={AlignBoxTopLeft}>
+                  {t("workflow.formTab", "Form")}
+                </Tab>
+                {/* <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
                                 <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
                                 <Tab renderIcon={ProgramsIcon}>Therapies</Tab> */}
-                                { otherStages.map((stage) => (
-                                    <Tab key={stage.formUuid}>Form: {stage.label}</Tab>
-                                )) }
-                            </TabList>
-                            <TabPanels>
-                                <TabPanel>
-                                    {visitLoading ? (
-                                        <div>{t('workflow.loadingVisit', 'Loading visit...')}</div>
-                                    ) : (
-                                        <>
-                                             {console.log(`Rendering embedded FormEngine for stage: ${stage.label || stage.formUuid}`, {
-                                                formUUID: stage.formUuid,
-                                                patientUUID: selectedPatient.uuid,
-                                                visitUuid: activeVisit?.uuid,
-                                                encounterUUID: encounterUuidPerForm[stage.formUuid],
-                                                formSessionIntent: "enter",
-                                                mode: "embedded-view",
-                                                hidePatientBanner: true,
-                                                key: `${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}-${stage.formUuid}`,
-                                                activeVisitExists: !!activeVisit,
-                                            })}
+                {otherStages.map((stage) => (
+                  <Tab key={stage.formUuid}>Form: {stage.label}</Tab>
+                ))}
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  {visitLoading ? (
+                    <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
+                  ) : visitError ? (
+                    <div className={styles.errorState}>
+                      {t(
+                        "workflow.visitError",
+                        "Error loading visit: {{error}}",
+                        { error: visitError.message },
+                      )}
+                    </div>
+                  ) : !activeVisit ? (
+                    <div className={styles.errorState}>
+                      {t(
+                        "workflow.noVisit",
+                        "No active visit found. Please ensure the patient has been registered properly.",
+                      )}
+                    </div>
+                  ) : (
+                    <>
+                      {console.log(
+                        `Rendering FormEngine for stage: ${props.stage.formUuid}`,
+                        {
+                          formUUID: props.stage.formUuid,
+                          patientUUID: selectedPatient.uuid,
+                          visitUuid: activeVisit.uuid,
+                          encounterUUID: encounterUuid,
+                          formSessionIntent: encounterUuid ? "edit" : "enter",
+                          mode: "edit",
+                          activeVisitExists: true,
+                        },
+                      )}
 
-                                            <FormEngine 
-                                                key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
-                                                onSubmit={(data) => console.log("onSubmit", data)}
-                                                formUUID={props.stage.formUuid}
-                                                patientUUID={selectedPatient.uuid}
-                                                visit={activeVisit}
-                                                encounterUUID={encounterUuid}
-                                                formSessionIntent={encounterUuid ? "edit" : "enter"}
-                                                mode="edit"
-                                                hidePatientBanner={false}
-                                            />
-                                        </>
-                                    )}
-                                </TabPanel>
-                                { otherStages.map((stage) => (
-                                    <TabPanel key={stage.formUuid}>
-                                     {visitLoading ? (
-                                        <div>{t('workflow.loadingVisit', 'Loading visit...')}</div>
-                                    ) : (
-                                        <FormEngine 
-                                            key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}-${stage.formUuid}`}
-                                            formUUID={stage.formUuid}
-                                            patientUUID={selectedPatient.uuid}
-                                            visit={activeVisit}
-                                            encounterUUID={encounterUuidPerForm[stage.formUuid]}
-                                            formSessionIntent={"enter"}
-                                            mode="embedded-view"
-                                            hidePatientBanner={true}
-                                        />
-                                    )}
-                                    </TabPanel>
-                                )) }
-                                {/* <TabPanel>Coming soon...</TabPanel>
+                      <FormEngine
+                        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
+                        onSubmit={(data) => console.log("onSubmit", data)}
+                        formUUID={props.stage.formUuid}
+                        patientUUID={selectedPatient.uuid}
+                        visit={activeVisit}
+                        encounterUUID={encounterUuid}
+                        formSessionIntent={encounterUuid ? "edit" : "enter"}
+                        mode="edit"
+                        hidePatientBanner={false}
+                      />
+                    </>
+                  )}
+                </TabPanel>
+                {otherStages.map((stage) => (
+                  <TabPanel key={stage.formUuid}>
+                    {visitLoading ? (
+                      <div>
+                        {t("workflow.loadingVisit", "Loading visit...")}
+                      </div>
+                    ) : visitError ? (
+                      <div className={styles.errorState}>
+                        {t(
+                          "workflow.visitError",
+                          "Error loading visit: {{error}}",
+                          { error: visitError.message },
+                        )}
+                      </div>
+                    ) : !activeVisit ? (
+                      <div className={styles.errorState}>
+                        {t(
+                          "workflow.noVisit",
+                          "No active visit found. Please ensure the patient has been registered properly.",
+                        )}
+                      </div>
+                    ) : (
+                      <FormEngine
+                        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}
+                        formUUID={stage.formUuid}
+                        patientUUID={selectedPatient.uuid}
+                        visit={activeVisit}
+                        encounterUUID={encounterUuidPerForm[stage.formUuid]}
+                        formSessionIntent={"enter"}
+                        mode="embedded-view"
+                        hidePatientBanner={true}
+                      />
+                    )}
+                  </TabPanel>
+                ))}
+                {/* <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel> */}
-                            </TabPanels>
-                        </Tabs>
-                    </div>
+              </TabPanels>
+            </Tabs>
+          </div>
 
-                    <div className={styles.moveButtonContainer}>
-                        <div style={{marginRight: '1em'}}>
-                            <EndVisitButton
-                                queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
-                                config={props.config} 
-                                activeVisit={activeVisit}
-                                onEndComplete={handleMoveComplete}
-                            />
-                        </div>
+          <div className={styles.moveButtonContainer}>
+            <div style={{ marginRight: "1em" }}>
+              <EndVisitButton
+                queueEntry={
+                  queueEntries.find(
+                    (entry) => entry.patient.uuid === selectedPatient?.uuid,
+                  )!
+                }
+                config={props.config}
+                activeVisit={activeVisit}
+                onEndComplete={handleMoveComplete}
+              />
+            </div>
 
-                        <MoveButton 
-                            queueEntry={queueEntries.find(entry => entry.patient.uuid === selectedPatient?.uuid)!} 
-                            nextStage={props.nextStage} 
-                            allStages={props.allStages}
-                            config={props.config}
-                            onMoveComplete={handleMoveComplete}
-                        />
-                    </div>
-                </>
-            ) : (
-                <div className={styles.emptyStateContainer}>
-                    <EmptyState
-                        icon={Person}
-                        title={t('workflow.noPatientSelected', 'No patient selected')}
-                        description={t('workflow.selectPatientDescription', 'Select a patient from the queue on the left to view their information and fill out forms')}
-                    />
-                </div>
+            <MoveButton
+              queueEntry={
+                queueEntries.find(
+                  (entry) => entry.patient.uuid === selectedPatient?.uuid,
+                )!
+              }
+              nextStage={props.nextStage}
+              allStages={props.allStages}
+              config={props.config}
+              onMoveComplete={handleMoveComplete}
+            />
+          </div>
+        </>
+      ) : (
+        <div className={styles.emptyStateContainer}>
+          <EmptyState
+            icon={Person}
+            title={t("workflow.noPatientSelected", "No patient selected")}
+            description={t(
+              "workflow.selectPatientDescription",
+              "Select a patient from the queue on the left to view their information and fill out forms",
             )}
+          />
         </div>
-    );
-}
+      )}
+    </div>
+  );
+};
