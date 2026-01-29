@@ -5,12 +5,13 @@ import { PatientList } from "../patient-list.component";
 import { TextInput } from "@carbon/react";
 import { MoveButton } from "../move-button";
 import { Patient } from "@openmrs/esm-framework";
-import { NewConfig } from "../new-config";
+import { ResolvedConfig } from "../new-config";
+import { RuntimeStage } from "../types";
 
 type Props = {
-    nextStage: Stage;
-    allStages: Stage[];
-    config: NewConfig;
+    nextStage: RuntimeStage;
+    allStages: RuntimeStage[];
+    config: ResolvedConfig;
 }
 
 export const RegistrationWorkflow = (props: Props) => {

@@ -15,14 +15,15 @@ import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
-import { NewConfig } from "../new-config";
+import { ResolvedConfig } from "../new-config";
+import { RuntimeStage } from "../types";
 import { EndVisitButton } from "../end-visit-button";
 
 type Props = {
-  stage: Stage;
-  nextStage: Stage;
-  allStages: Stage[];
-  config: NewConfig;
+  stage: RuntimeStage;
+  nextStage: RuntimeStage;
+  allStages: RuntimeStage[];
+  config: ResolvedConfig;
 };
 
 export const GenericWorkflow = (props: Props) => {

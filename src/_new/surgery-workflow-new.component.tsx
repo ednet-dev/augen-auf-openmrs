@@ -1,18 +1,51 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useConfig } from "@openmrs/esm-framework";
 import { GenericWorkflow } from "./workflows/generic-workflow";
 import { RegistrationWorkflow } from "./workflows/registration-workflow";
 import { SideNav, SideNavItems, SideNavLink } from "@carbon/react";
+import { InlineLoading } from "@carbon/react";
 import styles from "./surgery-workflow-new.scss";
-import { NewConfig } from "./new-config";
+import { ResolvedConfig } from "./new-config";
+import { ConfigResolverProvider, useResolvedConfig } from "./config-resolver";
 
-const SurgeryWorkflowNew = () => {
-    const config = useConfig() as NewConfig;
+/**
+ * Inner component that uses the resolved config
+ */
+const SurgeryWorkflowContent = () => {
+    const { config, isLoading, error, unresolvedForms } = useResolvedConfig();
     const { t, i18n } = useTranslation();
     const [selectedWorkflow, setSelectedWorkflow] = useState(0);
 
-    // Build stages from dynamic configuration
+    if (isLoading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <InlineLoading description={t('workflow.resolvingForms', 'Resolving form configurations...')} />
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className={styles.errorContainer}>
+                {t('workflow.configError', 'Error loading configuration: {{message}}', { message: error.message })}
+            </div>
+        );
+    }
+
+    if (!config) {
+        return (
+            <div className={styles.errorContainer}>
+                {t('workflow.noConfig', 'No configuration available')}
+            </div>
+        );
+    }
+
+    // Log any unresolved forms as warnings
+    if (unresolvedForms.length > 0) {
+        console.warn('Some forms could not be resolved:', unresolvedForms);
+    }
+
+    // Build stages from resolved configuration
     const enabledStages = config.stages.filter(stage => stage.enabled);
     
     // Get current language or fallback to English
@@ -80,5 +113,17 @@ const SurgeryWorkflowNew = () => {
         </div>
     );
 }
+
+/**
+ * Main component wrapped with ConfigResolverProvider
+ * Resolves form names to UUIDs before rendering the workflow
+ */
+const SurgeryWorkflowNew = () => {
+    return (
+        <ConfigResolverProvider>
+            <SurgeryWorkflowContent />
+        </ConfigResolverProvider>
+    );
+};
 
 export default SurgeryWorkflowNew;

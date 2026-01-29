@@ -1,6 +1,4 @@
-import _default from "@carbon/react/lib/components/Button/Button";
 import { Type } from "@openmrs/esm-framework";
-import { ref } from "process";
 
 export const configSchema = {
   stages: {
@@ -41,21 +39,36 @@ export const configSchema = {
         _description: "UUID of the queue for this workflow step"
       },
       formUuid: {
-        _type: Type.UUID,
-        _description: "UUID of the form for this workflow step"
+        _type: Type.String,
+        _description: "UUID of the form for this workflow step. Use this if form UUIDs are stable across deployments."
+      },
+      formName: {
+        _type: Type.String,
+        _description: "Name of the form for this workflow step (will be resolved to UUID at runtime). Use this if form UUIDs change across deployments. Takes precedence over formUuid if both are provided."
       }
     },
     _default: [
       {
-        id: "refraction",
+        id: "registration-form",
         label: {
-          en: "Refraction",
-          de: "Refraktion",
-          es: "Refracción"
+          en: "Registration Form",
+          de: "Registrierungsformular",
+          es: "Formulario de Registración"
         },
         enabled: true,
-        queueUuid: "aa004400-1234-5678-90ab-000000000002",
-        formUuid: "9e1a0c68-ca19-3482-9ffb-0a6b4e591c2a"
+        queueUuid: "310b9d28-737d-45d2-8b6a-f059aac6cea8",
+        formName: "AUA Registration"
+      },
+      {
+        id: "auto-refraction",
+        label: {
+          en: "Auto Refraction",
+          de: "Auto Refraktion",
+          es: "Autorefracción"
+        },
+        enabled: true,
+        queueUuid: "cbb6ec0c-c6c7-4e31-a6a6-3c447a29d95b",
+        formName: "AUA AutoRefraction"
       },
       {
         id: "eye-exam",
@@ -65,8 +78,8 @@ export const configSchema = {
           es: "Examen Ocular"
         },
         enabled: true,
-        queueUuid: "aa004400-1234-5678-90ab-000000000003",
-        formUuid: "Laboratory Test Results"
+        queueUuid: "3eab5184-aa9d-4ef6-8072-d219cd4fbcbf",
+        formName: "AUA Eye Exam"
       },
       {
         id: "therapy",
@@ -76,8 +89,8 @@ export const configSchema = {
           es: "Terapia"
         },
         enabled: true,
-        queueUuid: "aa004400-1234-5678-90ab-000000000004",
-        formUuid: "Mental Health Assessment Form"
+        queueUuid: "59006885-9096-407d-9428-efbbe6e5c8f3",
+        formName: "AUA Therapy"
       }
     ]
   },

@@ -2,13 +2,14 @@ import { ComboButton, MenuItem } from "@carbon/react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { movePatientToStage, QueueEntry } from "./patient-service";
-import { NewConfig } from "./new-config";
+import { ResolvedConfig } from "./new-config";
+import { RuntimeStage } from "./types";
 
 type Props = {
     queueEntry: QueueEntry;
-    nextStage: Stage;
-    allStages: Stage[];
-    config: NewConfig;
+    nextStage: RuntimeStage;
+    allStages: RuntimeStage[];
+    config: ResolvedConfig;
     onMoveComplete?: () => void;
 }
 
@@ -16,7 +17,7 @@ export const MoveButton: React.FC<Props> = ({ queueEntry, nextStage, allStages, 
     const { t } = useTranslation();
     const [isMoving, setIsMoving] = React.useState(false);
 
-    const handleMovePatient = (targetStage: Stage) => {
+    const handleMovePatient = (targetStage: RuntimeStage) => {
         setIsMoving(true);
         movePatientToStage(
             queueEntry.uuid,

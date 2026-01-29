@@ -7,12 +7,12 @@ import {
   movePatientToStage,
   QueueEntry,
 } from "./patient-service";
-import { NewConfig } from "./new-config";
+import { ResolvedConfig } from "./new-config";
 import { Visit } from "@openmrs/esm-framework/src";
 
 type Props = {
   queueEntry: QueueEntry;
-  config: NewConfig;
+  config: ResolvedConfig;
   activeVisit: Visit | null;
   onEndComplete?: () => void;
 };
