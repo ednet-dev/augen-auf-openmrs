@@ -88,9 +88,8 @@ export const GenericWorkflow = (props: Props) => {
                 formUUID: props.stage.formUuid,                      
                 patientUUID: selectedPatient.uuid,
                 visitUuid: activeVisit.uuid,
-                encounterUUID: encounterUuid,
-                formSessionIntent: encounterUuid ? "edit" : "enter",
-                mode: "edit",
+                encounterUUID: encounterUuid ? encounterUuid : "",                
+                mode: encounterUuid ? "edit" : "enter",
                 activeVisitExists: true,
               },
             );
