@@ -88,17 +88,31 @@ export const GenericWorkflow = (props: Props) => {
                                     {visitLoading ? (
                                         <div>{t('workflow.loadingVisit', 'Loading visit...')}</div>
                                     ) : (
-                                        <FormEngine 
-                                            key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
-                                            onSubmit={(data) => console.log("onSubmit", data)}
-                                            formUUID={props.stage.formUuid}
-                                            patientUUID={selectedPatient.uuid}
-                                            visit={activeVisit}
-                                            encounterUUID={encounterUuid}
-                                            formSessionIntent={encounterUuid ? "edit" : "enter"}
-                                            mode="edit"
-                                            hidePatientBanner={false}
-                                        />
+                                        <>
+                                             {console.log(`Rendering embedded FormEngine for stage: ${stage.label || stage.formUuid}`, {
+                                                formUUID: stage.formUuid,
+                                                patientUUID: selectedPatient.uuid,
+                                                visitUuid: activeVisit?.uuid,
+                                                encounterUUID: encounterUuidPerForm[stage.formUuid],
+                                                formSessionIntent: "enter",
+                                                mode: "embedded-view",
+                                                hidePatientBanner: true,
+                                                key: `${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}-${stage.formUuid}`,
+                                                activeVisitExists: !!activeVisit,
+                                            })}
+
+                                            <FormEngine 
+                                                key={`${selectedPatient.uuid}-${activeVisit?.uuid}-${encounterUuid || 'new'}`}
+                                                onSubmit={(data) => console.log("onSubmit", data)}
+                                                formUUID={props.stage.formUuid}
+                                                patientUUID={selectedPatient.uuid}
+                                                visit={activeVisit}
+                                                encounterUUID={encounterUuid}
+                                                formSessionIntent={encounterUuid ? "edit" : "enter"}
+                                                mode="edit"
+                                                hidePatientBanner={false}
+                                            />
+                                        </>
                                     )}
                                 </TabPanel>
                                 { otherStages.map((stage) => (
