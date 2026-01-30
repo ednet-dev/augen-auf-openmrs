@@ -24,7 +24,7 @@ export function useO3FormSchema(formNameOrUuid: string | undefined) {
       try {
         // The O3-specific endpoint accepts name OR uuid!
         const response = await openmrsFetch(
-          `/ws/rest/v1/o3/forms/${encodeURIComponent(formNameOrUuid)}`,
+          `/ws/rest/v1/form/${encodeURIComponent(formNameOrUuid)}`,
           {
             signal: abortController.signal,
             headers: { accept: 'application/json' },
