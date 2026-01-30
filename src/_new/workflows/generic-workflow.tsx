@@ -128,11 +128,7 @@ export const GenericWorkflow = (props: Props) => {
                   )}
                 </TabPanel>
 
-                {otherStages.map((stage) => {
-                  const { schema, isLoading: stageLoading, error: stageError } =
-                    useO3FormSchema(stage.formUuid);
-
-                  return (
+                {otherStages.map((stage) => (             
                     <TabPanel key={stage.formUuid}>
                       {stageLoading ? (
                         <div>
@@ -190,7 +186,6 @@ export const GenericWorkflow = (props: Props) => {
                          />
                       )}
                     </TabPanel>
-                  );
                 })}
               </TabPanels>
             </Tabs>
