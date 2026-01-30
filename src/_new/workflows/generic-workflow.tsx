@@ -122,7 +122,7 @@ export const GenericWorkflow = (props: Props) => {
                       patientUUID={selectedPatient.uuid}
                       visit={activeVisit}
                       encounterUUID={encounterUuid}
-                      mode={encounterUuid ? SessionMode.EDIT : SessionMode.ENTER }
+                      mode={encounterUuid ? "edit" : "enter" }
                       hidePatientBanner={false}
                     />
                   )}
@@ -252,7 +252,7 @@ function FormTabContent({
   patientUUID: string;
   visit: any; // use proper type from your hooks
   encounterUUID?: string;
-  mode: string;
+  mode?: SessionMode;
   hidePatientBanner: boolean;
   onSubmit?: (data: any) => void;
 }) {
@@ -285,10 +285,10 @@ function FormTabContent({
       patientUUID={patientUUID}
       visit={visit}
       encounterUUID={encounterUUID}
-      mode={SessionMode.VIEW}
+      mode = {mode}
       hidePatientBanner={hidePatientBanner}
       onSubmit={onSubmit}
-      // Add formSessionIntent if needed: formSessionIntent={encounterUUID ? "edit" : "enter"}
+      // Add formSessionIntent if needed: 
     />
   );
 }
