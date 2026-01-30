@@ -168,17 +168,26 @@ export const GenericWorkflow = (props: Props) => {
                           )}
                         </div>
                       ) : (
-                        <FormEngine
-                          key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}
-                           // formJson={currentFormSchema}
-                          formUUID = {resolvedFormUuid}
-                          formJson={schema}
+                        <FormTabContent
+                          formUuid={stage.formUuid}
                           patientUUID={selectedPatient.uuid}
                           visit={activeVisit}
                           encounterUUID={encounterUuidPerForm[stage.formUuid]}
                           mode="embedded-view"
                           hidePatientBanner={true}
-                        />
+                          onSubmit={(data) => console.log("onSubmit for other stage", data)} // optional
+                  
+                  //    <FormEngine
+                  //        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}
+                  //         // formJson={currentFormSchema}
+                  //        formUUID = {resolvedFormUuid}
+                  //        formJson={schema}
+                  //        patientUUID={selectedPatient.uuid}
+                  //        visit={activeVisit}
+                  //        encounterUUID={encounterUuidPerForm[stage.formUuid]}
+                  //        mode="embedded-view"
+                  //        hidePatientBanner={true}
+                         />
                       )}
                     </TabPanel>
                   );
@@ -229,3 +238,57 @@ export const GenericWorkflow = (props: Props) => {
     </div>
   );
 };
+
+function FormTabContent({
+  formUuid,
+  patientUUID,
+  visit,
+  encounterUUID,
+  mode,
+  hidePatientBanner,
+  onSubmit,
+}: {
+  formUuid: string;
+  patientUUID: string;
+  visit: any; // use proper type from your hooks
+  encounterUUID?: string;
+  mode: string;
+  hidePatientBanner: boolean;
+  onSubmit?: (data: any) => void;
+}) {
+  const { schema, isLoading: formLoading, error: formError } = useO3FormSchema(formUuid);
+
+  if (formLoading) {
+    return <div>Loading form...</div>;
+  }
+
+  if (formError) {
+    return (
+      <div className={styles.errorState}>
+        Error loading form: {formError.message}
+      </div>
+    );
+  }
+
+  //  if (!schema) {
+  //    return <div className={styles.errorState}>Form schema not found or invalid.</div>;
+  //  }
+
+  // You can add visitLoading / visitError checks here if needed,
+  // but since they're shared, it's often better to keep them outside
+
+  return (
+    <FormEngine
+      key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}
+      // formJson={schema}          // ← use formJson with the fetched schema (preferred for embedded case)
+      formUUID={formUuid}     // ← alternative if you want engine to fetch itself (but slower)
+      patientUUID={patientUUID}
+      visit={visit}
+      encounterUUID={encounterUUID}
+      mode={mode}
+      hidePatientBanner={hidePatientBanner}
+      onSubmit={onSubmit}
+      // Add formSessionIntent if needed: formSessionIntent={encounterUUID ? "edit" : "enter"}
+    />
+  );
+}
