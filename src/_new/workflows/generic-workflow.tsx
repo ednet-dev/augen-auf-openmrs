@@ -92,7 +92,8 @@ export const GenericWorkflow = (props: Props) => {
                         error: formError.message,
                       })}
                     </div>
-                  ) : !resolvedFormUuid || !currentFormSchema ? (
+                  //) : !resolvedFormUuid || !currentFormSchema ? (
+                    ) : !resolvedFormUuid ? (
                     <div className={styles.errorState}>
                       {t("workflow.formNotFound", "Form not found or invalid.")}
                     </div>
