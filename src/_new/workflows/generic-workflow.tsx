@@ -169,19 +169,16 @@ export const GenericWorkflow = (props: Props) => {
                 </TabPanel>
                 {otherStages.map((stage) => {
                   const { schema, formUuid: stageUuid, isLoading: stageLoading } = useO3FormSchema(stage.formUuid);
+          
                   return(
                   <TabPanel key={stage.formUuid}>
                     {visitLoading ? (
-                      <div>
-                        {t("workflow.loadingVisit", "Loading visit...")}
-                      </div>
+                      <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
                     ) : visitError ? (
-                      <div className={styles.errorState}>
-                        {t(
-                          "workflow.visitError",
-                          "Error loading visit: {{error}}",
-                          { error: visitError.message },
-                        )}
+                      <div claassName={styles.errorState}>
+                        {t("workflow.visitError","Error loading visit: {{error}}",{ 
+                        error: visitError.message, 
+                        }  )}
                       </div>
                     ) : !activeVisit ? (
                       <div className={styles.errorState}>
@@ -202,12 +199,14 @@ export const GenericWorkflow = (props: Props) => {
                         mode="embedded-view"
                         hidePatientBanner={true}
                       />                    
-                    )
-                    }
-                  </TabPanel>
-                    });
-                ))}
-                {/* <TabPanel>Coming soon...</TabPanel>
+                    )}
+                   </TabPanel>
+                )}
+                
+                
+            )
+          
+                /{* <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel>
                                 <TabPanel>Coming soon...</TabPanel> */}
               </TabPanels>
