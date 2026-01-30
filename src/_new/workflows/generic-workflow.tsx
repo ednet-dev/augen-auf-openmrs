@@ -118,7 +118,7 @@ export const GenericWorkflow = (props: Props) => {
                     <FormEngine
                       key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
                       onSubmit={(data) => console.log("onSubmit", data)}
-                      // formJson={currentFormSchema}
+                      formJson={currentFormSchema}
                       formUUID = {resolvedFormUuid}
                       patientUUID={selectedPatient.uuid}
                       visit={activeVisit}
@@ -253,15 +253,14 @@ function FormTabContent({
   return (
     <FormEngine
       key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}
-      // formJson={schema}          // ← use formJson with the fetched schema (preferred for embedded case)
+      formJson={schema}          // ← use formJson with the fetched schema (preferred for embedded case)
       formUUID={formUuid}     // ← alternative if you want engine to fetch itself (but slower)
       patientUUID={patientUUID}
       visit={visit}
       encounterUUID={encounterUUID}
-      mode = {mode}
+      mode={mode}
       hidePatientBanner={hidePatientBanner}
-      onSubmit={onSubmit}
-      // Add formSessionIntent if needed: 
+      onSubmit={onSubmit}      
     />
   );
 }
