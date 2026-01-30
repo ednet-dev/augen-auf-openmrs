@@ -243,7 +243,7 @@ function FormTabContent({
   formUuid,
   patientUUID,
   visit,
-  encounterUUID,
+  encounterUUID,  
   mode,
   hidePatientBanner,
   onSubmit,
