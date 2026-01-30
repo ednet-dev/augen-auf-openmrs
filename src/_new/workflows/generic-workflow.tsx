@@ -11,7 +11,7 @@ import {
 import { MoveButton } from "../move-button";
 import { useQueueEntries } from "../hooks/use-queue-entries";
 import { useActiveVisit } from "../hooks/use-active-visit";
-import { Button, Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from "@carbon/react";
 import { AlignBoxTopLeft, Person } from "@carbon/react/icons";
 import { EmptyState } from "../empty-state.component";
 import styles from "./generic-workflow.scss";
@@ -52,47 +52,11 @@ export const GenericWorkflow = (props: Props) => {
   );
 
   const {
-  schema: currentFormSchema,
-  formUuid: resolvedFormUuid,
-  isLoading: isFormLoading,
-  error: formError,
+    schema: currentFormSchema,
+    formUuid: resolvedFormUuid,
+    isLoading: isFormLoading,
+    error: formError,
   } = useO3FormSchema(props.stage.formUuid);
-  
-  /*const triggerFormValidation = () => {
-         window.dispatchEvent(
-            new CustomEvent('ampath-form-action', {
-                detail: {
-                    formUuid: props.stage.formUuid,
-                    patientUuid: selectedPatient?.uuid,
-                    action: 'validateForm',
-                },
-            })
-        );
-    };
-
-    const triggerFormSubmission = () => {
-         window.dispatchEvent(
-            new CustomEvent('ampath-form-action', {
-                detail: {
-                    formUuid: props.stage.formUuid,
-                    patientUuid: selectedPatient?.uuid,
-                    action: 'onSubmit',
-                },
-            })
-        );
-    }*/
-
-//  console.log(
-//              `Rendering FormEngine for stage: ${props.stage.formUuid}`,
-//              {
-//                formUUID: props.stage.formUuid,                      
-//                patientUUID: selectedPatient.uuid ? selectedPatient.uuid : "",
-//                visitUuid: activeVisit.uuid ? activeVisit.uuid : "",
-//                encounterUUID: encounterUuid ? encounterUuid : "",                
-//                mode: encounterUuid ? "edit" : "enter",
-//                activeVisitExists: true,
-//              },
-//            );
 
   return (
     <div className={styles.workflowWrapper}>
@@ -114,9 +78,6 @@ export const GenericWorkflow = (props: Props) => {
                 <Tab renderIcon={AlignBoxTopLeft}>
                   {t("workflow.formTab", "Form")}
                 </Tab>
-                {/* <Tab renderIcon={CalendarHeatMapIcon}>Visits</Tab>
-                                <Tab renderIcon={ConditionsIcon}>Conditions</Tab>
-                                <Tab renderIcon={ProgramsIcon}>Therapies</Tab> */}
                 {otherStages.map((stage) => (
                   <Tab key={stage.formUuid}>Form: {stage.label}</Tab>
                 ))}
@@ -125,11 +86,11 @@ export const GenericWorkflow = (props: Props) => {
                 <TabPanel>
                   {isFormLoading ? (
                     <div>{t("workflow.loadingForm", "Loading form...")}</div>
-                      ) : formError ? (
+                  ) : formError ? (
                     <div className={styles.errorState}>
                       {t("workflow.formError", "Error loading form: {{error}}", {
-                      error: formError.message,
-                    })}
+                        error: formError.message,
+                      })}
                     </div>
                   ) : !resolvedFormUuid || !currentFormSchema ? (
                     <div className={styles.errorState}>
@@ -153,62 +114,72 @@ export const GenericWorkflow = (props: Props) => {
                       )}
                     </div>
                   ) : (
-                      <FormEngine
-                        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
-                        onSubmit={(data) => console.log("onSubmit", data)}
-                       // formUUID={props.stage.formUuid}
-                        formJson={currentFormSchema}
-                        patientUUID={selectedPatient.uuid}
-                        visit={activeVisit}
-                        encounterUUID={encounterUuid}
-                        // formSessionIntent=
-                        mode={encounterUuid ? "edit" : "enter"}
-                        hidePatientBanner={false}
-                      />
+                    <FormEngine
+                      key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
+                      onSubmit={(data) => console.log("onSubmit", data)}
+                      formJson={currentFormSchema}
+                      patientUUID={selectedPatient.uuid}
+                      visit={activeVisit}
+                      encounterUUID={encounterUuid}
+                      mode={encounterUuid ? "edit" : "enter"}
+                      hidePatientBanner={false}
+                    />
                   )}
                 </TabPanel>
+
                 {otherStages.map((stage) => {
-                  const { schema, formUuid: stageUuid, isLoading: stageLoading } = useO3FormSchema(stage.formUuid);
-          
-                  return(
-                  <TabPanel key={stage.formUuid}>
-                    {visitLoading ? (
-                      <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
-                    ) : visitError ? (
-                      <div claassName={styles.errorState}>
-                        {t("workflow.visitError","Error loading visit: {{error}}",{ 
-                        error: visitError.message, 
-                        }  )}
-                      </div>
-                    ) : !activeVisit ? (
-                      <div className={styles.errorState}>
-                        {t(
-                          "workflow.noVisit",
-                          "No active visit found. Please ensure the patient has been registered properly.",
-                        )}
-                      </div>
-                    ) : (
-                      <FormEngine
-                        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}                        
-                        // formUUID={stage.formUuid}
-                        formJson={schema}
-                        patientUUID={selectedPatient.uuid}
-                        visit={activeVisit}
-                        encounterUUID={encounterUuidPerForm[stage.formUuid]}
-                        // formSessionIntent={"enter"}
-                        mode="embedded-view"
-                        hidePatientBanner={true}
-                      />                    
-                    )}
-                   </TabPanel>
-                )}
-                
-                
-            )
-          
-                /{* <TabPanel>Coming soon...</TabPanel>
-                                <TabPanel>Coming soon...</TabPanel>
-                                <TabPanel>Coming soon...</TabPanel> */}
+                  const { schema, isLoading: stageLoading, error: stageError } =
+                    useO3FormSchema(stage.formUuid);
+
+                  return (
+                    <TabPanel key={stage.formUuid}>
+                      {stageLoading ? (
+                        <div>
+                          {t("workflow.loadingForm", "Loading form for {label}...", {
+                            label: stage.label,
+                          })}
+                        </div>
+                      ) : stageError ? (
+                        <div className={styles.errorState}>
+                          {t("workflow.formError", "Error loading form: {{error}}", {
+                            error: stageError.message,
+                          })}
+                        </div>
+                      ) : !schema ? (
+                        <div className={styles.errorState}>
+                          {t("workflow.formNotFound", "Form not found or invalid.")}
+                        </div>
+                      ) : visitLoading ? (
+                        <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
+                      ) : visitError ? (
+                        <div className={styles.errorState}>
+                          {t(
+                            "workflow.visitError",
+                            "Error loading visit: {{error}}",
+                            { error: visitError.message },
+                          )}
+                        </div>
+                      ) : !activeVisit ? (
+                        <div className={styles.errorState}>
+                          {t(
+                            "workflow.noVisit",
+                            "No active visit found. Please ensure the patient has been registered properly.",
+                          )}
+                        </div>
+                      ) : (
+                        <FormEngine
+                          key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}
+                          formJson={schema}
+                          patientUUID={selectedPatient.uuid}
+                          visit={activeVisit}
+                          encounterUUID={encounterUuidPerForm[stage.formUuid]}
+                          mode="embedded-view"
+                          hidePatientBanner={true}
+                        />
+                      )}
+                    </TabPanel>
+                  );
+                })}
               </TabPanels>
             </Tabs>
           </div>
