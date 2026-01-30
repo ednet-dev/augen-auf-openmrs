@@ -51,8 +51,7 @@ export const GenericWorkflow = (props: Props) => {
     (stage) => stage.formUuid !== props.stage.formUuid,
   );
 
-  const {
-    schema: currentFormSchema,
+  const {  
     formUuid: resolvedFormUuid,
     isLoading: isFormLoading,
     error: formError,
@@ -91,8 +90,7 @@ export const GenericWorkflow = (props: Props) => {
                       {t("workflow.formError", "Error loading form: {{error}}", {
                         error: formError.message,
                       })}
-                    </div>
-                  //) : !resolvedFormUuid || !currentFormSchema ? (
+                    </div>                  
                     ) : !resolvedFormUuid ? (
                     <div className={styles.errorState}>
                       {t("workflow.formNotFound", "Form not found or invalid.")}
@@ -117,13 +115,12 @@ export const GenericWorkflow = (props: Props) => {
                   ) : (
                     <FormEngine
                       key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
-                      onSubmit={(data) => console.log("onSubmit", data)}
-                      formJson={currentFormSchema}
+                      onSubmit={(data) => console.log("onSubmit", data)}                      
                       formUUID = {resolvedFormUuid}
                       patientUUID={selectedPatient.uuid}
                       visit={activeVisit}
-                      encounterUUID={encounterUuid}
-                      mode={encounterUuid ? "edit" : "enter" }
+                      {...(encounterUuid != null && { encounterUUID: encounterUuid })}
+                      mode={encounterUuid ? "edit" : "enter"}
                       hidePatientBanner={false}
                     />
                   )}
@@ -149,18 +146,7 @@ export const GenericWorkflow = (props: Props) => {
                           encounterUUID={encounterUuidPerForm[stage.formUuid]}
                           mode="embedded-view"
                           hidePatientBanner={true}
-                          onSubmit={(data) => console.log("onSubmit for other stage", data)} // optional
-                  
-                  //    <FormEngine
-                  //        key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}-${stage.formUuid}`}
-                  //         // formJson={currentFormSchema}
-                  //        formUUID = {resolvedFormUuid}
-                  //        formJson={schema}
-                  //        patientUUID={selectedPatient.uuid}
-                  //        visit={activeVisit}
-                  //        encounterUUID={encounterUuidPerForm[stage.formUuid]}
-                  //        mode="embedded-view"
-                  //        hidePatientBanner={true}
+                          onSubmit={(data) => console.log("onSubmit for other stage", data)} // optional                  
                          />
                       )}
                     </TabPanel>
@@ -223,41 +209,19 @@ function FormTabContent({
 }: {
   formUuid: string;
   patientUUID: string;
-  visit: any; // use proper type from your hooks
+  visit: any; 
   encounterUUID?: string;
   mode?: SessionMode;
   hidePatientBanner: boolean;
   onSubmit?: (data: any) => void;
 }) {
-  const { schema, isLoading: formLoading, error: formError } = useO3FormSchema(formUuid);
-
-  if (formLoading) {
-    return <div>Loading form...</div>;
-  }
-
-  if (formError) {
-    return (
-      <div className={styles.errorState}>
-        Error loading form: {formError.message}
-      </div>
-    );
-  }
-
-  //  if (!schema) {
-  //    return <div className={styles.errorState}>Form schema not found or invalid.</div>;
-  //  }
-
-  // You can add visitLoading / visitError checks here if needed,
-  // but since they're shared, it's often better to keep them outside
-
   return (
     <FormEngine
-      key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}
-      formJson={schema}          // ← use formJson with the fetched schema (preferred for embedded case)
-      formUUID={formUuid}     // ← alternative if you want engine to fetch itself (but slower)
+      key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}      
+      formUUID={formUuid}     
       patientUUID={patientUUID}
-      visit={visit}
-      encounterUUID={encounterUUID}
+      visit={visit}      
+      {...(encounterUUID != null && { encounterUUID })}
       mode={mode}
       hidePatientBanner={hidePatientBanner}
       onSubmit={onSubmit}      
