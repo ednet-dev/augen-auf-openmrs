@@ -130,40 +130,17 @@ export const GenericWorkflow = (props: Props) => {
 
                 {otherStages.map((stage) => (             
                     <TabPanel key={stage.formUuid}>
-                      {stageLoading ? (
-                        <div>
-                          {t("workflow.loadingForm", "Loading form for {label}...", {
-                            label: stage.label,
-                          })}
-                        </div>
-                      ) : stageError ? (
-                        <div className={styles.errorState}>
-                          {t("workflow.formError", "Error loading form: {{error}}", {
-                            error: stageError.message,
-                          })}
-                        </div>
-                      ) : !schema ? (
-                        <div className={styles.errorState}>
-                          {t("workflow.formNotFound", "Form not found or invalid.")}
-                        </div>
-                      ) : visitLoading ? (
-                        <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
-                      ) : visitError ? (
-                        <div className={styles.errorState}>
-                          {t(
-                            "workflow.visitError",
-                            "Error loading visit: {{error}}",
-                            { error: visitError.message },
-                          )}
-                        </div>
-                      ) : !activeVisit ? (
-                        <div className={styles.errorState}>
-                          {t(
-                            "workflow.noVisit",
-                            "No active visit found. Please ensure the patient has been registered properly.",
-                          )}
-                        </div>
-                      ) : (
+                      {visitLoading ? (
+      <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
+    ) : visitError ? (
+      <div className={styles.errorState}>
+        {t("workflow.visitError", "Error loading visit: {{error}}", { error: visitError.message })}
+      </div>
+    ) : !activeVisit ? (
+      <div className={styles.errorState}>
+        {t("workflow.noVisit", "No active visit found. Please ensure the patient has been registered properly.")}
+      </div>
+    ) : (
                         <FormTabContent
                           formUuid={stage.formUuid}
                           patientUUID={selectedPatient.uuid}
