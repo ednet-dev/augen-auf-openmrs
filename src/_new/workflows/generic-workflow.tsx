@@ -186,7 +186,7 @@ export const GenericWorkflow = (props: Props) => {
                          />
                       )}
                     </TabPanel>
-                })}
+                ))}
               </TabPanels>
             </Tabs>
           </div>
