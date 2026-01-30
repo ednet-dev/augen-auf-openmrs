@@ -25,6 +25,7 @@ export function useO3FormSchema(formNameOrUuid: string | undefined) {
         const response = await openmrsFetch(
           `/ws/rest/v1/form/${encodeURIComponent(formNameOrUuid)}`,
           {
+            method: 'GET',
             signal: abortController.signal,
             headers: { accept: 'application/json' },
           },
