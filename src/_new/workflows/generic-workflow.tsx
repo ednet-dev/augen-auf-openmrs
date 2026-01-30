@@ -82,7 +82,7 @@ export const GenericWorkflow = (props: Props) => {
                 ))}
               </TabList>
               <TabPanels>
-                <TabPanel>
+                <TabPanel key={resolvedFormUuid ?? props.stage.formUuid}>
                   {isFormLoading ? (
                     <div>{t("workflow.loadingForm", "Loading form...")}</div>
                   ) : formError ? (
@@ -113,8 +113,9 @@ export const GenericWorkflow = (props: Props) => {
                       )}
                     </div>
                   ) : (
-                    <FormEngine
-                      key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
+                    <FormEngine                 
+                      // key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
+                      key={`form-${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid ?? "new"}`}
                       onSubmit={(data) => console.log("onSubmit", data)}                      
                       formUUID = {resolvedFormUuid}
                       patientUUID={selectedPatient.uuid}
@@ -126,30 +127,29 @@ export const GenericWorkflow = (props: Props) => {
                   )}
                 </TabPanel>
 
-                {otherStages.map((stage) => (             
-                    <TabPanel key={stage.formUuid}>
-                      {visitLoading ? (
-      <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
-    ) : visitError ? (
-      <div className={styles.errorState}>
-        {t("workflow.visitError", "Error loading visit: {{error}}", { error: visitError.message })}
-      </div>
-    ) : !activeVisit ? (
-      <div className={styles.errorState}>
-        {t("workflow.noVisit", "No active visit found. Please ensure the patient has been registered properly.")}
-      </div>
-    ) : (
-                        <FormTabContent
-                          formUuid={stage.formUuid}
-                          patientUUID={selectedPatient.uuid}
-                          visit={activeVisit}
-                          encounterUUID={encounterUuidPerForm[stage.formUuid]}
-                          mode="embedded-view"
-                          hidePatientBanner={true}
-                          onSubmit={(data) => console.log("onSubmit for other stage", data)} // optional                  
-                         />
-                      )}
-                    </TabPanel>
+                  {otherStages.map((stage) => (
+                  <TabPanel key={stage.formUuid}>
+                    {visitLoading ? (
+                      <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
+                    ) : visitError ? (
+                      <div className={styles.errorState}>
+                        {t("workflow.visitError", "Error loading visit: {{error}}", { error: visitError.message })}
+                      </div>
+                    ) : !activeVisit ? (
+                      <div className={styles.errorState}>
+                        {t("workflow.noVisit", "No active visit found. Please ensure the patient has been registered properly.")}
+                      </div>
+                    ) : (
+                      <FormTabContent
+                        formUuid={stage.formUuid}
+                        patientUUID={selectedPatient.uuid}
+                        visit={activeVisit}
+                        encounterUUID={encounterUuidPerForm[stage.formUuid]}
+                        mode="embedded-view"
+                        hidePatientBanner={true}                        
+                      />
+                    )}
+                  </TabPanel>
                 ))}
               </TabPanels>
             </Tabs>
@@ -217,7 +217,8 @@ function FormTabContent({
 }) {
   return (
     <FormEngine
-      key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}      
+      // key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}      
+      key={`form-${formUuid}-${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID ?? "new"}`}
       formUUID={formUuid}     
       patientUUID={patientUUID}
       visit={visit}      
