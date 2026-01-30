@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FormEngine } from "@openmrs/esm-form-engine-lib";
+import { FormEngine, SessionMode } from "@openmrs/esm-form-engine-lib";
 import { PatientList } from "../patient-list.component";
 import {
   CalendarHeatMapIcon,
@@ -122,7 +122,7 @@ export const GenericWorkflow = (props: Props) => {
                       patientUUID={selectedPatient.uuid}
                       visit={activeVisit}
                       encounterUUID={encounterUuid}
-                      mode={encounterUuid ? "edit" : "enter"}
+                      mode={encounterUuid ? SessionMode.EDIT : SessionMode.ENTER }
                       hidePatientBanner={false}
                     />
                   )}
@@ -285,7 +285,7 @@ function FormTabContent({
       patientUUID={patientUUID}
       visit={visit}
       encounterUUID={encounterUUID}
-      mode={mode}
+      mode={SessionMode.VIEW}
       hidePatientBanner={hidePatientBanner}
       onSubmit={onSubmit}
       // Add formSessionIntent if needed: formSessionIntent={encounterUUID ? "edit" : "enter"}
