@@ -115,7 +115,8 @@ export const GenericWorkflow = (props: Props) => {
                   ) : (
                     <FormEngine                 
                       // key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
-                      key={`form-${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid ?? "new"}`}
+                      // key={`form-${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid ?? "new"}`}
+                      key={`activeform-${resolvedFormUuid}-${selectedPatient.uuid}`}
                       onSubmit={(data) => console.log("onSubmit", data)}                      
                       formUUID = {resolvedFormUuid}
                       patientUUID={selectedPatient.uuid}
