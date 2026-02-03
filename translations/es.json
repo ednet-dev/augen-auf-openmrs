@@ -6,7 +6,7 @@
   },
   "search": {
     "searchPatients": "Buscar Pacientes",
-    "enterNameOrId": "Ingrese el nombre o ID del paciente"
+    "enterNameOrId": "Ingrese el nombre o la ID del paciente"
   },
   "patientList": {
     "loading": "Cargando pacientes...",
