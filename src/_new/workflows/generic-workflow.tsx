@@ -78,11 +78,11 @@ export const GenericWorkflow = (props: Props) => {
                   {t("workflow.formTab", "Form")}
                 </Tab>
                 {otherStages.map((stage) => (
-                  <Tab key={`displayform-{stage.formUuid}`}>Form: {stage.label}</Tab>
+                  <Tab key={`tab-${stage.formUuid}`}>Form: {stage.label}</Tab>
                 ))}
               </TabList>
               <TabPanels>
-                <TabPanel key={`displayform-{resolvedFormUuid ?? props.stage.formUuid}`}>
+                <TabPanel key={`panel-${resolvedFormUuid ?? props.stage.formUuid}`}>
                   {isFormLoading ? (
                     <div>{t("workflow.loadingForm", "Loading form...")}</div>
                   ) : formError ? (
@@ -129,7 +129,7 @@ export const GenericWorkflow = (props: Props) => {
                 </TabPanel>
 
                   {otherStages.map((stage) => (
-                  <TabPanel key={`displayform-{stage.formUuid}`}>
+                  <TabPanel key={`panel-${stage.formUuid}`}>
                     {visitLoading ? (
                       <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
                     ) : visitError ? (
