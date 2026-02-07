@@ -78,11 +78,11 @@ export const GenericWorkflow = (props: Props) => {
                   {t("workflow.formTab", "Form")}
                 </Tab>
                 {otherStages.map((stage) => (
-                  <Tab key={`tab-${stage.formUuid}`}>Form: {stage.label}</Tab>
+                  <Tab key={`${stage.formUuid}`}>Form: {stage.label}</Tab>
                 ))}
               </TabList>
               <TabPanels>
-                <TabPanel key={`panel-${resolvedFormUuid ?? props.stage.formUuid}`}>
+                <TabPanel key={`${resolvedFormUuid ?? props.stage.formUuid}`}>
                   {isFormLoading ? (
                     <div>{t("workflow.loadingForm", "Loading form...")}</div>
                   ) : formError ? (
@@ -116,7 +116,8 @@ export const GenericWorkflow = (props: Props) => {
                     <FormEngine                 
                       // key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
                       // key={`form-${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid ?? "new"}`}
-                      key={`activeform-${resolvedFormUuid}-${selectedPatient.uuid}`}
+                      // key={`activeform-${resolvedFormUuid}-${selectedPatient.uuid}`}
+                      key={`${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit?.uuid ?? 'no-visit'}-${encounterUuid ?? 'new'}`}
                       onSubmit={(data) => console.log("onSubmit", data)}                      
                       formUUID = {resolvedFormUuid}
                       patientUUID={selectedPatient.uuid}
@@ -129,7 +130,7 @@ export const GenericWorkflow = (props: Props) => {
                 </TabPanel>
 
                   {otherStages.map((stage) => (
-                  <TabPanel key={`panel-${stage.formUuid}`}>
+                  <TabPanel key={`${stage.formUuid}`}>
                     {visitLoading ? (
                       <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
                     ) : visitError ? (
@@ -219,7 +220,8 @@ function FormTabContent({
   return (
     <FormEngine
       // key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}      
-      key={`displayform-${formUuid}-${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID ?? "new"}`}
+      // key={`displayform-${formUuid}-${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID ?? "new"}`}
+      key={`${formUuid}-${patientUUID}-${visit?.uuid ?? 'no-visit'}-${encounterUUID ?? 'new'}`}
       formUUID={formUuid}     
       patientUUID={patientUUID}
       visit={visit}      
