@@ -78,11 +78,11 @@ export const GenericWorkflow = (props: Props) => {
                   {t("workflow.formTab", "Form")}
                 </Tab>
                 {otherStages.map((stage) => (
-                  <Tab key={stage.formUuid}>Form: {stage.label}</Tab>
+                  <Tab key={`displayform-{stage.formUuid}`}>Form: {stage.label}</Tab>
                 ))}
               </TabList>
               <TabPanels>
-                <TabPanel key={resolvedFormUuid ?? props.stage.formUuid}>
+                <TabPanel key={`displayform-{resolvedFormUuid ?? props.stage.formUuid}`}>
                   {isFormLoading ? (
                     <div>{t("workflow.loadingForm", "Loading form...")}</div>
                   ) : formError ? (
@@ -129,7 +129,7 @@ export const GenericWorkflow = (props: Props) => {
                 </TabPanel>
 
                   {otherStages.map((stage) => (
-                  <TabPanel key={stage.formUuid}>
+                  <TabPanel key={`displayform-{stage.formUuid}`}>
                     {visitLoading ? (
                       <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
                     ) : visitError ? (
@@ -219,7 +219,7 @@ function FormTabContent({
   return (
     <FormEngine
       // key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}      
-      key={`form-${formUuid}-${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID ?? "new"}`}
+      key={`displayform-${formUuid}-${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID ?? "new"}`}
       formUUID={formUuid}     
       patientUUID={patientUUID}
       visit={visit}      
