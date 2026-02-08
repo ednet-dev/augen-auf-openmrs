@@ -57,6 +57,8 @@ export const GenericWorkflow = (props: Props) => {
     error: formError,
   } = useO3FormSchema(props.stage.formUuid);
 
+  const [selectedTab, setSelectedTab] = useState(0);
+
   return (
     <div className={styles.workflowWrapper}>
       <div className={styles.patientListContainer}>
@@ -72,7 +74,10 @@ export const GenericWorkflow = (props: Props) => {
       {selectedPatient ? (
         <>
           <div className={styles.tabsContainer}>
-            <Tabs>
+            <Tabs
+              selectedIndex={selectedTab}
+              onChange={({ selectedIndex }) => setSelectedTab(selectedIndex)}
+            >
               <TabList contained>
                 <Tab renderIcon={AlignBoxTopLeft}>
                   {t("workflow.formTab", "Form")}
