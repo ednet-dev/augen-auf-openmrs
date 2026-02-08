@@ -117,7 +117,7 @@ export const GenericWorkflow = (props: Props) => {
                       // key={`${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid || "new"}`}
                       // key={`form-${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit.uuid}-${encounterUuid ?? "new"}`}
                       // key={`activeform-${resolvedFormUuid}-${selectedPatient.uuid}`}
-                      key={`${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit?.uuid ?? 'no-visit'}-${encounterUuid ?? 'new'}`}
+                      key={`editable-${resolvedFormUuid}-${selectedPatient.uuid}-${activeVisit?.uuid ?? 'no-visit'}-${encounterUuid ?? 'new'}`}
                       onSubmit={(data) => console.log("onSubmit", data)}                      
                       formUUID = {resolvedFormUuid}
                       patientUUID={selectedPatient.uuid}
@@ -129,8 +129,9 @@ export const GenericWorkflow = (props: Props) => {
                   )}
                 </TabPanel>
 
-                  {otherStages.map((stage) => (
-                  <TabPanel key={`${stage.formUuid}`}>
+                  {otherStages.map((stage, index) => (
+                  selectedTab === index + 1 && (
+                  <TabPanel key={`panel-${stage.formUuid}`}>
                     {visitLoading ? (
                       <div>{t("workflow.loadingVisit", "Loading visit...")}</div>
                     ) : visitError ? (
@@ -152,6 +153,7 @@ export const GenericWorkflow = (props: Props) => {
                       />
                     )}
                   </TabPanel>
+                    )
                 ))}
               </TabPanels>
             </Tabs>
@@ -221,7 +223,7 @@ function FormTabContent({
     <FormEngine
       // key={`${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID || "new"}`}      
       // key={`displayform-${formUuid}-${patientUUID}-${visit?.uuid || "no-visit"}-${encounterUUID ?? "new"}`}
-      key={`${formUuid}-${patientUUID}-${visit?.uuid ?? 'no-visit'}-${encounterUUID ?? 'new'}`}
+      key={`display-${formUuid}-${patientUUID}-${visit?.uuid ?? 'no-visit'}-${encounterUUID ?? 'new'}`}
       formUUID={formUuid}     
       patientUUID={patientUUID}
       visit={visit}      
